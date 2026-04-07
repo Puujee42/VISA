@@ -9,7 +9,7 @@ const intlMiddleware = createMiddleware({
 
 const isPublicRoute = createRouteMatcher([
     '/',
-    '/:locale',
+    '/:locale(|/)',           // Matches /en, /mn, /de and /en/, /mn/, /de/
     '/:locale/sign-in(.*)',
     '/:locale/sign-up(.*)',
     '/:locale/join',
