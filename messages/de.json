@@ -990,7 +990,8 @@
       "lessons": "Unterricht",
       "blog": "Blog & Nachrichten",
       "shopping": "Geschäft",
-      "role": "Super-Admin"
+      "role": "Super-Admin",
+      "online": "Online"
     },
     "header": {
       "blog": "Blog- & Inhaltsbibliothek",

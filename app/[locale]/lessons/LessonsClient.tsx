@@ -117,13 +117,17 @@ export default function LessonsClient() {
                            >
                               {/* Thumbnail */}
                               <div className="relative aspect-video overflow-hidden">
-                                 <Image
-                                    src={lesson.image}
-                                    alt={titleText}
-                                    fill
-                                    className="object-cover group-hover:scale-110 transition-transform duration-700"
-                                    unoptimized
-                                 />
+                                 {lesson.image ? (
+                                    <Image
+                                       src={lesson.image}
+                                       alt={titleText}
+                                       fill
+                                       className="object-cover group-hover:scale-110 transition-transform duration-700"
+                                       unoptimized
+                                    />
+                                 ) : (
+                                    <div className="absolute inset-0 bg-slate-200 group-hover:scale-110 transition-transform duration-700" />
+                                 )}
                                  <div className="absolute inset-0 bg-slate-900/20 group-hover:bg-slate-900/40 transition-colors flex items-center justify-center">
                                     <div className="w-16 h-16 bg-white/90 backdrop-blur rounded-full flex items-center justify-center text-red-600 shadow-xl scale-0 group-hover:scale-100 transition-transform duration-500">
                                        <Play fill="currentColor" size={28} />

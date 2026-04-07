@@ -1000,7 +1000,8 @@
       "lessons": "Lessons",
       "blog": "Blog & News",
       "shopping": "Shopping",
-      "role": "Super Admin"
+      "role": "Super Admin",
+      "online": "Online"
     },
     "header": {
       "blog": "Blog & Content Library",

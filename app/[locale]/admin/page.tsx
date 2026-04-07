@@ -1177,6 +1177,10 @@ function EventsManager({ events, opportunities, onRefresh }: any) {
          alert("Please upload a cover image first.");
          return;
       }
+      if (!formData.titleEn || !formData.titleMn || !formData.descEn || !formData.descMn) {
+         alert("Please fill in all titles and descriptions in both languages.");
+         return;
+      }
       setLoading(true);
       try {
          const url = activeTab === "event" ? "/api/admin/events" : "/api/admin/opportunities";
@@ -1368,6 +1372,10 @@ function ContentManager({ blogs, onRefresh }: any) {
 
    const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
+      if (!formData.titleEn || !formData.titleMn || !formData.descEn || !formData.descMn || !formData.summaryEn || !formData.summaryMn) {
+         alert("Please fill in all titles, summaries, and content in both languages.");
+         return;
+      }
       setLoading(true);
       try {
          const method = formData.id ? "PUT" : "POST";
