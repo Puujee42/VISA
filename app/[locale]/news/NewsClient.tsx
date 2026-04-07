@@ -36,7 +36,7 @@ export default function NewsClient() {
 
    // FETCH BLOG POSTS
    useEffect(() => {
-      fetch('/api/posts')
+      fetch('/api/news')
          .then(res => res.json())
          .then(data => {
             if (Array.isArray(data)) setPosts(data);

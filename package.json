@@ -13,6 +13,8 @@
     "seed": "ts-node --compiler-options {\\\"module\\\":\\\"commonjs\\\"} lib/seed.ts"
   },
   "dependencies": {
+    "@capacitor/core": "^8.3.0",
+    "@capacitor/push-notifications": "^8.0.3",
     "@clerk/nextjs": "^6.36.10",
     "@livekit/components-react": "^2.9.19",
     "@livekit/components-styles": "^1.2.0",
@@ -37,6 +39,9 @@
     "react-type-animation": "^3.2.0"
   },
   "devDependencies": {
+    "@capacitor/android": "^8.3.0",
+    "@capacitor/cli": "^8.3.0",
+    "@capacitor/ios": "^8.3.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

@@ -920,7 +920,15 @@
     "passwordPlaceholder": "Passwort",
     "signUpButton": "Registrieren",
     "alreadyHaveAccount": "Hast du schon ein Konto?",
-    "signIn": "Anmelden"
+    "signIn": "Anmelden",
+    "welcome": "Willkommen",
+    "back": "Zurück.",
+    "signinSubtitle": "Melden Sie sich an, um Ihre persönlichen Daten und Ihren Bewerbungsfortschritt zu überprüfen.",
+    "forgotPassword": "Passwort vergessen?",
+    "signInButton": "Anmelden",
+    "newMember": "Neues Mitglied?",
+    "secureAccess": "Sicherer Zugang",
+    "encrypted": "Verschlüsselt"
   },
   "events": {
     "back": "Zurück zu Veranstaltungen",

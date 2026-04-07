@@ -22,6 +22,7 @@ import { useTranslations, useLocale } from "next-intl";
 import dynamic from "next/dynamic";
 import { useIsMobile } from "./MotionProxy";
 import LanguageToggle from "./LanguageToggle";
+import { Capacitor } from "@capacitor/core";
 
 // Dynamically import Clerk components to reduce initial JS bundle
 const AuthActions = dynamic(() => import("./AuthActions"), {
@@ -44,6 +45,11 @@ export default function Navbar() {
   const pathname = usePathname();
   const { scrollY } = useScroll();
   const isMobile = useIsMobile();
+  const [isNative, setIsNative] = useState(false);
+
+  useEffect(() => {
+    setIsNative(Capacitor.isNativePlatform());
+  }, []);
 
 
 
@@ -204,34 +210,36 @@ export default function Navbar() {
         </div>
       </div>
 
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[100]">
-        <nav style={{ WebkitBackdropFilter: "blur(20px)" }} className="w-full grid grid-cols-5 items-center justify-items-center px-4 pt-2 bg-[#FDFBF7]/90 border-t border-black/5 text-slate-500 pb-[max(env(safe-area-inset-bottom),12px)] transition-all duration-500 shadow-[0_-4px_24px_rgba(0,0,0,0.04)]">
-          {mobileNav.map((item) => {
-            const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
-            if (item.isMain) {
+      {!isNative && (
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[100]">
+          <nav style={{ WebkitBackdropFilter: "blur(20px)" }} className="w-full grid grid-cols-5 items-center justify-items-center px-4 pt-2 bg-[#FDFBF7]/90 border-t border-black/5 text-slate-500 pb-[max(env(safe-area-inset-bottom),12px)] transition-all duration-500 shadow-[0_-4px_24px_rgba(0,0,0,0.04)]">
+            {mobileNav.map((item) => {
+              const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+              if (item.isMain) {
+                return (
+                  <div key={item.id} className="relative flex items-center justify-center">
+                    <Link href={item.href} className="flex items-center justify-center group outline-none -mt-5">
+                      <motion.div whileTap={{ scale: 0.9 }} className="w-[52px] h-[52px] rounded-full flex items-center justify-center text-white transition-all shadow-md group-hover:shadow-lg" style={{ backgroundColor: BRAND.RED, boxShadow: isActive ? `0 8px 16px -4px ${BRAND.RED}80` : `0 4px 12px -4px ${BRAND.RED}60` }}>
+                        <item.icon size={22} strokeWidth={isActive ? 2.5 : 2} />
+                      </motion.div>
+                    </Link>
+                  </div>
+                );
+              }
               return (
-                <div key={item.id} className="relative flex items-center justify-center">
-                  <Link href={item.href} className="flex items-center justify-center group outline-none -mt-5">
-                    <motion.div whileTap={{ scale: 0.9 }} className="w-[52px] h-[52px] rounded-full flex items-center justify-center text-white transition-all shadow-md group-hover:shadow-lg" style={{ backgroundColor: BRAND.RED, boxShadow: isActive ? `0 8px 16px -4px ${BRAND.RED}80` : `0 4px 12px -4px ${BRAND.RED}60` }}>
-                      <item.icon size={22} strokeWidth={isActive ? 2.5 : 2} />
-                    </motion.div>
-                  </Link>
-                </div>
+                <Link key={item.id} href={item.href} className="flex flex-col items-center justify-center relative p-2 w-full h-[52px] transition-all group outline-none">
+                  <div className={`transition-all duration-300 ${isActive ? "-translate-y-0.5 scale-110" : "opacity-60 group-hover:opacity-100 group-hover:scale-105"}`} style={{ color: isActive ? BRAND.GREEN : "currentColor" }}>
+                    <item.icon size={22} strokeWidth={isActive ? 2.5 : 2} />
+                  </div>
+                  {isActive && (
+                    <motion.div layoutId="mobileActiveDot" className="absolute bottom-1 w-1 h-1 rounded-full" style={{ backgroundColor: BRAND.GREEN }} />
+                  )}
+                </Link>
               );
-            }
-            return (
-              <Link key={item.id} href={item.href} className="flex flex-col items-center justify-center relative p-2 w-full h-[52px] transition-all group outline-none">
-                <div className={`transition-all duration-300 ${isActive ? "-translate-y-0.5 scale-110" : "opacity-60 group-hover:opacity-100 group-hover:scale-105"}`} style={{ color: isActive ? BRAND.GREEN : "currentColor" }}>
-                  <item.icon size={22} strokeWidth={isActive ? 2.5 : 2} />
-                </div>
-                {isActive && (
-                  <motion.div layoutId="mobileActiveDot" className="absolute bottom-1 w-1 h-1 rounded-full" style={{ backgroundColor: BRAND.GREEN }} />
-                )}
-              </Link>
-            );
-          })}
-        </nav>
-      </div>
+            })}
+          </nav>
+        </div>
+      )}
     </>
   );
 }

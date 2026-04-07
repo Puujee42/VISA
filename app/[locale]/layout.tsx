@@ -6,6 +6,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import SmoothScroll from "../components/SmoothScroll";
 import dynamic from "next/dynamic";
 import MotionProvider from "../components/MotionProvider";
+import PushNotificationManager from "../components/PushNotificationManager";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -65,6 +66,7 @@ export default async function RootLayout({
           <NextIntlClientProvider messages={messages}>
             <MotionProvider>
               <SmoothScroll />
+              <PushNotificationManager />
               <Navbar />
               <main className="min-h-[100dvh] pb-24 lg:pb-0">
                 {children}

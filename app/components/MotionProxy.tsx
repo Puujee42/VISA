@@ -18,14 +18,20 @@ if (typeof window !== 'undefined') {
 }
 
 export const useIsMobile = () => {
-    const [isMobile, setIsMobile] = useState(globalIsMobile);
+    // Start with false to match Server Side Rendering (SSR) initial state
+    const [isMobile, setIsMobile] = useState(false);
+    
     useEffect(() => {
+        // Hydrate with the actual client value after first mount
+        setIsMobile(globalIsMobile);
+        
         const handler = (val: boolean) => setIsMobile(val);
         listeners.add(handler);
         return () => {
             listeners.delete(handler);
         };
     }, []);
+    
     return isMobile;
 };
 
