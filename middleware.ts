@@ -7,26 +7,19 @@ const intlMiddleware = createMiddleware({
     localePrefix: 'always'
 });
 
-const isPublicRoute = createRouteMatcher([
-    '/',
-    '/:locale(|/)',           // Matches /en, /mn, /de and /en/, /mn/, /de/
-    '/:locale/sign-in(.*)',
-    '/:locale/sign-up(.*)',
-    '/:locale/join',
-    '/:locale/about',
-    '/:locale/aupair(.*)',
-    '/:locale/lessons(.*)',
-    '/:locale/events(.*)',
-    '/:locale/news(.*)',
-    '/:locale/contact',
-    '/:locale/booking',
-    '/:locale/shop(.*)',
-    '/sign-in(.*)',
-    '/sign-up(.*)',
-    '/api/events(.*)',
-    '/api/news(.*)',
-    '/api/livekit(.*)',
-    '/api/shopping(.*)'
+const isProtectedRoute = createRouteMatcher([
+    '/:locale/admin(.*)',
+    '/:locale/dashboard(.*)',
+    '/:locale/apply(.*)',
+    '/:locale/student-information(.*)',
+    '/:locale/submit-documents(.*)',
+    '/admin(.*)',
+    '/dashboard(.*)',
+    '/apply(.*)',
+    '/student-information(.*)',
+    '/submit-documents(.*)',
+    '/api/user(.*)',
+    '/api/admin(.*)'
 ]);
 
 // 1. Mark the function as 'async'
@@ -38,9 +31,9 @@ export default clerkMiddleware(async (auth, req) => {
     const userId = authObj.userId;
     const redirectToSignIn = authObj.redirectToSignIn;
 
-    // 3. Protect Private Routes manually
-    // If the route is NOT public AND the user is NOT logged in
-    if (!isPublicRoute(req) && !userId) {
+    // 3. Protect Private Routes explicitly
+    // If the route IS protected AND the user is NOT logged in
+    if (isProtectedRoute(req) && !userId) {
         console.log('[Middleware] Protected route accessed without user, redirecting');
         return redirectToSignIn({ returnBackUrl: req.url });
     }
