@@ -180,10 +180,10 @@ export default function Navbar() {
         </nav>
       </motion.header>
 
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-[100] px-5 py-4 flex justify-between items-center pointer-events-none">
-        <Link href="/" className="pointer-events-auto">
-          <div style={{ WebkitBackdropFilter: "blur(12px)" }} className="transform-gpu flex items-center gap-2 p-1.5 pr-4 rounded-full backdrop-blur-md border shadow-2xl transition-all duration-500 bg-white/90 border-slate-100">
-            <div className="relative w-8 h-8 rounded-full overflow-hidden border border-white/50 bg-white">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-[100]">
+        <div style={{ WebkitBackdropFilter: "blur(20px)" }} className="flex justify-between items-center w-full px-5 pb-3 pt-[max(env(safe-area-inset-top),12px)] bg-[#FDFBF7]/90 border-b border-black/5 shadow-sm transition-all duration-500">
+          <Link href="/" className="flex items-center gap-3 outline-none">
+            <div className="relative w-8 h-8 rounded-full overflow-hidden shadow-sm bg-white">
               <Image
                 src="/image.png"
                 alt="Logo"
@@ -194,37 +194,39 @@ export default function Navbar() {
                 quality={75}
               />
             </div>
-            <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: BRAND.RED }}>AuPair</span>
-          </div>
-        </Link>
+            <span className="text-[17px] font-bold tracking-tight" style={{ color: BRAND.RED }}>{t("logo") || "AuPair"}</span>
+          </Link>
 
-        <div className="flex items-center gap-2 pointer-events-auto min-w-[120px] justify-end">
-          <LanguageToggle />
-          <AuthActions BRAND={BRAND} isMobile={true} />
+          <div className="flex items-center gap-3">
+            <LanguageToggle />
+            <AuthActions BRAND={BRAND} isMobile={true} />
+          </div>
         </div>
       </div>
 
-      <div className="lg:hidden fixed bottom-6 left-0 right-0 z-[100] px-2 flex justify-center">
-        <nav style={{ WebkitBackdropFilter: isMobile ? "blur(8px)" : "blur(16px)" }} className="transform-gpu grid grid-cols-5 items-end justify-between w-full max-w-[420px] px-1 py-3 pb-3 rounded-[2rem] border shadow-lg backdrop-blur-lg transition-all duration-700 bg-white/95 border-slate-200 text-slate-500 shadow-[0_10px_30px_rgba(0,0,0,0.1)]">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[100]">
+        <nav style={{ WebkitBackdropFilter: "blur(20px)" }} className="w-full grid grid-cols-5 items-center justify-items-center px-4 pt-2 bg-[#FDFBF7]/90 border-t border-black/5 text-slate-500 pb-[max(env(safe-area-inset-bottom),12px)] transition-all duration-500 shadow-[0_-4px_24px_rgba(0,0,0,0.04)]">
           {mobileNav.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
             if (item.isMain) {
               return (
-                <div key={item.id} className="relative -top-8 flex flex-col items-center justify-end h-full">
-                  <Link href={item.href} className="flex flex-col items-center">
-                    <motion.div whileTap={{ scale: 0.9 }} className="w-14 h-14 rounded-full flex items-center justify-center shadow-2xl relative z-10 text-white border-4 border-[#FDFBF7]" style={{ backgroundColor: BRAND.RED }}>
-                      <item.icon size={24} strokeWidth={2.5} />
+                <div key={item.id} className="relative flex items-center justify-center">
+                  <Link href={item.href} className="flex items-center justify-center group outline-none -mt-5">
+                    <motion.div whileTap={{ scale: 0.9 }} className="w-[52px] h-[52px] rounded-full flex items-center justify-center text-white transition-all shadow-md group-hover:shadow-lg" style={{ backgroundColor: BRAND.RED, boxShadow: isActive ? `0 8px 16px -4px ${BRAND.RED}80` : `0 4px 12px -4px ${BRAND.RED}60` }}>
+                      <item.icon size={22} strokeWidth={isActive ? 2.5 : 2} />
                     </motion.div>
-                    <span className={`mt-2 text-[9px] font-bold uppercase tracking-wide transition-colors duration-300 ${isActive ? "text-[#E31B23]" : "opacity-80"}`} style={{ color: isActive ? BRAND.RED : undefined }}>{item.label}</span>
                   </Link>
                 </div>
               );
             }
             return (
-              <Link key={item.id} href={item.href} className="flex flex-col items-center justify-center gap-1 relative group p-1">
-                <div className={`transition-[transform,color,opacity] duration-300 ${isActive ? "-translate-y-1" : "opacity-70"}`} style={{ color: isActive ? BRAND.GREEN : "currentColor" }}><item.icon size={20} strokeWidth={isActive ? 2.5 : 2} /></div>
-                <span className={`text-[9px] font-bold leading-none tracking-wide transition-[color,opacity] duration-300 ${isActive ? "opacity-100" : "opacity-70 group-hover:opacity-100"}`} style={{ color: isActive ? BRAND.GREEN : "currentColor" }}>{item.label}</span>
-                {isActive && <motion.div layoutId="activeDot" className="absolute -top-1 w-1 h-1 rounded-full" style={{ backgroundColor: BRAND.GREEN }} />}
+              <Link key={item.id} href={item.href} className="flex flex-col items-center justify-center relative p-2 w-full h-[52px] transition-all group outline-none">
+                <div className={`transition-all duration-300 ${isActive ? "-translate-y-0.5 scale-110" : "opacity-60 group-hover:opacity-100 group-hover:scale-105"}`} style={{ color: isActive ? BRAND.GREEN : "currentColor" }}>
+                  <item.icon size={22} strokeWidth={isActive ? 2.5 : 2} />
+                </div>
+                {isActive && (
+                  <motion.div layoutId="mobileActiveDot" className="absolute bottom-1 w-1 h-1 rounded-full" style={{ backgroundColor: BRAND.GREEN }} />
+                )}
               </Link>
             );
           })}

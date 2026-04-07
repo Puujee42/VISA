@@ -134,10 +134,10 @@ const HeroSlider = () => {
       </div>
 
       {/* ─── 2. Main Content ─── */}
-      <div className="relative z-10 container mx-auto px-6 max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 items-center h-full">
+      <div className="relative z-10 container mx-auto px-5 md:px-6 max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 items-center h-full">
 
         {/* LEFT COLUMN: Text Content */}
-        <div className="lg:col-span-8 pt-20 lg:pt-0">
+        <div className="lg:col-span-8 pt-24 pb-20 lg:pt-0 lg:pb-0">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeSlide.id}
@@ -165,12 +165,12 @@ const HeroSlider = () => {
               {/* Headline */}
               <motion.h1
                 variants={textVariants}
-                className="text-5xl md:text-7xl font-black leading-[1.1] mb-8 tracking-tight drop-shadow-2xl"
+                className="text-[40px] sm:text-[48px] md:text-[64px] font-bold leading-[1.05] tracking-tight mb-5 md:mb-8 drop-shadow-lg text-slate-50"
               >
                 {activeSlide.title.split(" ").map((word: string, i: number) => (
-                  <span key={i} className="inline-block mr-3">
+                  <span key={i} className="inline-block mr-2 md:mr-3">
                     {word === "Au" || word === "Pair" ? (
-                      <span className="text-transparent bg-clip-text bg-gradient-to-br from-white to-slate-400">
+                      <span className="text-transparent bg-clip-text bg-gradient-to-br from-white to-slate-300 drop-shadow-sm">
                         {word}
                       </span>
                     ) : (
