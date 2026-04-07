@@ -6,7 +6,8 @@ const config: CapacitorConfig = {
   webDir: 'out',
   server: {
     url: 'https://visa-nu-nine.vercel.app/', // Use 10.0.2.2:3000 for Android emulator, or 192.168.x.x:3000 for physical device
-    cleartext: true
+    cleartext: true,
+    allowNavigation: ['*']
   }
 };
 
