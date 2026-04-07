@@ -1,0 +1,79 @@
+name: Capacitor Mobile Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci || npm install
+
+      - name: Prepare Capacitor Web Assets
+        run: |
+          mkdir -p out
+          echo '<!DOCTYPE html><html><body>Capacitor Node Wrapper</body></html>' > out/index.html
+
+      - name: Capacitor Sync Android
+        run: npx cap sync android
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Build Android APK
+        working-directory: ./android
+        run: ./gradlew assembleDebug
+
+      - name: Upload Android Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug.apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+
+  build-ios:
+    name: Build iOS App
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci || npm install
+
+      - name: Prepare Capacitor Web Assets
+        run: |
+          mkdir -p out
+          echo '<!DOCTYPE html><html><body>Capacitor Node Wrapper</body></html>' > out/index.html
+
+      - name: Capacitor Sync iOS
+        run: npx cap sync ios
+
+      # Notice: Full iOS IPA build requires signing keys. 
+      # This step ensures the Xcode project successfully builds the workspace.
+      - name: Build iOS Xcode Project
+        working-directory: ./ios/App
+        run: xcodebuild -workspace App.xcworkspace -scheme App -configuration Debug -sdk iphonesimulator CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
