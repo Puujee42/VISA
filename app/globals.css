@@ -26,3 +26,39 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* ==============================================================
+   NATIVE APP AESTHETICS OVERRIDES
+   ============================================================== */
+
+html, body {
+  /* Scale down the entire application slightly for denser native-app aesthetics */
+  font-size: 15px; /* Standard rem becomes slightly smaller (15px instead of 16px) */
+
+  /* Prevent the elastic "pull-to-refresh" web bouncing effect */
+  overscroll-behavior-y: none;
+  
+  /* Suppress the native web blue/grey flash on tap */
+  -webkit-tap-highlight-color: transparent;
+  
+  /* Hide scrollbars for a clean, immersive edge-to-edge look */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Hide scrollbars for WebKit (Chrome, Safari, iOS) */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Disable accidental text highlighting/copy-pasting while swiping/scrolling */
+body {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Explicitly re-enable text selection for input fields */
+input, textarea, [contenteditable="true"] {
+  user-select: auto;
+  -webkit-user-select: auto;
+}
