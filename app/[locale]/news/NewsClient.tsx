@@ -18,7 +18,7 @@ import { useTranslations, useLocale } from "next-intl";
 interface Post {
    _id: string;
    title: { [key: string]: string };
-   excerpt: { [key: string]: string };
+   summary: { [key: string]: string };
    author: string;
    date: string;
    image: string;
@@ -46,7 +46,7 @@ export default function NewsClient() {
    }, []);
 
    const filteredPosts = posts.filter(post => {
-      const title = post.title[locale] || post.title["en"] || "";
+      const title = post.title?.[locale] || post.title?.["en"] || "";
       return title.toLowerCase().includes(searchQuery.toLowerCase());
    });
 
@@ -101,7 +101,7 @@ export default function NewsClient() {
                   >
                      <Image
                         src={featuredPost.image}
-                        alt={featuredPost.title[locale] || featuredPost.title["en"]}
+                        alt={featuredPost.title?.[locale] || featuredPost.title?.["en"] || ""}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-1000"
                      />
@@ -111,7 +111,7 @@ export default function NewsClient() {
                            {featuredPost.category}
                         </span>
                         <h2 className="text-3xl md:text-5xl font-black text-white mb-6 leading-tight">
-                           {featuredPost.title[locale] || featuredPost.title["en"]}
+                           {featuredPost.title?.[locale] || featuredPost.title?.["en"] || ""}
                         </h2>
                         <Link
                            href={`/news/${featuredPost.slug}`}
@@ -146,8 +146,8 @@ export default function NewsClient() {
                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
                   <AnimatePresence>
                      {remainingPosts.map((post, idx) => {
-                        const titleText = post.title[locale] || post.title["en"];
-                        const excerptText = post.excerpt[locale] || post.excerpt["en"];
+                        const titleText = post.title?.[locale] || post.title?.["en"] || "";
+                        const excerptText = post.summary?.[locale] || post.summary?.["en"] || "";
                         return (
                            <motion.article
                               key={post._id}
@@ -193,38 +193,7 @@ export default function NewsClient() {
             </div>
          </section>
 
-         {/* ─── 3. NEWSLETTER / FOOTER AD ─── */}
-         <section className="py-20 px-6">
-            <div className="max-w-7xl mx-auto">
-               <div className="relative rounded-[4rem] bg-slate-900 p-12 md:p-20 overflow-hidden shadow-2xl">
-                  {/* Decorative Elements */}
-                  <div className="absolute top-0 right-0 w-96 h-96 bg-red-600/20 rounded-full blur-[100px]" />
-                  <div className="absolute bottom-0 left-0 w-80 h-80 bg-emerald-500/20 rounded-full blur-[100px]" />
 
-                  <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
-                     <div className="text-center md:text-left space-y-4">
-                        <h2 className="text-4xl md:text-6xl font-black text-white">{t("newsletterTitle")}</h2>
-                        <p className="text-slate-400 text-lg md:text-xl font-medium max-w-lg">
-                           {t("newsletterDesc")}
-                        </p>
-                     </div>
-                     <div className="w-full md:w-auto flex flex-col sm:flex-row gap-4">
-                        <div className="relative">
-                           <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500" size={20} />
-                           <input
-                              type="email"
-                              placeholder={t("emailPlaceholder")}
-                              className="w-full sm:w-80 pl-14 pr-6 py-5 rounded-3xl bg-white/5 border border-white/10 text-white font-bold focus:outline-none focus:ring-4 focus:ring-red-500/20"
-                           />
-                        </div>
-                        <button className="px-10 py-5 rounded-3xl bg-red-600 text-white font-black uppercase tracking-widest hover:bg-emerald-600 transition-colors shadow-lg">
-                           {t("register")}
-                        </button>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </section>
 
       </div>
    );
