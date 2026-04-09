@@ -15,7 +15,9 @@ import {
 import dynamic from "next/dynamic";
 import { useTranslations, useLocale } from "next-intl";
 
-const CloudinaryPlayer = dynamic(() => import("./CloudinaryPlayer"), { ssr: false });
+const CloudinaryPlayer = dynamic(() => import("./CloudinaryPlayer"), {
+  ssr: false,
+});
 
 /* ────────────────────── Configuration ────────────────────── */
 const AUTOPLAY_DURATION = 8000; // 8 Seconds per slide
@@ -32,7 +34,11 @@ const containerVariants: Variants = {
 
 const textVariants: Variants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
+  },
 };
 
 /* ────────────────────── Main Component ────────────────────── */
@@ -51,7 +57,7 @@ const HeroSlider = () => {
       desc: t("slide1_desc"),
       location: t("slide1_location"),
       path: "/aupair/germany",
-      duration: "12 Months"
+      duration: "12 Months",
     },
     {
       id: 2,
@@ -59,8 +65,16 @@ const HeroSlider = () => {
       desc: t("slide2_desc"),
       location: t("slide2_location"),
       path: "/aupair/austria",
-      duration: "12 Months"
-    }
+      duration: "12 Months",
+    },
+    {
+      id: 3,
+      title: t("slide3_title"),
+      desc: t("slide3_desc"),
+      location: t("slide3_location"),
+      path: "/aupair/france",
+      duration: "12 Months",
+    },
   ];
 
   // Auto-play logic
@@ -83,7 +97,7 @@ const HeroSlider = () => {
           observer.disconnect();
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     if (containerRef.current) {
@@ -96,8 +110,10 @@ const HeroSlider = () => {
   }, []);
 
   return (
-    <section ref={containerRef} className="relative h-[100dvh] min-h-[700px] w-full bg-slate-900 text-white flex items-center justify-center overflow-hidden selection:bg-red-500 selection:text-white">
-
+    <section
+      ref={containerRef}
+      className="relative h-[100dvh] min-h-[700px] w-full bg-slate-900 text-white flex items-center justify-center overflow-hidden selection:bg-red-500 selection:text-white"
+    >
       {/* ─── 1. Background (Video/Image) ─── */}
       <div className="absolute inset-0 z-0">
         {/* Desktop Video Background */}
@@ -124,7 +140,7 @@ const HeroSlider = () => {
             placeholder="blur"
             blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
             sizes="100vw"
-            style={{ transform: 'scale(1.05)' }}
+            style={{ transform: "scale(1.05)" }}
           />
         </div>
 
@@ -135,7 +151,6 @@ const HeroSlider = () => {
 
       {/* ─── 2. Main Content ─── */}
       <div className="relative z-10 container mx-auto px-5 md:px-6 max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 items-center h-full">
-
         {/* LEFT COLUMN: Text Content */}
         <div className="lg:col-span-8 pt-24 pb-20 lg:pt-0 lg:pb-0">
           <AnimatePresence mode="wait">
@@ -148,7 +163,10 @@ const HeroSlider = () => {
               className="max-w-4xl text-left"
             >
               {/* Floating Badges */}
-              <motion.div variants={textVariants} className="flex flex-wrap items-center gap-3 mb-8">
+              <motion.div
+                variants={textVariants}
+                className="flex flex-wrap items-center gap-3 mb-8"
+              >
                 {/* Location Badge */}
                 <span className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-bold uppercase tracking-widest text-white shadow-lg">
                   <FaGlobeEurope className="text-[#00C896]" size={14} />
@@ -181,7 +199,10 @@ const HeroSlider = () => {
               </motion.h1>
 
               {/* Description with Vertical Accent Line */}
-              <motion.div variants={textVariants} className="flex gap-6 mb-10 pl-2">
+              <motion.div
+                variants={textVariants}
+                className="flex gap-6 mb-10 pl-2"
+              >
                 <div className="w-1 rounded-full bg-gradient-to-b from-[#E31B23] to-transparent h-auto min-h-[60px]" />
                 <p className="text-lg md:text-xl text-slate-300 max-w-xl leading-relaxed font-medium">
                   {activeSlide.desc}
@@ -189,7 +210,10 @@ const HeroSlider = () => {
               </motion.div>
 
               {/* Metadata Stats */}
-              <motion.div variants={textVariants} className="flex items-center gap-8 mb-10 text-sm font-bold text-slate-300">
+              <motion.div
+                variants={textVariants}
+                className="flex items-center gap-8 mb-10 text-sm font-bold text-slate-300"
+              >
                 <div className="flex items-center gap-3">
                   <div className="p-2.5 rounded-xl bg-slate-800 border border-slate-700 text-[#E31B23]">
                     <FaClock />
@@ -209,7 +233,10 @@ const HeroSlider = () => {
               <motion.div variants={textVariants}>
                 <Link href={activeSlide.path}>
                   <motion.button
-                    whileHover={{ scale: 1.02, boxShadow: "0 20px 40px -10px rgba(227, 27, 35, 0.4)" }}
+                    whileHover={{
+                      scale: 1.02,
+                      boxShadow: "0 20px 40px -10px rgba(227, 27, 35, 0.4)",
+                    }}
                     whileTap={{ scale: 0.98 }}
                     className="group relative inline-flex items-center gap-4 px-8 py-4 bg-[#E31B23] text-white rounded-full font-bold text-lg overflow-hidden transition-all duration-300"
                   >
@@ -223,7 +250,6 @@ const HeroSlider = () => {
                   </motion.button>
                 </Link>
               </motion.div>
-
             </motion.div>
           </AnimatePresence>
         </div>
@@ -239,7 +265,9 @@ const HeroSlider = () => {
                   onClick={() => setSlideIndex(index)}
                   className="group relative w-72 flex items-center justify-end gap-6 outline-none"
                 >
-                  <div className={`text-right transition-all duration-500 ${isActive ? "opacity-100 translate-x-0" : "opacity-40 translate-x-4 group-hover:opacity-70"}`}>
+                  <div
+                    className={`text-right transition-all duration-500 ${isActive ? "opacity-100 translate-x-0" : "opacity-40 translate-x-4 group-hover:opacity-70"}`}
+                  >
                     <p className="text-xs font-bold uppercase tracking-widest text-[#E31B23] mb-1">
                       0{index + 1}
                     </p>
@@ -256,7 +284,10 @@ const HeroSlider = () => {
                         className="absolute top-0 left-0 w-full bg-gradient-to-b from-[#00C896] to-[#E31B23]"
                         initial={{ height: "0%" }}
                         animate={{ height: "100%" }}
-                        transition={{ duration: AUTOPLAY_DURATION / 1000, ease: "linear" }}
+                        transition={{
+                          duration: AUTOPLAY_DURATION / 1000,
+                          ease: "linear",
+                        }}
                         key={slideIndex}
                       />
                     )}

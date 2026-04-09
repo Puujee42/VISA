@@ -201,6 +201,9 @@
     "slide2_title": "REISE DURCH EUROPA & SAMMLE ERFAHRUNG",
     "slide2_desc": "Durch die Teilnahme am Au-Pair-Programm werden Sie Mitglied einer Gastfamilie und erleben europäische Bräuche von innen. Monatliches Taschengeld, freie Kost und Logis sowie Reiserechte erwarten Sie.",
     "slide2_location": "Österreich",
+    "slide3_title": "FRANKREICH ENTDECKEN & SPRACHE LERNEN",
+    "slide3_desc": "Leben Sie mit einer Gastfamilie in Frankreich, verbessern Sie Ihr Französisch im Alltag und sammeln Sie wertvolle internationale Erfahrung für Ihre Zukunft.",
+    "slide3_location": "Frankreich",
     "learnMore": "Mehr erfahren",
     "verified": "Geprüftes Programm"
   },
@@ -628,6 +631,105 @@
       ]
     }
   },
+  "FrancePage": {
+    "metadata": {
+      "title": "Au-Pair in Frankreich | Mongolian Au Pair",
+      "description": "Lebe mit einer Gastfamilie in Frankreich, verbessere dein Französisch und entdecke die europäische Kultur in einem der ikonischsten Länder der Welt."
+    },
+    "hero": {
+      "tag": "Frankreich-Programm",
+      "title": "Au-Pair in",
+      "highlight": "Frankreich",
+      "sub": "Erlebe die französische Kultur aus erster Hand, lebe bei einer Gastfamilie, lerne die Sprache und gestalte deine internationale Zukunft.",
+      "cta": "Jetzt registrieren",
+      "about": "Über uns",
+      "visualTag": "Paris-Leben"
+    },
+    "info": {
+      "title": "Über Frankreich",
+      "desc": "Frankreich gehört zu den kulturellen und bildungsstärksten Ländern Europas. Von Paris bis Provence bietet es Sprachentwicklung, reiche Traditionen und wertvolle Lebenserfahrung.",
+      "stats": {
+        "capital": {
+          "label": "Hauptstadt",
+          "val": "Paris"
+        },
+        "population": {
+          "label": "Bevölkerung",
+          "val": "68 Millionen"
+        },
+        "language": {
+          "label": "Sprache",
+          "val": "Französisch"
+        }
+      }
+    },
+    "cultureTitle": "Kulturelle Highlights Frankreichs",
+    "culture": [
+      {
+        "title": "Historische Städte",
+        "desc": "Paris & mehr"
+      },
+      {
+        "title": "Küche",
+        "desc": "Weltberühmt"
+      },
+      {
+        "title": "Französische Sprache",
+        "desc": "Tägliche Praxis"
+      },
+      {
+        "title": "Kunst & Lebensstil",
+        "desc": "Weltweiter Einfluss"
+      }
+    ],
+    "highlights": [
+      {
+        "title": "€350",
+        "sub": "Monatliches Taschengeld"
+      },
+      {
+        "title": "A1–B2",
+        "sub": "Fortschritt in Französisch"
+      },
+      {
+        "title": "Gastfamilien-Support",
+        "sub": "Begleitete Eingewöhnung"
+      }
+    ],
+    "contract": {
+      "title_pre": "Vertrags",
+      "title_post": "bedingungen",
+      "desc": "Wichtige Konditionen nach Standards des kulturellen Austauschs.",
+      "items": {
+        "hours": {
+          "title": "Arbeitszeit",
+          "desc": "Bis zu 30 Stunden pro Woche."
+        },
+        "money": {
+          "title": "Taschengeld",
+          "desc": "Etwa 350€ pro Monat."
+        },
+        "course": {
+          "title": "Sprachkurs",
+          "desc": "Französischkurse werden im Rahmen der Gastfamilienvereinbarung unterstützt."
+        },
+        "vacation": {
+          "title": "Urlaub",
+          "desc": "Bezahlte freie Tage gemäß Familienvereinbarung und lokalen Regeln."
+        }
+      }
+    },
+    "housing": {
+      "title": "Unterkunft & Verpflegung",
+      "sub": "Von der Gastfamilie inklusive",
+      "items": [
+        "Eigenes Zimmer",
+        "Tägliche Mahlzeiten",
+        "Sicheres Wohnumfeld",
+        "Unterstützung durch die Familie"
+      ]
+    }
+  },
   "ContactPage": {
     "metadata": {
       "title": "Kontaktieren Sie uns | Mongolian Au Pair",
@@ -795,10 +897,12 @@
     "austria": "Österreich",
     "switzerland": "Schweiz",
     "belgium": "Belgien",
+    "france": "Frankreich",
     "desc_de": "Lernen Sie die Sprache kostenlos in Deutschland",
     "desc_at": "Lernen Sie die Sprache kostenlos in Österreich",
     "desc_ch": "Lernen Sie die Sprache kostenlos in der Schweiz",
-    "desc_be": "Lernen Sie die Sprache kostenlos in Belgien"
+    "desc_be": "Lernen Sie die Sprache kostenlos in Belgien",
+    "desc_fr": "Lernen Sie die Sprache kostenlos in Frankreich"
   },
   "dashboard": {
     "loading": "Profil wird geladen...",
@@ -908,6 +1012,11 @@
       "title": "Schweiz",
       "subtitle": "Höchste Lebensqualität",
       "desc": "Leben Sie mit dem weltweit höchsten Taschengeld, reinster Luft und sicherster Umgebung."
+    },
+    "france": {
+      "title": "Frankreich",
+      "subtitle": "Die Kunst zu leben",
+      "desc": "Tauchen Sie in die französische Kultur und Sprache ein und bauen Sie Ihre Zukunft in Europa auf."
     }
   },
   "Auth": {
@@ -1194,25 +1303,14 @@
       "initialRequest": "Erstanfrage"
     },
     "requirements": {
-      "germany": [
-        "Alter 18-26",
-        "Deutsch A1",
-        "Ledig"
-      ],
-      "belgium": [
-        "Alter 18-25",
-        "Englisch oder Französisch",
-        "Abitur"
-      ],
-      "austria": [
+      "germany": ["Alter 18-26", "Deutsch A1", "Ledig"],
+      "belgium": ["Alter 18-25", "Englisch oder Französisch", "Abitur"],
+      "austria": ["Alter 18-27", "Deutschkenntnisse", "Erfahrung mit Kindern"],
+      "switzerland": ["Alter 18-25", "Deutsch/Französisch", "Führerschein"],
+      "france": [
         "Alter 18-27",
-        "Deutschkenntnisse",
+        "Französisch oder Englisch",
         "Erfahrung mit Kindern"
-      ],
-      "switzerland": [
-        "Alter 18-25",
-        "Deutsch/Französisch",
-        "Führerschein"
       ]
     },
     "steps": {

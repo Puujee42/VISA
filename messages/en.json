@@ -198,6 +198,9 @@
     "slide2_title": "TRAVEL EUROPE & GAIN EXPERIENCE",
     "slide2_desc": "By joining the Au Pair program, you become a member of a host family and experience European customs from within. Monthly pocket money, free room and board, and travel rights await you.",
     "slide2_location": "Austria",
+    "slide3_title": "LIVE FRANCE & MASTER THE LANGUAGE",
+    "slide3_desc": "Experience daily life with a host family in France, improve your French in real-world settings, and build international confidence through cultural exchange.",
+    "slide3_location": "France",
     "learnMore": "Learn More",
     "verified": "Verified Program"
   },
@@ -625,6 +628,105 @@
       ]
     }
   },
+  "FrancePage": {
+    "metadata": {
+      "title": "Au Pair in France | Mongolian Au Pair",
+      "description": "Live with a host family in France, improve your French, and experience European culture in one of the world’s most iconic destinations."
+    },
+    "hero": {
+      "tag": "France Program",
+      "title": "Au Pair in",
+      "highlight": "France",
+      "sub": "Discover French culture from the inside while living with a host family, studying language, and building your global future.",
+      "cta": "Register Now",
+      "about": "About Us",
+      "visualTag": "Paris Life"
+    },
+    "info": {
+      "title": "About France",
+      "desc": "France is one of Europe’s cultural and educational leaders. From Paris to Provence, it offers language growth, rich traditions, and unforgettable life experience.",
+      "stats": {
+        "capital": {
+          "label": "Capital",
+          "val": "Paris"
+        },
+        "population": {
+          "label": "Population",
+          "val": "68 Million"
+        },
+        "language": {
+          "label": "Language",
+          "val": "French"
+        }
+      }
+    },
+    "cultureTitle": "French Culture Highlights",
+    "culture": [
+      {
+        "title": "Historic Cities",
+        "desc": "Paris & Beyond"
+      },
+      {
+        "title": "Cuisine",
+        "desc": "World Famous"
+      },
+      {
+        "title": "French Language",
+        "desc": "Daily Practice"
+      },
+      {
+        "title": "Art & Lifestyle",
+        "desc": "Global Influence"
+      }
+    ],
+    "highlights": [
+      {
+        "title": "€350",
+        "sub": "Monthly pocket money"
+      },
+      {
+        "title": "A1–B2",
+        "sub": "French language progression"
+      },
+      {
+        "title": "Host Support",
+        "sub": "Family-guided adaptation"
+      }
+    ],
+    "contract": {
+      "title_pre": "Contract",
+      "title_post": "Conditions",
+      "desc": "Key terms aligned with host-family cultural exchange standards.",
+      "items": {
+        "hours": {
+          "title": "Working Hours",
+          "desc": "Up to 30 hours per week."
+        },
+        "money": {
+          "title": "Pocket Money",
+          "desc": "Around €350 monthly."
+        },
+        "course": {
+          "title": "Language Course",
+          "desc": "French classes supported by the host arrangement."
+        },
+        "vacation": {
+          "title": "Vacation",
+          "desc": "Paid leave based on family agreement and local rules."
+        }
+      }
+    },
+    "housing": {
+      "title": "Housing & Food",
+      "sub": "Included by host family",
+      "items": [
+        "Private room",
+        "Daily meals",
+        "Safe home environment",
+        "Family support"
+      ]
+    }
+  },
   "ContactPage": {
     "metadata": {
       "title": "Contact Us | Mongolian Au Pair",
@@ -792,10 +894,12 @@
     "austria": "Austria",
     "switzerland": "Switzerland",
     "belgium": "Belgium",
+    "france": "France",
     "desc_de": "Learn language for free in Germany",
     "desc_at": "Learn language for free in Austria",
     "desc_ch": "Learn language for free in Switzerland",
-    "desc_be": "Learn language for free in Belgium"
+    "desc_be": "Learn language for free in Belgium",
+    "desc_fr": "Learn language for free in France"
   },
   "dashboard": {
     "loading": "Loading Profile...",
@@ -910,6 +1014,11 @@
       "title": "Switzerland",
       "subtitle": "Highest Quality of Life",
       "desc": "Live with the world's highest allowance, purest air, and safest environment."
+    },
+    "france": {
+      "title": "France",
+      "subtitle": "The Art of Living",
+      "desc": "Immerse yourself in French culture and language while building your future in Europe."
     }
   },
   "Auth": {
@@ -1196,26 +1305,11 @@
       "initialRequest": "Initial Request"
     },
     "requirements": {
-      "germany": [
-        "Age 18-26",
-        "Basic German (A1)",
-        "Single"
-      ],
-      "belgium": [
-        "Age 18-25",
-        "English or French",
-        "High School Diploma"
-      ],
-      "austria": [
-        "Age 18-27",
-        "Basic German",
-        "Experience with kids"
-      ],
-      "switzerland": [
-        "Age 18-25",
-        "German/French",
-        "Driving License"
-      ]
+      "germany": ["Age 18-26", "Basic German (A1)", "Single"],
+      "belgium": ["Age 18-25", "English or French", "High School Diploma"],
+      "austria": ["Age 18-27", "Basic German", "Experience with kids"],
+      "switzerland": ["Age 18-25", "German/French", "Driving License"],
+      "france": ["Age 18-27", "French or English", "Childcare Experience"]
     },
     "steps": {
       "choose": "Choose Program",
