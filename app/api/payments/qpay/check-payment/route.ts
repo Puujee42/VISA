@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { connectToDB } from "@/lib/db";
+import { connectToDBWithRetry } from "@/lib/db";
 import Order from "@/lib/models/Order";
 import ShoppingItem from "@/lib/models/ShoppingItem";
 import { checkQPayPayment } from "@/lib/qpay";
@@ -49,6 +49,17 @@ function safeStatusForOrder(status: string): InternalStatus {
     : "pending";
 }
 
+function isMongoTransient(err: any): boolean {
+  return (
+    err?.name === "MongoNetworkError" ||
+    err?.name === "MongoServerSelectionError" ||
+    err?.code === "ECONNRESET" ||
+    String(err?.cause?.code) === "ECONNRESET" ||
+    String(err?.message).includes("ECONNRESET") ||
+    String(err?.message).includes("connect ETIMEDOUT")
+  );
+}
+
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
@@ -62,7 +73,7 @@ export async function GET(req: Request) {
       );
     }
 
-    await connectToDB();
+    await connectToDBWithRetry();
 
     const order = await Order.findById(orderId);
     if (!order) {
@@ -109,7 +120,6 @@ export async function GET(req: Request) {
     if (!paid) {
       const nextStatus = safeStatusForOrder(derivePendingStatus(paymentStatus));
 
-      // Only update if changed and not terminal
       if (order.status !== "paid" && order.status !== nextStatus) {
         order.status = nextStatus;
         (order as any).qpayRawCheck = paymentStatus;
@@ -129,8 +139,7 @@ export async function GET(req: Request) {
     }
 
     // Paid path — atomic stock decrement safety:
-    // 1) atomically transition pending/processing -> paid
-    // 2) decrement stock only if transition happened in this request
+    // findOneAndUpdate with status filter prevents double-decrement
     const paidAmount =
       Number(paymentStatus?.paid_amount) ||
       Number(
@@ -160,7 +169,6 @@ export async function GET(req: Request) {
     );
 
     if (transitioned) {
-      // Decrement stock only once, and only if stock is available
       await ShoppingItem.updateOne(
         { _id: transitioned.itemId, stock: { $gt: 0 } },
         { $inc: { stock: -1 } },
@@ -181,12 +189,18 @@ export async function GET(req: Request) {
     );
   } catch (error: any) {
     console.error("QPay check-payment error:", error);
+
+    const status = isMongoTransient(error) ? 503 : 500;
+
     return NextResponse.json(
       {
-        error: "Failed to check QPay payment status",
+        error:
+          status === 503
+            ? "Database temporarily unavailable, please retry"
+            : "Failed to check QPay payment status",
         detail: error?.message || "Unknown error",
       },
-      { status: 500 },
+      { status },
     );
   }
 }

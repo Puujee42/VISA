@@ -3,7 +3,14 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, XCircle, Loader2, Clock3, ExternalLink, X } from "lucide-react";
+import {
+  CheckCircle2,
+  XCircle,
+  Loader2,
+  Clock3,
+  ExternalLink,
+  X,
+} from "lucide-react";
 
 type PaymentStatus = "idle" | "waiting" | "paid" | "failed" | "expired";
 
@@ -92,7 +99,10 @@ const T = {
 };
 
 function tr(locale: string | undefined, key: keyof typeof T) {
-  const lang = locale && ["en", "mn", "de"].includes(locale) ? (locale as "en" | "mn" | "de") : "en";
+  const lang =
+    locale && ["en", "mn", "de"].includes(locale)
+      ? (locale as "en" | "mn" | "de")
+      : "en";
   return T[key][lang];
 }
 
@@ -110,7 +120,8 @@ function normalizeQrImage(src?: string) {
   if (!src) return "";
   if (src.startsWith("data:image")) return src;
   const trimmed = src.trim();
-  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) return trimmed;
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://"))
+    return trimmed;
   return `data:image/png;base64,${trimmed}`;
 }
 
@@ -172,7 +183,7 @@ export default function QPayModal({
         setLoadingCheck(true);
         const res = await fetch(
           `/api/payments/qpay/check-payment?orderId=${encodeURIComponent(orderId)}&invoiceId=${encodeURIComponent(invoiceId)}`,
-          { method: "GET", cache: "no-store" }
+          { method: "GET", cache: "no-store" },
         );
 
         if (!res.ok) return;
@@ -234,7 +245,10 @@ export default function QPayModal({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
       >
-        <div className="absolute inset-0 bg-black/55 backdrop-blur-sm" onClick={onClose} />
+        <div
+          className="absolute inset-0 bg-black/55 backdrop-blur-sm"
+          onClick={onClose}
+        />
 
         <motion.div
           key="qpay-modal-content"
@@ -246,8 +260,12 @@ export default function QPayModal({
         >
           <div className="p-5 sm:p-7 border-b border-slate-200 dark:border-white/10 flex items-start justify-between gap-4">
             <div>
-              <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">{tr(locale, "title")}</h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{tr(locale, "subtitle")}</p>
+              <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
+                {tr(locale, "title")}
+              </h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                {tr(locale, "subtitle")}
+              </p>
             </div>
             <button
               onClick={onClose}
@@ -262,11 +280,21 @@ export default function QPayModal({
             <div className="rounded-2xl border border-slate-200 dark:border-white/10 p-4 sm:p-5 bg-slate-50 dark:bg-slate-900/40">
               <div className="aspect-square w-full rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 flex items-center justify-center overflow-hidden">
                 {qrSrc ? (
-                  <Image src={qrSrc} alt="QPay QR" width={320} height={320} className="w-full h-full object-contain" />
+                  <Image
+                    src={qrSrc}
+                    alt="QPay QR"
+                    width={320}
+                    height={320}
+                    className="w-full h-full object-contain"
+                  />
                 ) : qrText ? (
-                  <div className="text-xs text-slate-600 dark:text-slate-300 p-4 break-all">{qrText}</div>
+                  <div className="text-xs text-slate-600 dark:text-slate-300 p-4 break-all">
+                    {qrText}
+                  </div>
                 ) : (
-                  <div className="text-sm text-slate-500">{tr(locale, "checking")}</div>
+                  <div className="text-sm text-slate-500">
+                    {tr(locale, "checking")}
+                  </div>
                 )}
               </div>
 
@@ -293,10 +321,18 @@ export default function QPayModal({
               </div>
 
               <div className="rounded-2xl border border-slate-200 dark:border-white/10 p-4 sm:p-5 flex items-center gap-3 bg-white dark:bg-slate-900 mb-4">
-                {status === "waiting" && <Loader2 className="animate-spin text-blue-500" size={20} />}
-                {status === "paid" && <CheckCircle2 className="text-emerald-500" size={20} />}
-                {status === "failed" && <XCircle className="text-red-500" size={20} />}
-                {status === "expired" && <Clock3 className="text-amber-500" size={20} />}
+                {status === "waiting" && (
+                  <Loader2 className="animate-spin text-blue-500" size={20} />
+                )}
+                {status === "paid" && (
+                  <CheckCircle2 className="text-emerald-500" size={20} />
+                )}
+                {status === "failed" && (
+                  <XCircle className="text-red-500" size={20} />
+                )}
+                {status === "expired" && (
+                  <Clock3 className="text-amber-500" size={20} />
+                )}
 
                 <div className="text-sm font-semibold text-slate-700 dark:text-slate-200">
                   {status === "waiting" && tr(locale, "waiting")}
@@ -307,12 +343,16 @@ export default function QPayModal({
               </div>
 
               {loadingCheck && status === "waiting" && (
-                <div className="text-xs text-slate-500 dark:text-slate-400 mb-3">{tr(locale, "checking")}</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mb-3">
+                  {tr(locale, "checking")}
+                </div>
               )}
 
               {links.length > 0 && (
                 <div className="rounded-2xl border border-slate-200 dark:border-white/10 p-4 sm:p-5 bg-slate-50 dark:bg-slate-900/40">
-                  <p className="text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 mb-3">Apps</p>
+                  <p className="text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 mb-3">
+                    Apps
+                  </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {links.map((bank, i) => (
                       <a
@@ -324,12 +364,13 @@ export default function QPayModal({
                       >
                         <span className="flex items-center gap-2 min-w-0">
                           {bank.logo ? (
-                            <Image
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
                               src={bank.logo}
                               alt={bank.name || "Bank"}
                               width={20}
                               height={20}
-                              className="rounded-sm object-contain"
+                              className="rounded-sm object-contain w-5 h-5"
                             />
                           ) : (
                             <span className="w-5 h-5 rounded bg-emerald-500/10 border border-emerald-500/20" />

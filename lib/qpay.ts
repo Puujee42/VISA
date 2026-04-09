@@ -49,15 +49,51 @@ type QPayPaymentCheckResponse = {
   [key: string]: unknown;
 };
 
-const QPAY_BASE_URL = process.env.QPAY_BASE_URL ?? "https://merchant.qpay.mn";
-const QPAY_USERNAME = process.env.QPAY_USERNAME;
-const QPAY_PASSWORD = process.env.QPAY_PASSWORD;
-const QPAY_INVOICE_CODE = process.env.QPAY_INVOICE_CODE;
+/**
+ * Supports both naming styles:
+ * - Preferred: QPAY_USERNAME, QPAY_PASSWORD, QPAY_INVOICE_CODE, QPAY_BASE_URL
+ * - Existing env in your project: MERCHANT_ID, PASSWORD, INVOICE_CODE, QPAY_URL
+ */
+const QPAY_USERNAME =
+  process.env.QPAY_USERNAME ?? process.env.MERCHANT_ID ?? "";
+const QPAY_PASSWORD = process.env.QPAY_PASSWORD ?? process.env.PASSWORD ?? "";
+const QPAY_INVOICE_CODE =
+  process.env.QPAY_INVOICE_CODE ?? process.env.INVOICE_CODE ?? "";
+
+/**
+ * Normalize base URL no matter if user provides:
+ * - https://merchant.qpay.mn
+ * - https://merchant.qpay.mn/
+ * - https://merchant.qpay.mn/v2
+ * - https://merchant.qpay.mn/v2/
+ *
+ * We keep base as host-only and append /v2 routes in code.
+ */
+function normalizeQPayBaseUrl(raw?: string): string {
+  const input = (raw || "").trim() || "https://merchant.qpay.mn";
+
+  // Remove trailing slashes
+  let cleaned = input.replace(/\/+$/, "");
+
+  // Remove optional /v2 suffix if present
+  cleaned = cleaned.replace(/\/v2$/i, "");
+
+  // Ensure protocol
+  if (!/^https?:\/\//i.test(cleaned)) {
+    cleaned = `https://${cleaned}`;
+  }
+
+  return cleaned;
+}
+
+const QPAY_BASE_URL = normalizeQPayBaseUrl(
+  process.env.QPAY_BASE_URL ?? process.env.QPAY_URL,
+);
 
 function assertQPayConfig() {
   if (!QPAY_USERNAME || !QPAY_PASSWORD || !QPAY_INVOICE_CODE) {
     throw new Error(
-      "Missing QPay configuration. Please set QPAY_USERNAME, QPAY_PASSWORD, and QPAY_INVOICE_CODE in your environment.",
+      "Missing QPay configuration. Please set QPAY_USERNAME/QPAY_PASSWORD/QPAY_INVOICE_CODE or MERCHANT_ID/PASSWORD/INVOICE_CODE in your environment.",
     );
   }
 }
@@ -117,10 +153,7 @@ export async function getQPayAccessToken(): Promise<string> {
   assertQPayConfig();
   if (isTokenValid() && cachedToken) return cachedToken.value;
 
-  const authHeader = buildAuthHeader(
-    QPAY_USERNAME as string,
-    QPAY_PASSWORD as string,
-  );
+  const authHeader = buildAuthHeader(QPAY_USERNAME, QPAY_PASSWORD);
 
   const data = await qpayFetch<QPayAuthResponse>(
     "/v2/auth/token",
@@ -175,14 +208,15 @@ export async function createQPayInvoice(input: {
   assertQPayConfig();
 
   const payload: QPayInvoiceRequest = {
-    invoice_code: QPAY_INVOICE_CODE as string,
+    invoice_code: QPAY_INVOICE_CODE,
     sender_invoice_no: input.senderInvoiceNo.trim(),
     invoice_description: input.invoiceDescription.trim(),
     amount: Number(input.amount),
   };
 
   if (input.callbackUrl) payload.callback_url = input.callbackUrl;
-  if (input.receiverCode) payload.invoice_receiver_code = input.receiverCode;
+  // invoice_receiver_code is REQUIRED by QPay — default to "terminal" for standard merchant invoices
+  payload.invoice_receiver_code = input.receiverCode?.trim() || "terminal";
   if (input.senderBranchCode)
     payload.sender_branch_code = input.senderBranchCode;
   if (typeof input.allowPartial === "boolean")

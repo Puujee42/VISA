@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { connectToDB } from "@/lib/db";
+import { connectToDBWithRetry } from "@/lib/db";
 import ShoppingItem from "@/lib/models/ShoppingItem";
 import Order from "@/lib/models/Order";
 import { createQPayInvoice } from "@/lib/qpay";
@@ -20,9 +20,31 @@ function getItemName(item: any, locale: string) {
   );
 }
 
+function isDbConnectionError(err: any): boolean {
+  const name = String(err?.name ?? "");
+  const msg = String(err?.message ?? "");
+  const code = String(err?.code ?? err?.cause?.code ?? "");
+
+  return (
+    name === "MongoNetworkError" ||
+    name === "MongoServerSelectionError" ||
+    code === "ECONNRESET" ||
+    msg.includes("ECONNRESET") ||
+    msg.includes("connect ETIMEDOUT") ||
+    msg.includes("Could not connect") ||
+    msg.includes("topology was destroyed")
+  );
+}
+
 export async function POST(req: Request) {
   try {
-    const body = (await req.json()) as CreateInvoiceBody;
+    // ── 1. Parse + validate body ─────────────────────────────────────────────
+    let body: CreateInvoiceBody;
+    try {
+      body = (await req.json()) as CreateInvoiceBody;
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    }
 
     if (!body?.itemId) {
       return NextResponse.json(
@@ -41,8 +63,24 @@ export async function POST(req: Request) {
       );
     }
 
-    await connectToDB();
+    // ── 2. Connect (retries once on ECONNRESET / Atlas idle timeout) ─────────
+    try {
+      await connectToDBWithRetry(2);
+    } catch (dbErr: any) {
+      console.error(
+        "QPay create-invoice: DB connection failed:",
+        dbErr?.message,
+      );
+      return NextResponse.json(
+        {
+          error: "Database temporarily unavailable. Please try again.",
+          detail: dbErr?.message,
+        },
+        { status: 503 },
+      );
+    }
 
+    // ── 3. Fetch item ─────────────────────────────────────────────────────────
     const item = await ShoppingItem.findById(body.itemId).lean();
     if (!item || !item.isActive) {
       return NextResponse.json(
@@ -58,6 +96,7 @@ export async function POST(req: Request) {
       );
     }
 
+    // ── 4. Build invoice params ───────────────────────────────────────────────
     const itemName = getItemName(item, locale);
     const unitPrice = Number(item.price || 0);
     const amount = unitPrice * quantity;
@@ -76,6 +115,7 @@ export async function POST(req: Request) {
       process.env.NEXT_PUBLIC_BASE_URL ||
       (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "");
 
+    // ── 5. Call QPay ──────────────────────────────────────────────────────────
     const qpayInvoice = await createQPayInvoice({
       senderInvoiceNo,
       invoiceDescription,
@@ -95,19 +135,23 @@ export async function POST(req: Request) {
 
     if (!invoiceId) {
       return NextResponse.json(
-        { error: "QPay did not return invoice_id" },
+        {
+          error:
+            "QPay did not return an invoice_id. Check your QPay credentials.",
+        },
         { status: 502 },
       );
     }
 
-    const urls =
-      (Array.isArray((qpayInvoice as any)?.urls)
-        ? (qpayInvoice as any).urls
-        : []) || [];
+    const urls: any[] = Array.isArray((qpayInvoice as any)?.urls)
+      ? (qpayInvoice as any).urls
+      : [];
 
+    // ── 6. Persist order ──────────────────────────────────────────────────────
     const created = await Order.create({
       itemId: item._id,
       itemName,
+      quantity,
       amount,
       currency: "MNT",
       locale,
@@ -122,6 +166,7 @@ export async function POST(req: Request) {
       expiresAt: new Date(Date.now() + 30 * 60 * 1000),
     });
 
+    // ── 7. Return success ─────────────────────────────────────────────────────
     return NextResponse.json(
       {
         success: true,
@@ -139,6 +184,18 @@ export async function POST(req: Request) {
   } catch (error: any) {
     console.error("QPay create-invoice error:", error);
 
+    // Surface DB errors as 503 so the client knows to retry
+    if (isDbConnectionError(error)) {
+      return NextResponse.json(
+        {
+          error:
+            "Database temporarily unavailable. Please try again in a few seconds.",
+          detail: error?.message,
+        },
+        { status: 503 },
+      );
+    }
+
     return NextResponse.json(
       {
         error: "Failed to create QPay invoice",
@@ -154,7 +211,15 @@ export async function GET() {
     {
       ok: true,
       endpoint: "create-qpay-invoice",
-      requiredEnv: ["QPAY_USERNAME", "QPAY_PASSWORD", "QPAY_INVOICE_CODE"],
+      acceptedEnvVars: {
+        preferred: [
+          "QPAY_USERNAME",
+          "QPAY_PASSWORD",
+          "QPAY_INVOICE_CODE",
+          "QPAY_BASE_URL",
+        ],
+        fallback: ["MERCHANT_ID", "PASSWORD", "INVOICE_CODE", "QPAY_URL"],
+      },
     },
     { status: 200 },
   );
