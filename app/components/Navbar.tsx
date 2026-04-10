@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, usePathname } from "@/navigation";
 import Image from "next/image";
 import {
@@ -45,11 +45,10 @@ export default function Navbar() {
   const pathname = usePathname();
   const { scrollY } = useScroll();
   const isMobile = useIsMobile();
-  const [isNative, setIsNative] = useState(false);
-
-  useEffect(() => {
-    setIsNative(Capacitor.isNativePlatform());
-  }, []);
+  const [isNative] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return Capacitor.isNativePlatform();
+  });
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     const shouldBeScrolled = latest > 50;

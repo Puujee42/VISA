@@ -105,11 +105,14 @@ const HeroSection = () => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    const id = setTimeout(() => setMounted(true), 0);
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
     window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
+    return () => {
+      clearTimeout(id);
+      window.removeEventListener("resize", checkMobile);
+    };
   }, []);
 
   const active = COUNTRY_DATA[index];

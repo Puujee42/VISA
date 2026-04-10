@@ -43,7 +43,32 @@ const formatCategory = (cat: string, locale: string) => {
   return cat.toUpperCase();
 };
 
-const ProductCard = ({ item, locale = "en", isDark }: any) => {
+interface LocalizedString {
+  en?: string;
+  mn?: string;
+  de?: string;
+  [key: string]: string | undefined;
+}
+
+interface ShopItem {
+  _id: string;
+  name: LocalizedString;
+  description?: LocalizedString;
+  category?: string;
+  stock: number;
+  image?: string;
+  price: number;
+}
+
+const ProductCard = ({
+  item,
+  locale = "en",
+  isDark,
+}: {
+  item: ShopItem;
+  locale?: string;
+  isDark: boolean;
+}) => {
   const name = item.name?.[locale] || item.name?.en || "Unknown Item";
   const desc = item.description?.[locale] || item.description?.en || "";
 
@@ -127,24 +152,31 @@ export default function ShopClient({
   items,
   locale,
 }: {
-  items: any[];
+  items: ShopItem[];
   locale: string;
 }) {
   const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [filter, setFilter] = useState("all");
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    const id = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(id);
+  }, []);
   const isDark = mounted && theme === "dark";
 
   const categories = [
     "all",
     ...Array.from(
-      new Set(items.map((item: any) => item.category).filter(Boolean)),
+      new Set(
+        items
+          .map((item) => item.category)
+          .filter((c): c is string => Boolean(c)),
+      ),
     ),
   ];
   const filteredItems = items.filter(
-    (item: any) => filter === "all" || item.category === filter,
+    (item) => filter === "all" || item.category === filter,
   );
 
   if (!mounted) return null;
@@ -192,7 +224,7 @@ export default function ShopClient({
 
           {/* Categories Filter */}
           <motion.div className="flex overflow-x-auto pb-2 gap-2 scrollbar-hide">
-            {categories.map((cat: any) => {
+            {categories.map((cat: string) => {
               const isActive = filter === cat;
               return (
                 <button
@@ -227,7 +259,7 @@ export default function ShopClient({
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
             >
               <AnimatePresence mode="popLayout">
-                {filteredItems.map((item: any) => (
+                {filteredItems.map((item) => (
                   <ProductCard
                     key={item._id}
                     item={item}
