@@ -238,12 +238,10 @@ export async function checkQPayPayment(
     throw new Error("invoiceId is required.");
   }
 
-  return qpayFetch<QPayPaymentCheckResponse>(
-    `/v2/payment/check/${encodeURIComponent(invoiceId)}`,
-    {
-      method: "GET",
-    },
-  );
+  return qpayFetch<QPayPaymentCheckResponse>("/v2/payment/check", {
+    method: "POST",
+    body: JSON.stringify({ invoice_id: invoiceId.trim() }),
+  });
 }
 
 export function isQPayPaid(result: QPayPaymentCheckResponse): boolean {
