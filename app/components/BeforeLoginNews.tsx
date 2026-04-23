@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import {
   Globe,
   Rocket,
@@ -43,7 +43,7 @@ const BeforeLoginNews = () => {
   ];
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
@@ -102,7 +102,7 @@ const BeforeLoginNews = () => {
 
       {/* Decorative Blur */}
       <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-emerald-200/30 rounded-full blur-3xl pointer-events-none" />
-    </motion.div>
+    </m.div>
   );
 };
 

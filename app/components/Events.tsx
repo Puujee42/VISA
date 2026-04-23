@@ -17,7 +17,8 @@ import {
   useMotionValue,
   useSpring,
   useTransform,
-  AnimatePresence
+  AnimatePresence,
+  m
 } from "framer-motion";
 import { useIsMobile, Motion as motion } from "./MotionProxy";
 import { useTheme } from "next-themes";
@@ -92,7 +93,7 @@ const ContentCard = ({ item, lang, isDark, isMobile, type }: any) => {
   const authorName = typeof item.author === 'string' ? item.author : (item.author?.[lang] || item.author?.en);
 
   const renderCard = (rotateX: any = 0, rotateY: any = 0, handleMouseMove?: any, handleMouseLeave?: any) => (
-    <motion.div
+    <m.div
       layout
       initial={{ opacity: 0, scale: 0.9, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -190,7 +191,7 @@ const ContentCard = ({ item, lang, isDark, isMobile, type }: any) => {
           </Link>
         </div>
       </div>
-    </motion.div>
+    </m.div>
   );
 
   if (isMobile) return renderCard();
@@ -279,7 +280,7 @@ export default function LatestUpdatesSection() {
         {!isMobile && (
           <>
             {/* Brand Red Blob */}
-            <motion.div
+            <m.div
               animate={{
                 scale: [1, 1.2, 1],
                 opacity: [0.1, 0.2, 0.1],
@@ -291,7 +292,7 @@ export default function LatestUpdatesSection() {
             />
 
             {/* Brand Green Blob */}
-            <motion.div
+            <m.div
               animate={{
                 scale: [1, 1.1, 1],
                 opacity: [0.1, 0.15, 0.1],
@@ -327,7 +328,7 @@ export default function LatestUpdatesSection() {
                       }`}
                   >
                     {isActive && (
-                      <motion.div
+                      <m.div
                         layoutId="activeContentTab"
                         className="absolute inset-0 rounded-full -z-10 shadow-lg"
                         style={{ backgroundColor: BRAND.RED }}
@@ -341,7 +342,7 @@ export default function LatestUpdatesSection() {
 
             {/* Title */}
             <div className="relative">
-              <motion.h2
+              <m.h2
                 key={activeTab}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -353,12 +354,12 @@ export default function LatestUpdatesSection() {
                   : (lang === 'mn' ? 'Мэдээлэл' : 'Latest Insights')
                 }
                 <span style={{ color: BRAND.GREEN }}>.</span>
-              </motion.h2>
+              </m.h2>
             </div>
           </div>
 
           {/* --- CATEGORY FILTERS --- */}
-          <motion.div
+          <m.div
             layout
             className={`flex overflow-x-auto pb-2 xl:pb-0 gap-2 scrollbar-hide`}
           >
@@ -380,7 +381,7 @@ export default function LatestUpdatesSection() {
                 </button>
               )
             })}
-          </motion.div>
+          </m.div>
         </div>
 
         {/* --- GRID CONTENT --- */}
@@ -390,7 +391,7 @@ export default function LatestUpdatesSection() {
               <Loader2 className="animate-spin text-red-500" size={40} />
             </div>
           ) : filteredItems.length > 0 ? (
-            <motion.div
+            <m.div
               layout
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
             >
@@ -406,7 +407,7 @@ export default function LatestUpdatesSection() {
                   />
                 ))}
               </AnimatePresence>
-            </motion.div>
+            </m.div>
           ) : (
             <div className="flex flex-col items-center justify-center py-32 rounded-[3rem] border-2 border-dashed bg-slate-50/50"
               style={{ borderColor: isDark ? 'rgba(255,255,255,0.1)' : '#CBD5E1' }}>
@@ -419,7 +420,7 @@ export default function LatestUpdatesSection() {
         </div>
 
         {/* --- FOOTER CTA --- */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
@@ -438,7 +439,7 @@ export default function LatestUpdatesSection() {
               <ArrowUpRight size={20} />
             </div>
           </Link>
-        </motion.div>
+        </m.div>
 
       </div>
     </section>

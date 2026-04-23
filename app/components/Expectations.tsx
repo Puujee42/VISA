@@ -13,7 +13,8 @@ import {
 import {
   useMotionValue,
   useSpring,
-  useTransform
+  useTransform,
+  m
 } from "framer-motion";
 import { Motion as motion } from "./MotionProxy";
 import { useTheme } from "next-themes";
@@ -53,7 +54,7 @@ const StepCard = ({ step, index, isDark }: any) => {
   const accentSoft = isEven ? BRAND.GREEN_SOFT : BRAND.RED_SOFT;
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -111,7 +112,7 @@ const StepCard = ({ step, index, isDark }: any) => {
         </div>
       </div>
 
-    </motion.div>
+    </m.div>
   );
 };
 
@@ -167,7 +168,7 @@ export default function Expectations() {
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] mix-blend-overlay" />
 
         {/* Red Blob (Top Left) */}
-        <motion.div
+        <m.div
           animate={{ scale: [1, 1.1, 1], opacity: [0.03, 0.06, 0.03] }}
           transition={{ duration: 15, repeat: Infinity }}
           style={{ backgroundColor: BRAND.RED }}
@@ -175,7 +176,7 @@ export default function Expectations() {
         />
 
         {/* Green Blob (Bottom Right) */}
-        <motion.div
+        <m.div
           animate={{ scale: [1, 1.2, 1], opacity: [0.03, 0.06, 0.03] }}
           transition={{ duration: 20, repeat: Infinity }}
           style={{ backgroundColor: BRAND.GREEN }}
@@ -188,7 +189,7 @@ export default function Expectations() {
         {/* HEADER SECTION */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10 mb-20">
           <div className="max-w-3xl">
-            <motion.div
+            <m.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -198,9 +199,9 @@ export default function Expectations() {
               <span className="text-xs font-black uppercase tracking-[0.25em]" style={{ color: BRAND.GREEN }}>
                 {t("badge")}
               </span>
-            </motion.div>
+            </m.div>
 
-            <motion.h2
+            <m.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -208,20 +209,20 @@ export default function Expectations() {
                        ${isDark ? "text-white" : "text-slate-900"}`}
             >
               {t("title")}<span style={{ color: BRAND.RED }}>.</span>
-            </motion.h2>
+            </m.h2>
 
-            <motion.p
+            <m.p
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
               className={`text-lg md:text-xl font-medium max-w-xl ${isDark ? "text-slate-400" : "text-slate-500"}`}
             >
               {t("subtitle")}
-            </motion.p>
+            </m.p>
           </div>
 
           {/* CTA Button */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -239,7 +240,7 @@ export default function Expectations() {
                 <ArrowRight size={12} strokeWidth={3} />
               </div>
             </Link>
-          </motion.div>
+          </m.div>
         </div>
 
         {/* STEPS GRID */}

@@ -39,7 +39,7 @@ import {
   FaImage,
 } from "react-icons/fa";
 import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import LessonsManager from "@/app/components/admin/LessonsManager";
@@ -114,11 +114,10 @@ const StatCard = ({ label, val, icon: Icon, colorClass }: any) => (
 const SidebarItem = ({ icon: Icon, label, active, onClick }: any) => (
   <button
     onClick={onClick}
-    className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition-all ${
-      active
+    className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition-all ${active
         ? "bg-white text-slate-900 shadow-sm"
         : "text-slate-500 hover:bg-slate-200/50 hover:text-slate-700"
-    }`}
+      }`}
   >
     <Icon size={18} className={active ? "text-[#E31B23]" : "text-slate-400"} />
     {label}
@@ -128,11 +127,10 @@ const SidebarItem = ({ icon: Icon, label, active, onClick }: any) => (
 const TabButton = ({ active, onClick, icon: Icon, label }: any) => (
   <button
     onClick={onClick}
-    className={`flex items-center gap-2 px-6 py-2 rounded-lg text-xs font-black uppercase transition-all ${
-      active
+    className={`flex items-center gap-2 px-6 py-2 rounded-lg text-xs font-black uppercase transition-all ${active
         ? "bg-white text-slate-900 shadow-sm"
         : "text-slate-400 hover:text-slate-600"
-    }`}
+      }`}
   >
     <Icon size={14} />
     {label}
@@ -166,14 +164,14 @@ const UserMasterManagementModal = ({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <motion.div
+      <m.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
         className="absolute inset-0 bg-slate-900/60 backdrop-blur-md"
       />
-      <motion.div
+      <m.div
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -353,8 +351,8 @@ const UserMasterManagementModal = ({
                       value={
                         formData.profile?.dob
                           ? new Date(formData.profile.dob)
-                              .toISOString()
-                              .split("T")[0]
+                            .toISOString()
+                            .split("T")[0]
                           : ""
                       }
                       onChange={(v: string) =>
@@ -566,8 +564,8 @@ const UserMasterManagementModal = ({
                     <p className="font-bold">
                       {formData.documentsApprovedAt
                         ? new Date(
-                            formData.documentsApprovedAt,
-                          ).toLocaleString()
+                          formData.documentsApprovedAt,
+                        ).toLocaleString()
                         : "-"}
                     </p>
                   </div>
@@ -591,7 +589,7 @@ const UserMasterManagementModal = ({
             Save Master Record
           </button>
         </div>
-      </motion.div>
+      </m.div>
     </div>
   );
 };
@@ -609,14 +607,14 @@ const ApplicationDetailsModal = ({
   const profile = app.userProfile;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <motion.div
+      <m.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
         className="absolute inset-0 bg-black/40 backdrop-blur-md"
       />
-      <motion.div
+      <m.div
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -773,7 +771,7 @@ const ApplicationDetailsModal = ({
             </div>
           )}
         </div>
-      </motion.div>
+      </m.div>
     </div>
   );
 };
@@ -1557,7 +1555,7 @@ export default function AdminDashboard() {
                       {expandedUser === u.id && u.role === "Student" && (
                         <tr>
                           <td colSpan={5} className="px-8 py-0">
-                            <motion.div
+                            <m.div
                               initial={{ height: 0, opacity: 0 }}
                               animate={{ height: "auto", opacity: 1 }}
                               className="overflow-hidden"
@@ -1598,8 +1596,8 @@ export default function AdminDashboard() {
                                       <p className="text-xs font-bold text-slate-900">
                                         {u.profile?.dob
                                           ? new Date(
-                                              u.profile.dob,
-                                            ).toLocaleDateString()
+                                            u.profile.dob,
+                                          ).toLocaleDateString()
                                           : t("users.missing")}
                                       </p>
                                     </div>
@@ -1691,7 +1689,7 @@ export default function AdminDashboard() {
                                   </p>
                                 </div>
                               </div>
-                            </motion.div>
+                            </m.div>
                           </td>
                         </tr>
                       )}
@@ -1726,7 +1724,7 @@ export default function AdminDashboard() {
         <AnimatePresence>
           {isEditingUser !== null && (
             <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
@@ -1755,11 +1753,10 @@ export default function AdminDashboard() {
                           key={role}
                           onClick={() => setUserForm({ ...userForm, role })}
                           className={`py-3 rounded-xl text-xs font-bold border-2 transition-all
-                                ${
-                                  userForm.role === role
-                                    ? "bg-slate-900 text-white border-slate-900 shadow-lg"
-                                    : "bg-white border-slate-100 text-slate-500 hover:border-slate-300"
-                                }`}
+                                ${userForm.role === role
+                              ? "bg-slate-900 text-white border-slate-900 shadow-lg"
+                              : "bg-white border-slate-100 text-slate-500 hover:border-slate-300"
+                            }`}
                         >
                           {role}
                         </button>
@@ -1777,11 +1774,10 @@ export default function AdminDashboard() {
                           key={status}
                           onClick={() => setUserForm({ ...userForm, status })}
                           className={`py-3 rounded-xl text-xs font-bold border-2 transition-all
-                                ${
-                                  userForm.status === status
-                                    ? "bg-slate-900 text-white border-slate-900 shadow-lg"
-                                    : "bg-white border-slate-100 text-slate-500 hover:border-slate-300"
-                                }`}
+                                ${userForm.status === status
+                              ? "bg-slate-900 text-white border-slate-900 shadow-lg"
+                              : "bg-white border-slate-100 text-slate-500 hover:border-slate-300"
+                            }`}
                         >
                           {status}
                         </button>
@@ -1852,7 +1848,7 @@ export default function AdminDashboard() {
                 >
                   {t("modals.saveUpdate")}
                 </button>
-              </motion.div>
+              </m.div>
             </div>
           )}
         </AnimatePresence>
@@ -2135,7 +2131,7 @@ function EventsManager({ events, opportunities, onRefresh }: any) {
       <AnimatePresence>
         {isModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-            <motion.div
+            <m.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
@@ -2304,7 +2300,7 @@ function EventsManager({ events, opportunities, onRefresh }: any) {
                     : t("events.manage.save")}
                 </button>
               </div>
-            </motion.div>
+            </m.div>
           </div>
         )}
       </AnimatePresence>
@@ -2509,7 +2505,7 @@ function ContentManager({ blogs, onRefresh }: any) {
       <AnimatePresence>
         {isCreating && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-            <motion.div
+            <m.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
@@ -2607,7 +2603,7 @@ function ContentManager({ blogs, onRefresh }: any) {
                   {t("blog.save")}
                 </button>
               </div>
-            </motion.div>
+            </m.div>
           </div>
         )}
       </AnimatePresence>

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useTheme } from "next-themes";
 import {
   ArrowLeft,
@@ -196,7 +196,7 @@ export default function ItemClient({
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
           {/* Left: Image */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="relative w-full aspect-square md:aspect-[4/3] lg:aspect-square overflow-hidden rounded-[2rem] sm:rounded-[3rem] border border-slate-100 dark:border-white/5 bg-slate-100 dark:bg-slate-900"
@@ -208,10 +208,10 @@ export default function ItemClient({
               className="object-cover"
               priority
             />
-          </motion.div>
+          </m.div>
 
           {/* Right: Product Info */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             className="flex flex-col justify-center"
@@ -299,7 +299,7 @@ export default function ItemClient({
                 )}
               </button>
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </div>
 

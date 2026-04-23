@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import { Upload, FileText, CheckCircle, Loader2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useTranslations } from "next-intl";
 
 const DOCUMENT_KEYS = [
@@ -101,7 +101,7 @@ export default function SubmitDocuments() {
                             <span className="text-sm font-bold text-[#E31B23]">{uploadedCount} / {DOCUMENT_FIELDS.length}</span>
                         </div>
                         <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
-                            <motion.div
+                            <m.div
                                 className="h-full bg-gradient-to-r from-[#E31B23] to-[#00C896]"
                                 initial={{ width: 0 }}
                                 animate={{ width: `${(uploadedCount / DOCUMENT_FIELDS.length) * 100}%` }}

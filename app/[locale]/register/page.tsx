@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import {
   UserPlus,
   LogIn,
@@ -42,7 +42,7 @@ export default function RegisterPage() {
         {/* Subtle Background Pattern */}
         <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px] opacity-50 -z-10" />
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
@@ -87,7 +87,7 @@ export default function RegisterPage() {
                   >
                     {/* Active Gradient Glow behind */}
                     {isActive && (
-                      <motion.div
+                      <m.div
                         layoutId="activeGlow"
                         className="absolute inset-0 bg-gradient-to-r from-red-50 to-transparent opacity-50"
                       />
@@ -126,14 +126,14 @@ export default function RegisterPage() {
 
           {/* CTA Button */}
           <Link href={selected === "new" ? "/sign-up" : "/sign-in"}>
-            <motion.button
+            <m.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
               className="w-full py-5 rounded-[1.5rem] bg-slate-900 text-white font-black text-lg uppercase tracking-widest shadow-2xl flex items-center justify-center gap-3 hover:bg-red-600 transition-colors duration-300 group"
             >
               {selected === "new" ? "Бүртгэл Үүсгэх" : "Нэвтрэх"}
               <ArrowRight className="group-hover:translate-x-1 transition-transform" />
-            </motion.button>
+            </m.button>
           </Link>
 
           {/* Back Link */}
@@ -143,7 +143,7 @@ export default function RegisterPage() {
             </Link>
           </div>
 
-        </motion.div>
+        </m.div>
       </div>
 
       {/* ─── RIGHT: VISUAL EXPERIENCE (50%) ─── */}

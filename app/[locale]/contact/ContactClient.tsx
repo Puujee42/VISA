@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import {
   Phone,
   Mail,
@@ -71,12 +71,12 @@ export default function ContactClient() {
 
       {/* ─── ATMOSPHERE ─── */}
       <div className="fixed inset-0 pointer-events-none">
-        <motion.div
+        <m.div
           animate={{ scale: [1, 1.1, 1], rotate: [0, 5, 0] }}
           transition={{ duration: 20, repeat: Infinity }}
           className="absolute top-[-10%] right-[-10%] w-[800px] h-[800px] bg-[#E31B23] rounded-full blur-[200px] opacity-[0.04]"
         />
-        <motion.div
+        <m.div
           animate={{ scale: [1, 1.2, 1], rotate: [0, -5, 0] }}
           transition={{ duration: 25, repeat: Infinity }}
           className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-[#00C896] rounded-full blur-[150px] opacity-[0.04]"
@@ -88,7 +88,7 @@ export default function ContactClient() {
 
         {/* ─── HEADER ─── */}
         <div className="text-center mb-20">
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white border border-slate-200 shadow-sm mb-6"
@@ -98,25 +98,25 @@ export default function ContactClient() {
               <span className="relative inline-flex rounded-full h-3 w-3 bg-[#E31B23]"></span>
             </span>
             <span className="text-xs font-black uppercase tracking-[0.25em] text-slate-500">{t("badge")}</span>
-          </motion.div>
+          </m.div>
 
-          <motion.h1
+          <m.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             className="text-5xl md:text-7xl font-black tracking-tighter leading-[0.9] mb-6"
           >
             {t("heroTitle")} <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E31B23] to-rose-400">{t("heroTitleHighlight")}</span>
-          </motion.h1>
+          </m.h1>
 
-          <motion.p
+          <m.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
             className="text-lg md:text-xl text-slate-500 font-medium max-w-2xl mx-auto"
           >
             {t("heroDesc")}
-          </motion.p>
+          </m.p>
         </div>
 
         {/* ─── GRID CONTENT ─── */}
@@ -125,7 +125,7 @@ export default function ContactClient() {
           {/* LEFT: INFO CARDS */}
           <div className="space-y-6">
             {CONTACT_INFO.map((item, i) => (
-              <motion.div
+              <m.div
                 key={item.id}
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -154,11 +154,11 @@ export default function ContactClient() {
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </m.div>
             ))}
 
             {/* Social Proof */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
@@ -179,11 +179,11 @@ export default function ContactClient() {
                   ))}
                 </div>
               </div>
-            </motion.div>
+            </m.div>
           </div>
 
           {/* RIGHT: FORM */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4 }}
@@ -198,7 +198,7 @@ export default function ContactClient() {
 
               <AnimatePresence mode="wait">
                 {success ? (
-                  <motion.div
+                  <m.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="text-center py-12"
@@ -209,7 +209,7 @@ export default function ContactClient() {
                     <h4 className="text-2xl font-black text-slate-900 mb-2">{t("successTitle")}</h4>
                     <p className="text-slate-500 font-medium">{t("successDesc")}</p>
                     <button onClick={() => setSuccess(false)} className="mt-8 text-xs font-bold text-[#E31B23] uppercase tracking-widest hover:underline">{t("sendAnother")}</button>
-                  </motion.div>
+                  </m.div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -261,7 +261,7 @@ export default function ContactClient() {
                 )}
               </AnimatePresence>
             </div>
-          </motion.div>
+          </m.div>
 
         </div>
       </div>

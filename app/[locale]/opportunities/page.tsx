@@ -14,7 +14,7 @@ import {
   ArrowRight,
   Loader2
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
 import { useTranslations, useLocale } from "next-intl";
 
@@ -46,7 +46,7 @@ const OpportunityCard = ({ opp, locale, isDark }: { opp: Opportunity, locale: st
   const description = opp.description[locale as keyof typeof opp.description] || opp.description.en;
 
   return (
-    <motion.div
+    <m.div
       layout
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -103,7 +103,7 @@ const OpportunityCard = ({ opp, locale, isDark }: { opp: Opportunity, locale: st
           </Link>
         </div>
       </div>
-    </motion.div>
+    </m.div>
   );
 };
 
@@ -172,7 +172,7 @@ export default function OpportunitiesPage() {
         
         {/* HEADER */}
         <div className="text-center mb-20">
-          <motion.div 
+          <m.div 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border transition-colors mb-6
@@ -182,19 +182,19 @@ export default function OpportunitiesPage() {
             <span className="font-black text-[10px] uppercase tracking-[0.2em]">
                {t('badge')}
             </span>
-          </motion.div>
+          </m.div>
 
-          <motion.h1 
+          <m.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className={`text-5xl md:text-7xl font-black tracking-tighter mb-8 leading-[0.9]
               ${isDark ? "text-white" : "text-[#001829]"}`}
           >
             {t('titleMain')} <span className="text-[#00aeef]">{t('titleHighlight')}</span>{t('titleEnd')}
-          </motion.h1>
+          </m.h1>
 
           {/* SEARCH BAR */}
-          <motion.div 
+          <m.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             className="max-w-2xl mx-auto relative group"
@@ -216,7 +216,7 @@ export default function OpportunitiesPage() {
                     <X size={18} className="opacity-40" />
                 </button>
             )}
-          </motion.div>
+          </m.div>
 
           {/* FILTER TABS */}
           <div className="flex flex-wrap justify-center gap-3 mt-12">
@@ -261,7 +261,7 @@ export default function OpportunitiesPage() {
                 />
               ))
             ) : (
-              <motion.div 
+              <m.div 
                 initial={{ opacity: 0 }} 
                 animate={{ opacity: 1 }}
                 className="col-span-full py-32 text-center"
@@ -270,7 +270,7 @@ export default function OpportunitiesPage() {
                     <Briefcase className="opacity-20" size={40} />
                 </div>
                 <p className="opacity-30 italic font-medium">{t('noResults')}</p>
-              </motion.div>
+              </m.div>
             )}
           </AnimatePresence>
         </div>

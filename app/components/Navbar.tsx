@@ -15,7 +15,7 @@ import {
   Plane,
   ChevronDown,
 } from "lucide-react";
-import { useScroll, useMotionValueEvent, AnimatePresence } from "framer-motion";
+import { useScroll, useMotionValueEvent, AnimatePresence, m } from "framer-motion";
 import { Motion as motion } from "./MotionProxy";
 import { useTheme } from "next-themes";
 import { useTranslations, useLocale } from "next-intl";
@@ -121,7 +121,7 @@ export default function Navbar() {
   const language = locale === "mn" ? "mn" : locale === "en" ? "en" : "de";
   return (
     <>
-      <motion.header
+      <m.header
         className="fixed top-5 left-0 right-0 hidden lg:flex justify-center pointer-events-none z-[999]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -191,7 +191,7 @@ export default function Navbar() {
 
                   <AnimatePresence>
                     {item.hasDropdown && hoveredNav === item.href && (
-                      <motion.div
+                      <m.div
                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -230,7 +230,7 @@ export default function Navbar() {
                             </Link>
                           ))}
                         </div>
-                      </motion.div>
+                      </m.div>
                     )}
                   </AnimatePresence>
                 </div>
@@ -244,7 +244,7 @@ export default function Navbar() {
             <AuthActions BRAND={BRAND} isMobile={false} />
           </div>
         </nav>
-      </motion.header>
+      </m.header>
 
       <div className="lg:hidden fixed top-0 left-0 right-0 z-[100]">
         <div
@@ -299,7 +299,7 @@ export default function Navbar() {
                       href={item.href}
                       className="flex items-center justify-center group outline-none -mt-5"
                     >
-                      <motion.div
+                      <m.div
                         whileTap={{ scale: 0.9 }}
                         className="w-[52px] h-[52px] rounded-full flex items-center justify-center text-white transition-all shadow-md group-hover:shadow-lg"
                         style={{
@@ -310,7 +310,7 @@ export default function Navbar() {
                         }}
                       >
                         <item.icon size={22} strokeWidth={isActive ? 2.5 : 2} />
-                      </motion.div>
+                      </m.div>
                     </Link>
                   </div>
                 );
@@ -328,7 +328,7 @@ export default function Navbar() {
                     <item.icon size={22} strokeWidth={isActive ? 2.5 : 2} />
                   </div>
                   {isActive && (
-                    <motion.div
+                    <m.div
                       layoutId="mobileActiveDot"
                       className="absolute bottom-1 w-1 h-1 rounded-full"
                       style={{ backgroundColor: BRAND.GREEN }}

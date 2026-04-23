@@ -10,7 +10,7 @@ import {
    CheckCircle2,
    Sparkles
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
 import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
@@ -52,7 +52,7 @@ export default function JoinPage() {
 
             {/* Main Content Form */}
             <div className="max-w-lg w-full py-20 relative z-10">
-               <motion.h1
+               <m.h1
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
@@ -60,8 +60,8 @@ export default function JoinPage() {
                 ${isDark ? "text-white" : "text-[#001829]"}`}
                >
                   {t("joinTitle")}
-               </motion.h1>
-               <motion.p
+               </m.h1>
+               <m.p
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
@@ -69,13 +69,13 @@ export default function JoinPage() {
                 ${isDark ? "text-white" : "text-slate-600"}`}
                >
                   {t("signupSubtitle")}
-               </motion.p>
+               </m.p>
 
                {/* OPTION CARDS */}
                <div className="space-y-6">
 
                   {/* Option 1: Sign Up */}
-                  <motion.div
+                  <m.div
                      initial={{ opacity: 0, x: -20 }}
                      animate={{ opacity: 1, x: 0 }}
                      transition={{ delay: 0.3 }}
@@ -114,10 +114,10 @@ export default function JoinPage() {
                      <div className="absolute -top-3 right-8 bg-[#00aeef] text-white text-[9px] font-black uppercase tracking-[0.2em] px-4 py-1.5 rounded-full shadow-xl">
                         {t("recommended")}
                      </div>
-                  </motion.div>
+                  </m.div>
 
                   {/* Option 2: Sign In */}
-                  <motion.div
+                  <m.div
                      initial={{ opacity: 0, x: -20 }}
                      animate={{ opacity: 1, x: 0 }}
                      transition={{ delay: 0.4 }}
@@ -151,12 +151,12 @@ export default function JoinPage() {
                            {t("existingMemberDesc")}
                         </p>
                      </div>
-                  </motion.div>
+                  </m.div>
 
                </div>
 
                {/* Continue Button */}
-               <motion.div
+               <m.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 }}
@@ -169,10 +169,10 @@ export default function JoinPage() {
                      {selected === 'signup' ? t("signUpButton") : t("signIn")}
                      <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                   </button>
-               </motion.div>
+               </m.div>
 
                {/* Footer Link */}
-               <motion.div
+               <m.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6 }}
@@ -182,7 +182,7 @@ export default function JoinPage() {
                  ${isDark ? "text-white/30 hover:text-white" : "text-slate-400 hover:text-[#001829]"}`}>
                      {t("home")}
                   </Link>
-               </motion.div>
+               </m.div>
 
             </div>
          </div>
@@ -192,13 +192,13 @@ export default function JoinPage() {
          ${isDark ? "bg-[#00101a]" : "bg-sky-50"}`}>
 
             {/* Animated Glows */}
-            <motion.div
+            <m.div
                animate={{ scale: [1, 1.1, 1], opacity: isDark ? [0.3, 0.5, 0.3] : [0.4, 0.6, 0.4] }}
                transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
                className={`absolute -top-[20%] -right-[20%] w-[1000px] h-[1000px] rounded-full blur-[100px] 
                ${isDark ? "bg-[#00aeef]" : "bg-sky-300"}`}
             />
-            <motion.div
+            <m.div
                animate={{ scale: [1, 1.2, 1], opacity: isDark ? [0.2, 0.4, 0.2] : [0.3, 0.5, 0.3] }}
                transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 2 }}
                className={`absolute -bottom-[20%] -left-[10%] w-[800px] h-[800px] rounded-full blur-[120px] 
@@ -207,7 +207,7 @@ export default function JoinPage() {
 
             {/* Abstract Glass Card */}
             <div className="absolute inset-0 flex items-center justify-center z-20">
-               <motion.div
+               <m.div
                   initial={{ opacity: 0, scale: 0.9, rotateY: -10 }}
                   animate={{ opacity: 1, scale: 1, rotateY: 0 }}
                   transition={{ duration: 1.5, type: "spring" }}
@@ -235,7 +235,7 @@ export default function JoinPage() {
 
                      <div className={`h-1 w-20 rounded-full mx-auto ${isDark ? "bg-white/20" : "bg-[#001829]/10"}`} />
                   </div>
-               </motion.div>
+               </m.div>
             </div>
          </div>
 

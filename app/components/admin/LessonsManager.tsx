@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import Image from "next/image"; // Added Image import
 import {
     FaPlus,
@@ -203,7 +203,7 @@ export default function LessonsManager({ lessons, onRefresh }: LessonsManagerPro
             <AnimatePresence>
                 {isCreating && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-                        <motion.div
+                        <m.div
                             initial={{ scale: 0.95, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.95, opacity: 0 }}
@@ -304,7 +304,7 @@ export default function LessonsManager({ lessons, onRefresh }: LessonsManagerPro
                                     {loading ? "Saving..." : formData.id ? "Update Lesson" : "Create Lesson"}
                                 </button>
                             </div>
-                        </motion.div>
+                        </m.div>
                     </div>
                 )}
             </AnimatePresence>
@@ -315,7 +315,7 @@ export default function LessonsManager({ lessons, onRefresh }: LessonsManagerPro
             <AnimatePresence>
                 {viewingAttendees && (
                     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-                        <motion.div
+                        <m.div
                             initial={{ scale: 0.95, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.95, opacity: 0 }}
@@ -363,7 +363,7 @@ export default function LessonsManager({ lessons, onRefresh }: LessonsManagerPro
                             <div className="p-4 border-t border-slate-100 bg-slate-50 text-right">
                                 <button onClick={() => setViewingAttendees(null)} className="px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-200 rounded-lg">Close</button>
                             </div>
-                        </motion.div>
+                        </m.div>
                     </div>
                 )}
             </AnimatePresence>

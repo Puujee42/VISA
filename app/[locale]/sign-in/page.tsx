@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSignIn } from "@clerk/nextjs";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useTranslations } from "next-intl";
 import BeforeLoginNews from "../../components/BeforeLoginNews";
 import { ArrowRight, ChevronLeft, Fingerprint, KeyRound, Loader2, Lock, Mail, ShieldCheck } from "lucide-react";
@@ -125,7 +125,7 @@ export default function SignInPage() {
         {/* Subtle Background Pattern */}
         <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px] opacity-50 -z-10" />
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
@@ -144,7 +144,7 @@ export default function SignInPage() {
 
           {/* Header */}
           <div className="mb-10 relative">
-            <motion.div
+            <m.div
               initial={{ scale: 0 }} animate={{ scale: 1 }}
               className="absolute -top-10 -left-10 w-24 h-24 bg-emerald-100 rounded-full blur-3xl opacity-50"
             />
@@ -200,9 +200,9 @@ export default function SignInPage() {
 
               {/* ERROR MSG */}
               {error && (
-                <motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="text-red-500 text-[11px] font-black uppercase tracking-wider bg-red-50 p-4 rounded-2xl border border-red-100 text-center">
+                <m.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="text-red-500 text-[11px] font-black uppercase tracking-wider bg-red-50 p-4 rounded-2xl border border-red-100 text-center">
                   {error}
-                </motion.p>
+                </m.p>
               )}
 
               {/* SUBMIT BUTTON */}
@@ -238,9 +238,9 @@ export default function SignInPage() {
 
               {/* ERROR MSG */}
               {error && (
-                <motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="text-red-500 text-[11px] font-black uppercase tracking-wider bg-red-50 p-4 rounded-2xl border border-red-100 text-center">
+                <m.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="text-red-500 text-[11px] font-black uppercase tracking-wider bg-red-50 p-4 rounded-2xl border border-red-100 text-center">
                   {error}
-                </motion.p>
+                </m.p>
               )}
 
               {/* VERIFY BUTTON */}
@@ -274,7 +274,7 @@ export default function SignInPage() {
             </div>
           )}
 
-        </motion.div>
+        </m.div>
       </div>
 
       {/* ─── RIGHT: VISUAL SECTION (50%) ─── */}
@@ -282,12 +282,12 @@ export default function SignInPage() {
 
         {/* Animated Gradients */}
         <div className="absolute inset-0 w-full h-full">
-          <motion.div
+          <m.div
             animate={{ scale: [1, 1.1, 1], x: [0, 20, 0] }}
             transition={{ duration: 10, repeat: Infinity }}
             className="absolute top-[-10%] right-[-10%] w-[700px] h-[700px] bg-emerald-200 rounded-full blur-[100px] opacity-40"
           />
-          <motion.div
+          <m.div
             animate={{ scale: [1, 1.2, 1], x: [0, -20, 0] }}
             transition={{ duration: 15, repeat: Infinity }}
             className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-teal-200 rounded-full blur-[100px] opacity-40"
@@ -296,7 +296,7 @@ export default function SignInPage() {
         </div>
 
         {/* 3D Floating "Secure Login" Card */}
-        <motion.div
+        <m.div
           initial={{ rotateY: 90, opacity: 0 }}
           animate={{ rotateY: -5, opacity: 1 }}
           transition={{ duration: 1.2, type: "spring", bounce: 0.3 }}
@@ -309,21 +309,21 @@ export default function SignInPage() {
           {/* Rotating Elements */}
           <div className="relative w-64 h-64 mb-8">
             {/* Outer Ring */}
-            <motion.div
+            <m.div
               animate={{ rotate: 360 }}
               transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
               className="absolute inset-0 rounded-full border border-dashed border-emerald-300"
             />
 
             {/* Inner Ring */}
-            <motion.div
+            <m.div
               animate={{ rotate: -360 }}
               transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
               className="absolute inset-4 rounded-full border border-dotted border-emerald-400"
             />
 
             {/* Central Lock */}
-            <motion.div
+            <m.div
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               className="absolute inset-0 flex items-center justify-center"
@@ -331,7 +331,7 @@ export default function SignInPage() {
               <div className="w-24 h-24 bg-white rounded-3xl flex items-center justify-center shadow-xl shadow-emerald-200/50">
                 <KeyRound className="text-emerald-500 text-4xl" />
               </div>
-            </motion.div>
+            </m.div>
           </div>
 
           <div className="text-center relative z-10">
@@ -347,7 +347,7 @@ export default function SignInPage() {
             <Fingerprint size={48} className="text-emerald-700" />
           </div>
 
-        </motion.div>
+        </m.div>
 
       </div>
 

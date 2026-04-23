@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
+import { useScroll, useTransform, useSpring, useMotionValue, m } from "framer-motion";
 import { useIsMobile, Motion as motion } from "./MotionProxy";
 import {
   FaShieldAlt,
@@ -36,24 +36,24 @@ const DreamyAtmosphere = ({ containerRef }: { containerRef: React.RefObject<any>
       <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.03] mix-blend-overlay" />
 
       {/* Soft Pink Orb */}
-      <motion.div
+      <m.div
         style={{ y: yBg, opacity: opacityBg }}
         className="absolute -top-[10%] -left-[10%] w-[800px] h-[800px] rounded-full blur-[120px] will-change-transform"
         animate={{ scale: [1, 1.1, 1] }}
         transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
       >
         <div className="w-full h-full bg-gradient-to-br from-rose-200 to-transparent" />
-      </motion.div>
+      </m.div>
 
       {/* Soft Teal Orb */}
-      <motion.div
+      <m.div
         style={{ y: useTransform(scrollYProgress, [0, 1], [0, 50]) }}
         className="absolute top-[20%] -right-[10%] w-[600px] h-[600px] rounded-full blur-[100px] will-change-transform"
         animate={{ scale: [1, 1.2, 1] }}
         transition={{ duration: 20, repeat: Infinity, ease: "easeInOut", delay: 2 }}
       >
         <div className="w-full h-full bg-gradient-to-bl from-teal-100 to-transparent" />
-      </motion.div>
+      </m.div>
     </div>
   );
 };
@@ -81,7 +81,7 @@ const WhyChooseUs = () => {
 
         {/* ─── HEADER ─── */}
         <div className="text-center mb-24 max-w-3xl mx-auto">
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -91,9 +91,9 @@ const WhyChooseUs = () => {
             <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
               {t("badge")}
             </span>
-          </motion.div>
+          </m.div>
 
-          <motion.h2
+          <m.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -106,7 +106,7 @@ const WhyChooseUs = () => {
                 {t("title_highlight")}
               </span>
               {/* Soft Underline */}
-              <motion.svg
+              <m.svg
                 initial={{ pathLength: 0, opacity: 0 }}
                 whileInView={{ pathLength: 1, opacity: 1 }}
                 viewport={{ once: true }}
@@ -115,11 +115,11 @@ const WhyChooseUs = () => {
                 viewBox="0 0 100 10" preserveAspectRatio="none"
               >
                 <path d="M0 5 Q 50 12 100 5" stroke="currentColor" strokeWidth="6" fill="none" strokeLinecap="round" />
-              </motion.svg>
+              </m.svg>
             </span>
-          </motion.h2>
+          </m.h2>
 
-          <motion.p
+          <m.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
@@ -127,7 +127,7 @@ const WhyChooseUs = () => {
             className="text-slate-500 text-lg md:text-xl font-medium leading-relaxed max-w-2xl mx-auto"
           >
             {t("desc")}
-          </motion.p>
+          </m.p>
         </div>
 
         {/* ─── AESTHETIC GRID ─── */}
@@ -145,7 +145,7 @@ const WhyChooseUs = () => {
                   </div>
                   {/* Animated Planes */}
                   <div className="relative w-24 h-24 opacity-20">
-                    <motion.div
+                    <m.div
                       animate={{ rotate: 360 }}
                       transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                       className="absolute inset-0 border border-dashed border-slate-400 rounded-full"
@@ -175,7 +175,7 @@ const WhyChooseUs = () => {
             <div className="p-8 h-full flex flex-col items-center text-center justify-center z-10">
 
               {/* Floating Avatar Group */}
-              <motion.div
+              <m.div
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                 className="mb-8 relative"
@@ -186,14 +186,14 @@ const WhyChooseUs = () => {
                   </div>
                 </div>
                 {/* Chat Bubble */}
-                <motion.div
+                <m.div
                   animate={{ scale: [1, 1.1, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
                   className="absolute -top-2 -right-4 px-3 py-1 bg-white rounded-xl shadow-md text-[10px] font-bold text-rose-500 border border-rose-100"
                 >
                   Hi there! 👋
-                </motion.div>
-              </motion.div>
+                </m.div>
+              </m.div>
 
               <h3 className="text-2xl font-bold text-slate-900 mb-3">{t("card2_title")}</h3>
               <p className="text-slate-500 text-sm mb-8 leading-relaxed">
@@ -313,7 +313,7 @@ const AestheticCard = ({ children, className }: { children: React.ReactNode; cla
   };
 
   return (
-    <motion.div
+    <m.div
       ref={ref}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -340,7 +340,7 @@ const AestheticCard = ({ children, className }: { children: React.ReactNode; cla
       <div style={{ transform: "translateZ(30px)" }} className="h-full">
         {children}
       </div>
-    </motion.div>
+    </m.div>
   );
 };
 

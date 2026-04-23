@@ -4,7 +4,7 @@ import React, { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
-   motion,
+   m,
    useScroll,
    useTransform,
    Variants
@@ -78,22 +78,22 @@ export default function SwitzerlandClient() {
             <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-gradient-to-t from-emerald-100 to-transparent rounded-full blur-[100px] opacity-80" />
 
             <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center relative z-10">
-               <motion.div initial="hidden" animate="visible" variants={containerVar} className="space-y-8 text-center lg:text-left">
-                  <motion.div variants={itemVar} className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-red-600 text-white shadow-lg shadow-red-200">
+               <m.div initial="hidden" animate="visible" variants={containerVar} className="space-y-8 text-center lg:text-left">
+                  <m.div variants={itemVar} className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-red-600 text-white shadow-lg shadow-red-200">
                      <FaMountain />
                      <span className="text-xs font-bold uppercase tracking-widest">{t("hero.tag")}</span>
-                  </motion.div>
+                  </m.div>
 
-                  <motion.h1 variants={itemVar} className="text-6xl md:text-8xl font-black leading-[0.95] tracking-tight text-slate-900">
+                  <m.h1 variants={itemVar} className="text-6xl md:text-8xl font-black leading-[0.95] tracking-tight text-slate-900">
                      <span className="block text-slate-800">{t("hero.title")}</span>
                      <span className="block text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-red-500 to-emerald-500">
                         {t("hero.highlight")}
                      </span>
-                  </motion.h1>
+                  </m.h1>
 
-                  <motion.p variants={itemVar} className="text-xl text-slate-600 font-medium leading-relaxed max-w-lg mx-auto lg:mx-0">{t("hero.sub")}</motion.p>
+                  <m.p variants={itemVar} className="text-xl text-slate-600 font-medium leading-relaxed max-w-lg mx-auto lg:mx-0">{t("hero.sub")}</m.p>
 
-                  <motion.div variants={itemVar} className="flex flex-wrap gap-4 justify-center lg:justify-start pt-4">
+                  <m.div variants={itemVar} className="flex flex-wrap gap-4 justify-center lg:justify-start pt-4">
                      {!isSignedIn && (
                         <Link href="/register">
                            <button className="px-10 py-4 rounded-xl bg-red-600 text-white font-black text-sm uppercase tracking-widest shadow-xl hover:bg-emerald-600 hover:scale-105 transition-all flex items-center gap-3">
@@ -106,11 +106,11 @@ export default function SwitzerlandClient() {
                            {t("hero.about")}
                         </button>
                      </Link>
-                  </motion.div>
-               </motion.div>
+                  </m.div>
+               </m.div>
 
                <div className="relative h-[600px] hidden lg:block perspective-1000">
-                  <motion.div style={{ y: yHero, rotateY: -10, rotateX: 5 }} className="absolute right-8 top-8 w-[420px] h-[550px] bg-white p-4 rounded-[2rem] shadow-2xl border border-red-100 z-20">
+                  <m.div style={{ y: yHero, rotateY: -10, rotateX: 5 }} className="absolute right-8 top-8 w-[420px] h-[550px] bg-white p-4 rounded-[2rem] shadow-2xl border border-red-100 z-20">
                      <div className="relative w-full h-full rounded-[1.5rem] overflow-hidden">
                         <Image src="https://images.unsplash.com/photo-1527668752968-14dc70a27c95?auto=format&fit=crop&w=800&q=80" alt="Swiss Alps" fill className="object-cover" />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
@@ -122,7 +122,7 @@ export default function SwitzerlandClient() {
                            <h3 className="text-3xl font-black">Switzerland</h3>
                         </div>
                      </div>
-                  </motion.div>
+                  </m.div>
                </div>
             </div>
          </section>
@@ -130,7 +130,7 @@ export default function SwitzerlandClient() {
          <section className="py-24 px-6 bg-white relative">
             <div className="max-w-7xl mx-auto">
                <div className="grid lg:grid-cols-2 gap-20 items-center mb-20">
-                  <motion.div initial="hidden" whileInView="visible" variants={containerVar} viewport={{ once: true }}>
+                  <m.div initial="hidden" whileInView="visible" variants={containerVar} viewport={{ once: true }}>
                      <div className="flex items-center gap-3 mb-6">
                         <div className="w-12 h-12 rounded-xl bg-red-600 flex items-center justify-center text-white text-xl shadow-lg shadow-red-200"><FaGlobeEurope /></div>
                         <h2 className="text-4xl font-black text-slate-900">{t("info.title")}</h2>
@@ -144,26 +144,26 @@ export default function SwitzerlandClient() {
                            </div>
                         ))}
                      </div>
-                  </motion.div>
+                  </m.div>
                   <div className="bg-white p-8 rounded-[3rem] shadow-xl border border-red-50 relative overflow-hidden">
                      <div className="absolute top-0 right-0 w-40 h-40 bg-red-50 rounded-bl-[10rem] -z-0" />
                      <h3 className="text-2xl font-black text-slate-900 mb-8 relative z-10">{t("info.quality")}</h3>
                      <div className="grid grid-cols-2 gap-6 relative z-10">
                         {brands.map((brand, i) => (
-                           <motion.div key={i} whileHover={{ y: -5 }} className={`flex flex-col items-center justify-center p-6 rounded-3xl text-center border transition-colors duration-300 ${brand.color} border-transparent hover:border-current`}>
+                           <m.div key={i} whileHover={{ y: -5 }} className={`flex flex-col items-center justify-center p-6 rounded-3xl text-center border transition-colors duration-300 ${brand.color} border-transparent hover:border-current`}>
                               <brand.icon className="text-3xl mb-3" />
                               <span className="font-bold text-sm text-slate-700">{brand.name}</span>
-                           </motion.div>
+                           </m.div>
                         ))}
                      </div>
                   </div>
                </div>
                <div className="grid md:grid-cols-3 gap-6">
                   {highlights.map((h, i) => (
-                     <motion.div key={i} whileHover={{ y: -10 }} className={`p-8 rounded-3xl shadow-sm border-2 flex items-center gap-5 group hover:shadow-xl transition-all ${h.color}`}>
+                     <m.div key={i} whileHover={{ y: -10 }} className={`p-8 rounded-3xl shadow-sm border-2 flex items-center gap-5 group hover:shadow-xl transition-all ${h.color}`}>
                         <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-3xl shadow-sm"><h.icon /></div>
                         <div><h4 className="text-3xl font-black">{t(`highlights.${i}.title`)}</h4><p className="text-xs font-bold uppercase opacity-80">{t(`highlights.${i}.sub`)}</p></div>
-                     </motion.div>
+                     </m.div>
                   ))}
                </div>
             </div>

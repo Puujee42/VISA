@@ -3,7 +3,7 @@
 import React, { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useScroll, useTransform, Variants } from "framer-motion";
+import { m, useScroll, useTransform, Variants } from "framer-motion";
 import {
   FaGlobeEurope,
   FaGraduationCap,
@@ -128,13 +128,13 @@ export default function FranceClient() {
         <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-gradient-to-t from-red-100 to-transparent rounded-full blur-[100px] opacity-80" />
 
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center relative z-10">
-          <motion.div
+          <m.div
             initial="hidden"
             animate="visible"
             variants={containerVar}
             className="space-y-8 text-center lg:text-left"
           >
-            <motion.div
+            <m.div
               variants={itemVar}
               className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-blue-600 text-white shadow-lg shadow-blue-200"
             >
@@ -142,9 +142,9 @@ export default function FranceClient() {
               <span className="text-xs font-bold uppercase tracking-widest">
                 {t("hero.tag")}
               </span>
-            </motion.div>
+            </m.div>
 
-            <motion.h1
+            <m.h1
               variants={itemVar}
               className="text-6xl md:text-8xl font-black leading-[0.95] tracking-tight text-slate-900"
             >
@@ -152,16 +152,16 @@ export default function FranceClient() {
               <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-700 via-blue-500 to-red-500">
                 {t("hero.highlight")}
               </span>
-            </motion.h1>
+            </m.h1>
 
-            <motion.p
+            <m.p
               variants={itemVar}
               className="text-xl text-slate-600 font-medium leading-relaxed max-w-lg mx-auto lg:mx-0"
             >
               {t("hero.sub")}
-            </motion.p>
+            </m.p>
 
-            <motion.div
+            <m.div
               variants={itemVar}
               className="flex flex-wrap gap-4 justify-center lg:justify-start pt-4"
             >
@@ -177,11 +177,11 @@ export default function FranceClient() {
                   {t("hero.about")}
                 </button>
               </Link>
-            </motion.div>
-          </motion.div>
+            </m.div>
+          </m.div>
 
           <div className="relative h-[600px] hidden lg:block perspective-1000">
-            <motion.div
+            <m.div
               style={{ y: yHero, rotateY: -10, rotateX: 5 }}
               className="absolute right-8 top-8 w-[420px] h-[550px] bg-white p-4 rounded-[2rem] shadow-2xl border border-blue-100 z-20"
             >
@@ -203,7 +203,7 @@ export default function FranceClient() {
                   <h3 className="text-3xl font-black">France</h3>
                 </div>
               </div>
-            </motion.div>
+            </m.div>
           </div>
         </div>
       </section>
@@ -212,7 +212,7 @@ export default function FranceClient() {
       <section className="py-24 px-6 bg-white relative">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-20 items-center mb-20">
-            <motion.div
+            <m.div
               initial="hidden"
               whileInView="visible"
               variants={containerVar}
@@ -245,7 +245,7 @@ export default function FranceClient() {
                   </div>
                 ))}
               </div>
-            </motion.div>
+            </m.div>
 
             <div className="bg-white p-8 rounded-[3rem] shadow-xl border border-red-50 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-40 h-40 bg-red-50 rounded-bl-[10rem] -z-0" />
@@ -256,7 +256,7 @@ export default function FranceClient() {
               </h3>
               <div className="grid grid-cols-2 gap-6 relative z-10">
                 {culture.map((item, i) => (
-                  <motion.div
+                  <m.div
                     key={i}
                     whileHover={{ y: -5 }}
                     className={`flex flex-col items-center justify-center p-6 rounded-3xl text-center border transition-colors duration-300 ${item.color} border-transparent hover:border-current`}
@@ -268,7 +268,7 @@ export default function FranceClient() {
                     <span className="text-[10px] text-slate-500 uppercase tracking-widest mt-1">
                       {item.desc}
                     </span>
-                  </motion.div>
+                  </m.div>
                 ))}
               </div>
             </div>
@@ -276,7 +276,7 @@ export default function FranceClient() {
 
           <div className="grid md:grid-cols-3 gap-6">
             {highlights.map((h, i) => (
-              <motion.div
+              <m.div
                 key={i}
                 whileHover={{ y: -10 }}
                 className={`p-8 rounded-3xl shadow-sm border-2 flex items-center gap-5 group hover:shadow-xl transition-all ${h.color}`}
@@ -292,7 +292,7 @@ export default function FranceClient() {
                     {t(`highlights.${i}.sub`)}
                   </p>
                 </div>
-              </motion.div>
+              </m.div>
             ))}
           </div>
         </div>

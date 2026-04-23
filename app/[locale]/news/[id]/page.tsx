@@ -19,7 +19,7 @@ import {
   Bookmark,
   MessageCircle
 } from "lucide-react";
-import { motion, useScroll, useSpring } from "framer-motion";
+import { m, useScroll, useSpring } from "framer-motion";
 import { useTheme } from "next-themes";
 import { useTranslations, useLocale } from "next-intl";
 import { optimizeCloudinaryUrl } from "@/lib/cloudinary";
@@ -89,7 +89,7 @@ export default function NewsDetail() {
       ${isDark ? "bg-[#001829] text-white" : "bg-white text-slate-900"}`}>
       
       {/* READING PROGRESS BAR */}
-      <motion.div className="fixed top-0 left-0 right-0 h-1.5 bg-[#00aeef] z-[60] origin-left" style={{ scaleX }} />
+      <m.div className="fixed top-0 left-0 right-0 h-1.5 bg-[#00aeef] z-[60] origin-left" style={{ scaleX }} />
 
       {/* BACKGROUND DECOR */}
       <div className="absolute inset-0 pointer-events-none fixed overflow-hidden">
@@ -137,12 +137,12 @@ export default function NewsDetail() {
               </div>
            </div>
 
-           <motion.h1 
+           <m.h1 
              initial={{ opacity: 0, y: 20 }}
              animate={{ opacity: 1, y: 0 }}
              className={`text-5xl md:text-7xl font-black tracking-tighter leading-[0.9] mb-10 ${isDark ? "text-white" : "text-[#001829]"}`}>
               {article.title[locale] || article.title.en}
-           </motion.h1>
+           </m.h1>
 
            <p className={`text-xl md:text-2xl font-medium leading-relaxed opacity-70 ${isDark ? "text-white" : "text-slate-600"}`}>
               {article.summary[locale] || article.summary.en}
@@ -150,7 +150,7 @@ export default function NewsDetail() {
         </div>
 
         {/* FEATURED IMAGE */}
-        <motion.div 
+        <m.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           className="relative aspect-[21/9] w-full rounded-[4rem] overflow-hidden mb-20 shadow-3xl border border-white/5"
@@ -164,7 +164,7 @@ export default function NewsDetail() {
               priority
            />
            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-        </motion.div>
+        </m.div>
 
         {/* MAIN BODY GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
@@ -174,7 +174,7 @@ export default function NewsDetail() {
               <div className="space-y-10">
                  {(article.content[locale] || article.content.en).split('\n').map((para, i) => (
                     para.trim() && (
-                      <motion.p 
+                      <m.p 
                         key={i}
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -184,7 +184,7 @@ export default function NewsDetail() {
                            ${isDark ? "text-white/80" : "text-slate-700"}`}
                       >
                          {para}
-                      </motion.p>
+                      </m.p>
                     )
                  ))}
               </div>

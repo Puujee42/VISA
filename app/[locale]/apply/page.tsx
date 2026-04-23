@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import {
   CheckCircle2,
   MapPin,
@@ -187,7 +187,7 @@ export default function ApplyPage() {
     <div className="min-h-dvh bg-[#FDFBF7] text-slate-900 font-sans selection:bg-[#E31B23] selection:text-white pt-28 pb-20 px-6">
       {/* ─── 1. HERO SECTION ─── */}
       <div className="max-w-7xl mx-auto mb-20 text-center relative z-10">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-white border border-slate-200 text-slate-500 shadow-sm mb-6"
@@ -196,7 +196,7 @@ export default function ApplyPage() {
           <span className="text-xs font-black uppercase tracking-widest">
             {t("badge", { step })}
           </span>
-        </motion.div>
+        </m.div>
 
         <h1 className="text-5xl md:text-7xl font-black mb-6 tracking-tighter leading-tight">
           {step === 1 ? (
@@ -219,7 +219,7 @@ export default function ApplyPage() {
 
       <AnimatePresence mode="wait">
         {step === 1 ? (
-          <motion.div
+          <m.div
             key="step1"
             initial={{ opacity: 1 }}
             exit={{ opacity: 0, x: -20 }}
@@ -227,7 +227,7 @@ export default function ApplyPage() {
             {/* ─── 2. PROGRAM SELECTION GRID ─── */}
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-24 relative z-10">
               {PROGRAMS.map((prog, i) => (
-                <motion.div
+                <m.div
                   key={prog.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -293,14 +293,14 @@ export default function ApplyPage() {
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </m.div>
               ))}
             </div>
 
             {/* ─── 3. APPLICATION FORM ─── */}
             <div ref={formRef} className="max-w-4xl mx-auto relative z-10">
               {!selectedProgram ? (
-                <motion.div
+                <m.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   className="text-center py-20 border-2 border-dashed border-slate-200 rounded-[3rem] bg-white/50"
@@ -309,9 +309,9 @@ export default function ApplyPage() {
                   <h3 className="text-xl font-bold text-slate-400">
                     {t("programSelection.selectPrompt")}
                   </h3>
-                </motion.div>
+                </m.div>
               ) : (
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="bg-white rounded-[3rem] shadow-2xl overflow-hidden border border-slate-100 flex flex-col md:flex-row"
@@ -515,19 +515,19 @@ export default function ApplyPage() {
                       </button>
                     </form>
                   </div>
-                </motion.div>
+                </m.div>
               )}
             </div>
-          </motion.div>
+          </m.div>
         ) : (
-          <motion.div
+          <m.div
             key="step2"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             className="max-w-6xl mx-auto"
           >
             <StudentInformation onSuccess={() => setStep(3)} />
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>

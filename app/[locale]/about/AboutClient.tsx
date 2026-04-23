@@ -3,7 +3,7 @@
 import React, { useRef } from "react";
 import Image from "next/image";
 import {
-  motion,
+  m,
   useScroll,
   useTransform,
   useSpring,
@@ -55,7 +55,7 @@ export default function AboutPageRed() {
       {/* ─── 1. WARM RED ATMOSPHERE ─── */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         {/* Dominant Red Blob Top Right */}
-        <motion.div
+        <m.div
           animate={{
             x: [0, 50, -50, 0],
             y: [0, -30, 30, 0],
@@ -65,7 +65,7 @@ export default function AboutPageRed() {
           className="absolute top-[-15%] right-[-10%] w-[900px] h-[900px] bg-gradient-to-br from-rose-100 via-[#D93644]/10 to-transparent rounded-full blur-[100px] opacity-80"
         />
         {/* Secondary Emerald/Rose Mix Bottom Left */}
-        <motion.div
+        <m.div
           animate={{
             x: [0, -70, 30, 0],
             y: [0, 60, -40, 0],
@@ -84,7 +84,7 @@ export default function AboutPageRed() {
         <div className="grid lg:grid-cols-2 gap-16 md:gap-24 items-center mb-32">
 
           {/* Text Content */}
-          <motion.div
+          <m.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
@@ -93,16 +93,16 @@ export default function AboutPageRed() {
             className="space-y-10 relative pt-10"
           >
             {/* Tagline */}
-            <motion.div variants={itemVar} className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/90 border border-red-100 shadow-[0_4px_20px_-10px_rgba(217,54,68,0.3)] backdrop-blur-md">
+            <m.div variants={itemVar} className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/90 border border-red-100 shadow-[0_4px_20px_-10px_rgba(217,54,68,0.3)] backdrop-blur-md">
               <span className="relative flex h-3 w-3">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D93644] opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-[#D93644]"></span>
               </span>
               <span className="text-xs font-black uppercase tracking-[0.25em] text-[#D93644]">{t("tag")}</span>
-            </motion.div>
+            </m.div>
 
             {/* Title with Red Dominance */}
-            <motion.h1 variants={itemVar} className="text-6xl md:text-8xl font-black tracking-tighter leading-[0.95] text-slate-900 drop-shadow-sm">
+            <m.h1 variants={itemVar} className="text-6xl md:text-8xl font-black tracking-tighter leading-[0.95] text-slate-900 drop-shadow-sm">
               <span className="block text-slate-300 relative z-10">
                 {t("heroTitle")}
               </span>
@@ -112,14 +112,14 @@ export default function AboutPageRed() {
               <span className="block text-2xl md:text-4xl font-serif italic text-slate-400 mt-4 font-normal">
                 {t("heroSubtitle")}
               </span>
-            </motion.h1>
+            </m.h1>
 
-            <motion.p variants={itemVar} className="text-xl font-medium text-slate-600 leading-relaxed border-l-[6px] border-rose-300 pl-8 max-w-lg">
+            <m.p variants={itemVar} className="text-xl font-medium text-slate-600 leading-relaxed border-l-[6px] border-rose-300 pl-8 max-w-lg">
               {t("intro")}
-            </motion.p>
+            </m.p>
 
             {/* Stats Counter */}
-            <motion.div variants={itemVar} className="grid grid-cols-2 gap-y-10 gap-x-12 pt-4">
+            <m.div variants={itemVar} className="grid grid-cols-2 gap-y-10 gap-x-12 pt-4">
               {[
                 { val: "20", label: t("stat_years"), sub: t("stat_exp") },
                 { val: "3000+", label: t("stat_participants"), sub: t("stat_success") }
@@ -135,13 +135,13 @@ export default function AboutPageRed() {
                   </div>
                 </div>
               ))}
-            </motion.div>
-          </motion.div>
+            </m.div>
+          </m.div>
 
           {/* Hero Image */}
           <div className="relative">
             {/* Curtain Reveal Image */}
-            <motion.div
+            <m.div
               style={{ y: yHero }}
               initial={{ clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)" }}
               whileInView={{ clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)" }}
@@ -160,10 +160,10 @@ export default function AboutPageRed() {
                 {/* Warm Red Tint Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-rose-900/40 via-transparent to-transparent opacity-60 mix-blend-multiply" />
               </div>
-            </motion.div>
+            </m.div>
 
             {/* Rotating Badge - "Established 2005" */}
-            <motion.div
+            <m.div
               animate={{ rotate: 360 }}
               transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
               className="absolute -top-12 -right-6 md:-right-12 z-20 w-40 h-40 flex items-center justify-center bg-white rounded-full shadow-2xl border-[6px] border-rose-50"
@@ -180,14 +180,14 @@ export default function AboutPageRed() {
                 <span className="text-4xl font-black text-slate-900">20</span>
                 <span className="text-[10px] font-bold uppercase text-red-400 tracking-wider">{t("yearsLabel")}</span>
               </div>
-            </motion.div>
+            </m.div>
           </div>
         </div>
 
         {/* ─── 3. STORY SECTION ─── */}
         <div className="grid lg:grid-cols-12 gap-12 mb-32 items-start">
 
-          <motion.div
+          <m.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -214,9 +214,9 @@ export default function AboutPageRed() {
                 ))}
               </div>
             </div>
-          </motion.div>
+          </m.div>
 
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -240,7 +240,7 @@ export default function AboutPageRed() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </m.div>
         </div>
 
         {/* ─── 4. VALUES (Red-Themed 3D Grid) ─── */}
@@ -308,7 +308,7 @@ const RedTiltCard = ({ icon: Icon, title, text, index }: CardProps) => {
   const isRed = index !== 1; // Arbitrary pattern for variety
 
   return (
-    <motion.div
+    <m.div
       ref={ref}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -323,7 +323,7 @@ const RedTiltCard = ({ icon: Icon, title, text, index }: CardProps) => {
           : "border-emerald-50 hover:border-emerald-200 shadow-emerald-100/50"}`}
     >
       {/* Dynamic Glare */}
-      <motion.div
+      <m.div
         style={{ background: useMotionTemplate`radial-gradient(circle at ${glareX} ${glareY}, rgba(255,255,255,0.8), transparent 50%)` }}
         className="absolute inset-0 rounded-[2.5rem] opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300 z-20 mix-blend-overlay"
       />
@@ -351,6 +351,6 @@ const RedTiltCard = ({ icon: Icon, title, text, index }: CardProps) => {
       <div className={`absolute -right-12 -bottom-12 w-48 h-48 rounded-full blur-[70px] opacity-0 group-hover:opacity-20 transition-opacity duration-500 z-0
          ${isRed ? "bg-[#D93644]" : "bg-emerald-500"}`}
       />
-    </motion.div>
+    </m.div>
   );
 };

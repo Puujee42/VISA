@@ -19,7 +19,7 @@ import {
    Video,
 
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useTranslations, useLocale } from "next-intl";
 
 // --- CONSTANTS ---
@@ -54,14 +54,14 @@ interface ActivityLog {
 
 // --- COMPONENTS ---
 const DashboardCard = ({ children, className = "", delay = 0 }: any) => (
-   <motion.div
+   <m.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.5 }}
       className={`relative bg-white border border-slate-100 rounded-[2.5rem] p-6 overflow-hidden shadow-[0_20px_40px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_30px_60px_-15px_rgba(227,27,35,0.1)] hover:border-slate-200 transition-all duration-500 group ${className}`}
    >
       {children}
-   </motion.div>
+   </m.div>
 );
 
 const FullSnapshotSection = ({ profile }: { profile: any }) => {
@@ -279,7 +279,7 @@ export default function MemberDashboard() {
 
          <div className="relative z-10 max-w-7xl mx-auto space-y-16">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-               <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
+               <m.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
                   <div className="flex items-center gap-3 mb-2">
                      <div className={`w-2 h-2 rounded-full animate-pulse shadow-[0_0_10px] ${isStudent ? 'bg-[#00C896] shadow-[#00C896]' : 'bg-slate-400 shadow-slate-400'}`} />
                      <p className={`text-[10px] font-black uppercase tracking-[0.25em] ${isStudent ? 'text-[#00C896]' : 'text-slate-400'}`}>
@@ -289,13 +289,13 @@ export default function MemberDashboard() {
                   <h1 className="text-4xl md:text-6xl font-black tracking-tighter leading-none mb-1 text-slate-900">
                      {t('hello')}, <br /><span className="text-transparent bg-clip-text bg-linear-to-r from-[#E31B23] to-rose-400">{userData.fullName}</span>
                   </h1>
-               </motion.div>
-               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="flex gap-3">
+               </m.div>
+               <m.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="flex gap-3">
                   <Link href="/events" className="group relative px-8 py-4 rounded-2xl overflow-hidden transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1 bg-[#E31B23]">
                      <span className="relative z-10 text-white font-black text-[10px] uppercase tracking-widest flex items-center gap-2"><Calendar size={14} /> {t('findEvents')}</span>
                   </Link>
                   <button className="p-4 border border-slate-200 bg-white text-slate-400 hover:text-slate-900 rounded-2xl transition-all active:scale-95"><Settings size={18} /></button>
-               </motion.div>
+               </m.div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-4 gap-6">
@@ -330,9 +330,9 @@ export default function MemberDashboard() {
                                  <span className="text-[#E31B23]">{Math.round(progressPercent)}% {t('ready')}</span>
                               </div>
                               <div className="h-3 w-full bg-slate-100 rounded-full overflow-hidden relative">
-                                 <motion.div initial={{ width: 0 }} animate={{ width: `${progressPercent}%` }} transition={{ duration: 1.5, ease: "circOut" }} className="h-full bg-[#E31B23] relative overflow-hidden">
+                                 <m.div initial={{ width: 0 }} animate={{ width: `${progressPercent}%` }} transition={{ duration: 1.5, ease: "circOut" }} className="h-full bg-[#E31B23] relative overflow-hidden">
                                     <div className="absolute inset-0 bg-[linear-gradient(45deg,rgba(255,255,255,0.2)_25%,transparent_25%,transparent_50%,rgba(255,255,255,0.2)_50%,rgba(255,255,255,0.2)_75%,transparent_75%,transparent)] bg-size-[1rem_1rem] animate-[progress_1s_linear_infinite]" />
-                                 </motion.div>
+                                 </m.div>
                               </div>
                               <div className="flex justify-between mt-2">
                                  {STEPS.map((s, i) => (

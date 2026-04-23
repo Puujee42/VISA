@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "@/navigation";
 import { Globe, Check, ChevronDown } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 
 const LANGUAGES = [
   { code: "mn", name: "Монгол", flag: "🇲🇳" },
@@ -42,7 +42,7 @@ export default function LanguageToggle() {
             {/* Backdrop to close */}
             <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
             
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -64,7 +64,7 @@ export default function LanguageToggle() {
                   {locale === lang.code && <Check size={14} className="text-emerald-400" />}
                 </button>
               ))}
-            </motion.div>
+            </m.div>
           </>
         )}
       </AnimatePresence>

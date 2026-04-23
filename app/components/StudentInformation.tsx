@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import {
    User as UserIcon,
    MapPin,
@@ -173,7 +173,7 @@ export default function StudentInformation({ onSuccess }: StudentInformationProp
       <div className="w-full">
          <AnimatePresence mode="wait">
             {success ? (
-               <motion.div
+               <m.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   className="bg-white rounded-[3rem] p-16 text-center shadow-2xl border border-[#00C896]/20 max-w-2xl mx-auto"
@@ -188,9 +188,9 @@ export default function StudentInformation({ onSuccess }: StudentInformationProp
                   <button onClick={() => window.location.href = "/submit-documents"} className="bg-slate-900 text-white px-10 py-4 rounded-xl font-black text-sm uppercase tracking-widest hover:bg-[#E31B23] transition-colors inline-flex items-center gap-2">
                      {t("nextDocs")} <ArrowRight size={16} />
                   </button>
-               </motion.div>
+               </m.div>
             ) : (
-               <motion.div
+               <m.div
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="bg-white rounded-[3rem] shadow-2xl overflow-hidden border border-slate-100 flex flex-col lg:flex-row min-h-[800px]"
@@ -332,7 +332,7 @@ export default function StudentInformation({ onSuccess }: StudentInformationProp
                         </div>
                      </form>
                   </div>
-               </motion.div>
+               </m.div>
             )}
          </AnimatePresence>
       </div>

@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import {
-   motion,
+   m,
    AnimatePresence
 } from "framer-motion";
 import {
@@ -92,7 +92,7 @@ export default function EventsPageRedGreen() {
             </div>
 
             <div className="max-w-7xl mx-auto text-center relative z-10">
-               <motion.div
+               <m.div
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8 }}
@@ -108,7 +108,7 @@ export default function EventsPageRedGreen() {
                   <p className="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed font-medium">
                      {t("heroDesc")}
                   </p>
-               </motion.div>
+               </m.div>
             </div>
          </section>
 
@@ -134,7 +134,7 @@ export default function EventsPageRedGreen() {
                </div>
 
                {/* Grid */}
-               <motion.div
+               <m.div
                   layout
                   className="grid md:grid-cols-2 lg:grid-cols-2 gap-8"
                >
@@ -152,7 +152,7 @@ export default function EventsPageRedGreen() {
                         const isFull = event.status === "past" || event.status === "cancelled";
 
                         return (
-                           <motion.div
+                           <m.div
                               key={event._id}
                               layout
                               initial={{ opacity: 0, scale: 0.9 }}
@@ -225,11 +225,11 @@ export default function EventsPageRedGreen() {
                                     </div>
                                  </div>
                               </div>
-                           </motion.div>
+                           </m.div>
                         );
                      })}
                   </AnimatePresence>
-               </motion.div>
+               </m.div>
             </div>
          </section>
 

@@ -4,7 +4,7 @@ import React, { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
-   motion,
+   m,
    useScroll,
    useTransform,
    Variants
@@ -85,25 +85,25 @@ export default function GermanyClient() {
             <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-gradient-to-tr from-[#E3002D] via-rose-200 to-transparent rounded-full blur-[100px] opacity-30 mix-blend-multiply" />
 
             <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center relative z-10">
-               <motion.div initial="hidden" animate="visible" variants={containerVar} className="space-y-8 text-center lg:text-left">
-                  <motion.div variants={itemVar} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-teal-100 shadow-sm text-[#00C1B6]">
+               <m.div initial="hidden" animate="visible" variants={containerVar} className="space-y-8 text-center lg:text-left">
+                  <m.div variants={itemVar} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-teal-100 shadow-sm text-[#00C1B6]">
                      <span className="w-2.5 h-2.5 rounded-full bg-[#00C1B6] animate-ping absolute" />
                      <span className="w-2.5 h-2.5 rounded-full bg-[#00C1B6] relative" />
                      <span className="text-xs font-black uppercase tracking-widest ml-1">{t("hero.tag")}</span>
-                  </motion.div>
+                  </m.div>
 
-                  <motion.h1 variants={itemVar} className="text-6xl md:text-8xl font-black leading-[0.95] tracking-tight text-slate-900">
+                  <m.h1 variants={itemVar} className="text-6xl md:text-8xl font-black leading-[0.95] tracking-tight text-slate-900">
                      <span className="block text-slate-800">{t("hero.title")}</span>
                      <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#E3002D] via-teal-500 to-[#00C1B6]">
                         {t("hero.highlight")}
                      </span>
-                  </motion.h1>
+                  </m.h1>
 
-                  <motion.p variants={itemVar} className="text-xl text-slate-600 font-medium leading-relaxed max-w-lg mx-auto lg:mx-0">
+                  <m.p variants={itemVar} className="text-xl text-slate-600 font-medium leading-relaxed max-w-lg mx-auto lg:mx-0">
                      {t("hero.sub")}
-                  </motion.p>
+                  </m.p>
 
-                  <motion.div variants={itemVar} className="flex flex-wrap gap-4 justify-center lg:justify-start pt-4">
+                  <m.div variants={itemVar} className="flex flex-wrap gap-4 justify-center lg:justify-start pt-4">
                      {!isSignedIn && (
                         <Link href="/register">
                            <button className="px-10 py-4 rounded-full bg-[#E3002D] text-white font-black text-sm uppercase tracking-widest shadow-[0_10px_30px_rgba(227,0,45,0.3)] hover:scale-105 hover:bg-[#c90022] hover:shadow-[0_20px_40px_rgba(227,0,45,0.4)] transition-all flex items-center gap-2">
@@ -116,11 +116,11 @@ export default function GermanyClient() {
                            {t("hero.about")}
                         </button>
                      </Link>
-                  </motion.div>
-               </motion.div>
+                  </m.div>
+               </m.div>
 
                <div className="relative h-[600px] hidden lg:block perspective-1000">
-                  <motion.div style={{ y: yHero, rotateY: -10, rotateX: 5 }} className="absolute right-8 top-8 w-[420px] h-[550px] bg-white p-3 rounded-[3rem] shadow-2xl border-[6px] border-white z-20">
+                  <m.div style={{ y: yHero, rotateY: -10, rotateX: 5 }} className="absolute right-8 top-8 w-[420px] h-[550px] bg-white p-3 rounded-[3rem] shadow-2xl border-[6px] border-white z-20">
                      <div className="relative w-full h-full rounded-[2.5rem] overflow-hidden bg-slate-100">
                         <Image src="https://1001traveldestinations.wordpress.com/wp-content/uploads/2013/02/1001-travel-destinations-berliner-dom-frontansicht-wallpaper.jpg?w=625&h=390" alt="Berlin" fill className="object-cover" />
                         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/40" />
@@ -129,17 +129,17 @@ export default function GermanyClient() {
                            <h3 className="text-3xl font-black">Berlin Style</h3>
                         </div>
                      </div>
-                  </motion.div>
+                  </m.div>
 
-                  <motion.div
+                  <m.div
                      animate={{ y: [0, -15, 0], rotate: [0, 5, 0] }}
                      transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
                      className="absolute top-0 right-[350px] bg-teal-50 text-teal-600 p-6 rounded-2xl shadow-lg border border-white rotate-[-12deg] z-10"
                   >
                      <FaBeer size={32} />
-                  </motion.div>
+                  </m.div>
 
-                  <motion.div
+                  <m.div
                      animate={{ y: [0, 20, 0] }}
                      transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
                      className="absolute bottom-20 -left-4 bg-white p-5 rounded-3xl shadow-xl border border-slate-100 flex items-center gap-3 rotate-[5deg] z-30"
@@ -148,7 +148,7 @@ export default function GermanyClient() {
                         <FaPassport size={20} />
                      </div>
                      <p className="font-bold text-slate-800 text-xs uppercase tracking-widest">Visa Support</p>
-                  </motion.div>
+                  </m.div>
                </div>
             </div>
          </section>
@@ -156,7 +156,7 @@ export default function GermanyClient() {
          <section className="py-24 px-6 bg-white relative">
             <div className="max-w-6xl mx-auto">
                <div className="grid lg:grid-cols-2 gap-20 items-center">
-                  <motion.div
+                  <m.div
                      initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} viewport={{ once: true }}
                      className="bg-[#F0FDFA] border border-teal-50 p-10 rounded-[3rem] relative overflow-hidden shadow-sm"
                   >
@@ -176,7 +176,7 @@ export default function GermanyClient() {
                            </div>
                         ))}
                      </div>
-                  </motion.div>
+                  </m.div>
 
                   <div className="space-y-8">
                      <h3 className="text-4xl font-black text-slate-900 leading-tight">
@@ -206,7 +206,7 @@ export default function GermanyClient() {
 
                <div className="grid md:grid-cols-3 gap-8">
                   {programs.map((prog, i) => (
-                     <motion.div
+                     <m.div
                         key={i} whileHover={{ y: -12 }} transition={{ type: "spring", stiffness: 300 }}
                         className={`bg-white p-8 rounded-[2.5rem] shadow-[0_15px_50px_-15px_rgba(0,0,0,0.05)] border-2 border-white hover:border-[#00C1B6] flex flex-col justify-between h-full relative group transition-all`}
                      >
@@ -222,7 +222,7 @@ export default function GermanyClient() {
                            <p className="flex items-center gap-2 text-xs font-bold text-slate-800"><Clock size={14} className="text-[#00C896]" /> {t(`programs.list.${i}.duration`)}</p>
                            <p className="flex items-center gap-2 text-xs font-bold text-slate-800"><FaCheckCircle size={14} className="text-[#E31B23]" /> {t(`programs.list.${i}.age`)}</p>
                         </div>
-                     </motion.div>
+                     </m.div>
                   ))}
                </div>
             </div>

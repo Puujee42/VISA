@@ -11,7 +11,7 @@ import {
    ArrowRight,
    Loader2
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useTranslations, useLocale } from "next-intl";
 
 // --- TYPES ---
@@ -72,30 +72,30 @@ export default function LessonsClient() {
             <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-emerald-50 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/4 pointer-events-none" />
 
             <div className="max-w-7xl mx-auto relative z-10 text-center">
-               <motion.div
+               <m.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-red-50 text-red-600 shadow-sm mb-6"
                >
                   <BookOpen size={16} />
                   <span className="text-xs font-black uppercase tracking-widest">{t("badge")}</span>
-               </motion.div>
-               <motion.h1
+               </m.div>
+               <m.h1
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
                   className="text-5xl md:text-7xl font-black text-slate-900 mb-6 tracking-tighter"
                >
                   {t("heroTitle")} <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-emerald-600">{t("heroTitleHighlight")}</span>
-               </motion.h1>
-               <motion.p
+               </m.h1>
+               <m.p
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
                   className="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto font-medium"
                >
                   {t("heroDesc")}
-               </motion.p>
+               </m.p>
             </div>
          </section>
 
@@ -108,7 +108,7 @@ export default function LessonsClient() {
                         const titleText = lesson.title[locale] || lesson.title["en"];
                         const descText = lesson.description[locale] || lesson.description["en"];
                         return (
-                           <motion.div
+                           <m.div
                               key={lesson._id}
                               initial={{ opacity: 0, y: 20 }}
                               animate={{ opacity: 1, y: 0 }}
@@ -171,7 +171,7 @@ export default function LessonsClient() {
                                     </Link>
                                  </div>
                               </div>
-                           </motion.div>
+                           </m.div>
                         );
                      })}
                   </div>

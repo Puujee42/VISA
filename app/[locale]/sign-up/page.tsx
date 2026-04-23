@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useSignUp } from "@clerk/nextjs";
 import {
    ChevronLeft,
@@ -103,7 +103,7 @@ export default function AuPairRegisterPage() {
             {/* Subtle Background Pattern */}
             <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px] opacity-50 -z-10" />
 
-            <motion.div
+            <m.div
                initial={{ opacity: 0, x: -30 }}
                animate={{ opacity: 1, x: 0 }}
                transition={{ duration: 0.6, ease: "easeOut" }}
@@ -122,7 +122,7 @@ export default function AuPairRegisterPage() {
 
                {/* Header */}
                <div className="mb-10 relative">
-                  <motion.div
+                  <m.div
                      initial={{ scale: 0 }} animate={{ scale: 1 }}
                      className="absolute -top-10 -left-10 w-24 h-24 bg-red-100 rounded-full blur-3xl opacity-50"
                   />
@@ -186,9 +186,9 @@ export default function AuPairRegisterPage() {
 
                   {/* ERROR MSG */}
                   {error && (
-                     <motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="text-red-500 text-[11px] font-black uppercase tracking-wider bg-red-50 p-4 rounded-2xl border border-red-100 text-center">
+                     <m.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="text-red-500 text-[11px] font-black uppercase tracking-wider bg-red-50 p-4 rounded-2xl border border-red-100 text-center">
                         {error}
-                     </motion.p>
+                     </m.p>
                   )}
 
                   {/* SUBMIT BUTTON */}
@@ -215,7 +215,7 @@ export default function AuPairRegisterPage() {
                   </p>
                </div>
 
-            </motion.div>
+            </m.div>
          </div>
 
          {/* ─── RIGHT: VISUAL SECTION (50%) ─── */}
@@ -223,12 +223,12 @@ export default function AuPairRegisterPage() {
 
             {/* Animated Gradients */}
             <div className="absolute inset-0 w-full h-full">
-               <motion.div
+               <m.div
                   animate={{ scale: [1, 1.1, 1], x: [0, 20, 0] }}
                   transition={{ duration: 10, repeat: Infinity }}
                   className="absolute top-[-10%] right-[-10%] w-[700px] h-[700px] bg-red-200 rounded-full blur-[100px] opacity-40"
                />
-               <motion.div
+               <m.div
                   animate={{ scale: [1, 1.2, 1], x: [0, -20, 0] }}
                   transition={{ duration: 15, repeat: Infinity }}
                   className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-emerald-200 rounded-full blur-[100px] opacity-40"

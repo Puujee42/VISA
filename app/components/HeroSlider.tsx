@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "@/navigation";
 import Image from "next/image";
-import { AnimatePresence, Variants } from "framer-motion";
+import { AnimatePresence, m, Variants } from "framer-motion";
 import { Motion as motion } from "./MotionProxy";
 import {
   FaMapMarkerAlt,
@@ -154,7 +154,7 @@ const HeroSlider = () => {
         {/* LEFT COLUMN: Text Content */}
         <div className="lg:col-span-8 pt-24 pb-20 lg:pt-0 lg:pb-0">
           <AnimatePresence mode="wait">
-            <motion.div
+            <m.div
               key={activeSlide.id}
               variants={containerVariants}
               initial="hidden"
@@ -163,7 +163,7 @@ const HeroSlider = () => {
               className="max-w-4xl text-left"
             >
               {/* Floating Badges */}
-              <motion.div
+              <m.div
                 variants={textVariants}
                 className="flex flex-wrap items-center gap-3 mb-8"
               >
@@ -178,10 +178,10 @@ const HeroSlider = () => {
                   <FaUserCheck size={14} />
                   {t("verified")}
                 </span>
-              </motion.div>
+              </m.div>
 
               {/* Headline */}
-              <motion.h1
+              <m.h1
                 variants={textVariants}
                 className="text-[40px] sm:text-[48px] md:text-[64px] font-bold leading-[1.05] tracking-tight mb-5 md:mb-8 drop-shadow-lg text-slate-50"
               >
@@ -196,10 +196,10 @@ const HeroSlider = () => {
                     )}
                   </span>
                 ))}
-              </motion.h1>
+              </m.h1>
 
               {/* Description with Vertical Accent Line */}
-              <motion.div
+              <m.div
                 variants={textVariants}
                 className="flex gap-6 mb-10 pl-2"
               >
@@ -207,10 +207,10 @@ const HeroSlider = () => {
                 <p className="text-lg md:text-xl text-slate-300 max-w-xl leading-relaxed font-medium">
                   {activeSlide.desc}
                 </p>
-              </motion.div>
+              </m.div>
 
               {/* Metadata Stats */}
-              <motion.div
+              <m.div
                 variants={textVariants}
                 className="flex items-center gap-8 mb-10 text-sm font-bold text-slate-300"
               >
@@ -227,12 +227,12 @@ const HeroSlider = () => {
                   </div>
                   <span>{activeSlide.location}</span>
                 </div>
-              </motion.div>
+              </m.div>
 
               {/* CTA Button */}
-              <motion.div variants={textVariants}>
+              <m.div variants={textVariants}>
                 <Link href={activeSlide.path}>
-                  <motion.button
+                  <m.button
                     whileHover={{
                       scale: 1.02,
                       boxShadow: "0 20px 40px -10px rgba(227, 27, 35, 0.4)",
@@ -247,10 +247,10 @@ const HeroSlider = () => {
 
                     {/* Shine Effect */}
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-[100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
-                  </motion.button>
+                  </m.button>
                 </Link>
-              </motion.div>
-            </motion.div>
+              </m.div>
+            </m.div>
           </AnimatePresence>
         </div>
 
@@ -279,7 +279,7 @@ const HeroSlider = () => {
                   {/* Vertical Progress Bar */}
                   <div className="relative w-[6px] h-[80px] rounded-full overflow-hidden transition-all duration-500 bg-slate-800 shrink-0">
                     {isActive && (
-                      <motion.div
+                      <m.div
                         layoutId="activeGlow"
                         className="absolute top-0 left-0 w-full bg-gradient-to-b from-[#00C896] to-[#E31B23]"
                         initial={{ height: "0%" }}

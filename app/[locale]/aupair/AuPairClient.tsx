@@ -4,7 +4,7 @@ import React, { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
-   motion,
+   m,
    useScroll,
    useTransform,
    useSpring,
@@ -82,12 +82,12 @@ export default function AuPairPage() {
 
          {/* ─── 1. ATMOSPHERIC BACKGROUND ─── */}
          <div className="fixed inset-0 pointer-events-none z-0">
-            <motion.div
+            <m.div
                animate={{ scale: [1, 1.2, 1], rotate: [0, 45, 0] }}
                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                className="absolute top-[-10%] right-[-5%] w-[800px] h-[800px] bg-gradient-to-br from-emerald-100/50 to-transparent rounded-full blur-[100px]"
             />
-            <motion.div
+            <m.div
                animate={{ scale: [1, 1.3, 1], x: [0, -50, 0] }}
                transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
                className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-gradient-to-tr from-rose-100/60 to-transparent rounded-full blur-[100px]"
@@ -98,42 +98,42 @@ export default function AuPairPage() {
          {/* ─── 2. HERO SECTION ─── */}
          <section className="relative z-10 pt-40 pb-20 px-6">
             <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
-               <motion.div
+               <m.div
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true }}
                   variants={containerVar}
                   className="space-y-8"
                >
-                  <motion.div variants={fadeUp} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-emerald-100 shadow-sm">
+                  <m.div variants={fadeUp} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-emerald-100 shadow-sm">
                      <div className="w-2 h-2 bg-[#D93644] rounded-full animate-pulse" />
                      <span className="text-xs font-black uppercase tracking-widest text-emerald-800">{t("cultureExchange")}</span>
-                  </motion.div>
+                  </m.div>
 
-                  <motion.h1 variants={fadeUp} className="text-6xl md:text-8xl font-black leading-[0.9] tracking-tighter text-slate-900">
+                  <m.h1 variants={fadeUp} className="text-6xl md:text-8xl font-black leading-[0.9] tracking-tighter text-slate-900">
                      <span className="block">{t("heroTitlePrefix")}</span>
                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-[#10B981] to-[#D93644]">
                         {t("heroTitleHighlight")}
                      </span>
-                  </motion.h1>
+                  </m.h1>
 
-                  <motion.p variants={fadeUp} className="text-xl text-slate-600 font-medium leading-relaxed max-w-lg border-l-4 border-[#D93644] pl-6">
+                  <m.p variants={fadeUp} className="text-xl text-slate-600 font-medium leading-relaxed max-w-lg border-l-4 border-[#D93644] pl-6">
                      {t("heroSub")}
-                  </motion.p>
+                  </m.p>
 
-                  <motion.div variants={fadeUp} className="flex flex-wrap gap-4 pt-4">
+                  <m.div variants={fadeUp} className="flex flex-wrap gap-4 pt-4">
                      <button className="px-8 py-4 rounded-full bg-[#D93644] text-white font-bold text-sm uppercase tracking-widest shadow-lg shadow-rose-500/30 hover:bg-rose-600 hover:scale-105 transition-all">
                         {t("cta")}
                      </button>
                      <button className="px-8 py-4 rounded-full bg-white text-slate-800 border border-slate-200 font-bold text-sm uppercase tracking-widest hover:border-emerald-400 hover:text-emerald-600 transition-all">
                         {t("more")}
                      </button>
-                  </motion.div>
-               </motion.div>
+                  </m.div>
+               </m.div>
 
                {/* Hero Visual */}
                <div className="relative h-[600px] hidden lg:block perspective-1000">
-                  <motion.div style={{ y: yHero, rotate: rotateHero }} className="absolute inset-0 z-10">
+                  <m.div style={{ y: yHero, rotate: rotateHero }} className="absolute inset-0 z-10">
                      <div className="relative w-full h-full rounded-[3rem] overflow-hidden border-[8px] border-white shadow-2xl bg-slate-100">
                         <Image
                            src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80"
@@ -146,7 +146,7 @@ export default function AuPairPage() {
                            <p className="text-sm opacity-80">Au Pair = {t("whatIsEqualRights")}</p>
                         </div>
                      </div>
-                  </motion.div>
+                  </m.div>
 
                   {/* Decorative Circle */}
                   <div className="absolute -top-10 -right-10 w-64 h-64 bg-emerald-400 rounded-full blur-[80px] opacity-40 z-0" />
@@ -174,7 +174,7 @@ export default function AuPairPage() {
             <div className="max-w-7xl mx-auto">
                <div className="grid lg:grid-cols-2 gap-20">
                   {/* Left: Definition */}
-                  <motion.div
+                  <m.div
                      initial={{ opacity: 0, x: -50 }}
                      whileInView={{ opacity: 1, x: 0 }}
                      viewport={{ once: true }}
@@ -192,10 +192,10 @@ export default function AuPairPage() {
                            {t("whatIsBox")}
                         </p>
                      </div>
-                  </motion.div>
+                  </m.div>
 
                   {/* Right: History */}
-                  <motion.div
+                  <m.div
                      initial={{ opacity: 0, x: 50 }}
                      whileInView={{ opacity: 1, x: 0 }}
                      viewport={{ once: true }}
@@ -217,7 +217,7 @@ export default function AuPairPage() {
                      <Link href="/register" className="inline-flex items-center gap-2 mt-8 text-[#D93644] font-bold uppercase tracking-widest text-xs hover:gap-4 transition-all">
                         {t("register")} <ArrowRight size={16} />
                      </Link>
-                  </motion.div>
+                  </m.div>
                </div>
             </div>
          </section>
@@ -248,7 +248,7 @@ export default function AuPairPage() {
                   <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-emerald-200 via-rose-200 to-transparent rounded-full -ml-0.5 md:ml-0" />
 
                   {steps.map((step, i) => (
-                     <motion.div
+                     <m.div
                         key={i}
                         initial={{ opacity: 0, y: 50 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -267,7 +267,7 @@ export default function AuPairPage() {
                            </div>
                         </div>
                         <div className="hidden md:block w-1/2" />
-                     </motion.div>
+                     </m.div>
                   ))}
                </div>
             </div>
@@ -353,7 +353,7 @@ const TiltCard = ({ icon: Icon, title, desc, index }: { icon: any, title: string
    const isEmerald = index % 2 === 0;
 
    return (
-      <motion.div
+      <m.div
          ref={ref}
          onMouseMove={handleMouseMove}
          onMouseLeave={handleMouseLeave}
@@ -365,7 +365,7 @@ const TiltCard = ({ icon: Icon, title, desc, index }: { icon: any, title: string
          className={`group relative min-h-[220px] p-8 rounded-[2.5rem] bg-white border border-slate-100 shadow-xl cursor-pointer perspective-1000 overflow-hidden
         ${isEmerald ? "hover:border-emerald-200" : "hover:border-red-200"}`}
       >
-         <motion.div
+         <m.div
             style={{ background: useMotionTemplate`radial-gradient(circle at ${glareX} ${glareY}, rgba(255,255,255,0.8), transparent 50%)` }}
             className="absolute inset-0 rounded-[2.5rem] opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300 z-20 mix-blend-overlay"
          />
@@ -380,6 +380,6 @@ const TiltCard = ({ icon: Icon, title, desc, index }: { icon: any, title: string
             <h3 className="text-xl font-black text-slate-900 mb-2 group-hover:translate-x-1 transition-transform">{title}</h3>
             <p className="text-sm text-slate-500 font-medium leading-relaxed">{desc}</p>
          </div>
-      </motion.div>
+      </m.div>
    );
 };

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
 import { ArrowUpRight, ShoppingBag, Loader2, Info, QrCode } from "lucide-react";
 
@@ -73,7 +73,7 @@ const ProductCard = ({
   const desc = item.description?.[locale] || item.description?.en || "";
 
   return (
-    <motion.div
+    <m.div
       layout
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -144,7 +144,7 @@ const ProductCard = ({
           </Link>
         </div>
       </div>
-    </motion.div>
+    </m.div>
   );
 };
 
@@ -189,7 +189,7 @@ export default function ShopClient({
         {/* Header */}
         <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-10 mb-16">
           <div className="space-y-4">
-            <motion.h2
+            <m.h2
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className={`text-4xl sm:text-6xl font-black tracking-tighter leading-[0.9] ${isDark ? "text-white" : "text-slate-900"}`}
@@ -197,7 +197,7 @@ export default function ShopClient({
               {T.shopTitle[locale as keyof typeof T.shopTitle] ||
                 T.shopTitle.en}
               <span style={{ color: BRAND.GREEN }}>.</span>
-            </motion.h2>
+            </m.h2>
             <p
               className={`text-sm tracking-wide font-medium max-w-xl ${isDark ? "text-slate-400" : "text-slate-600"}`}
             >
@@ -206,7 +206,7 @@ export default function ShopClient({
           </div>
 
           {/* QPay Badge */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             className={`inline-flex items-center gap-2 px-3 py-2 rounded-full border text-[10px] font-black uppercase tracking-widest w-fit
@@ -220,10 +220,10 @@ export default function ShopClient({
               <QrCode size={12} />
             </span>
             QPay accepted
-          </motion.div>
+          </m.div>
 
           {/* Categories Filter */}
-          <motion.div className="flex overflow-x-auto pb-2 gap-2 scrollbar-hide">
+          <m.div className="flex overflow-x-auto pb-2 gap-2 scrollbar-hide">
             {categories.map((cat: string) => {
               const isActive = filter === cat;
               return (
@@ -248,13 +248,13 @@ export default function ShopClient({
                 </button>
               );
             })}
-          </motion.div>
+          </m.div>
         </div>
 
         {/* Product Grid */}
         <div className="min-h-[500px]">
           {filteredItems.length > 0 ? (
-            <motion.div
+            <m.div
               layout
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
             >
@@ -268,7 +268,7 @@ export default function ShopClient({
                   />
                 ))}
               </AnimatePresence>
-            </motion.div>
+            </m.div>
           ) : (
             <div
               className={`flex flex-col items-center justify-center py-32 rounded-[3rem] border-2 border-dashed ${isDark ? "border-white/10 bg-slate-900/50" : "border-slate-300 bg-slate-50/50"}`}

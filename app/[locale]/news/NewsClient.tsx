@@ -11,7 +11,7 @@ import {
    User,
    Loader2
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { useTranslations, useLocale } from "next-intl";
 
 // --- TYPES ---
@@ -74,26 +74,26 @@ export default function NewsClient() {
 
             <div className="max-w-7xl mx-auto relative z-10">
                <div className="text-center mb-16">
-                  <motion.div
+                  <m.div
                      initial={{ opacity: 0, y: 20 }}
                      animate={{ opacity: 1, y: 0 }}
                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-red-50 text-red-600 shadow-sm mb-6"
                   >
                      <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
                      <span className="text-xs font-bold uppercase tracking-widest">{t("badge")}</span>
-                  </motion.div>
-                  <motion.h1
+                  </m.div>
+                  <m.h1
                      initial={{ opacity: 0, y: 20 }}
                      animate={{ opacity: 1, y: 0 }}
                      transition={{ delay: 0.1 }}
                      className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter"
                   >
                      {t("heroTitle")} <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-emerald-600">{t("heroTitleHighlight")}</span>
-                  </motion.h1>
+                  </m.h1>
                </div>
 
                {featuredPost && (
-                  <motion.div
+                  <m.div
                      initial={{ opacity: 0, scale: 0.95 }}
                      animate={{ opacity: 1, scale: 1 }}
                      transition={{ delay: 0.2 }}
@@ -120,7 +120,7 @@ export default function NewsClient() {
                            {t("featured")} <ArrowRight className="group-hover/btn:translate-x-1 transition-transform" />
                         </Link>
                      </div>
-                  </motion.div>
+                  </m.div>
                )}
             </div>
          </section>
@@ -149,7 +149,7 @@ export default function NewsClient() {
                         const titleText = post.title?.[locale] || post.title?.["en"] || "";
                         const excerptText = post.summary?.[locale] || post.summary?.["en"] || "";
                         return (
-                           <motion.article
+                           <m.article
                               key={post._id}
                               initial={{ opacity: 0, y: 20 }}
                               animate={{ opacity: 1, y: 0 }}
@@ -185,7 +185,7 @@ export default function NewsClient() {
                                     {t("readMore")} <ArrowRight size={14} />
                                  </Link>
                               </div>
-                           </motion.article>
+                           </m.article>
                         );
                      })}
                   </AnimatePresence>

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import {
   CheckCircle2,
   XCircle,
@@ -238,7 +238,7 @@ export default function QPayModal({
 
   return (
     <AnimatePresence>
-      <motion.div
+      <m.div
         key="qpay-modal-overlay"
         className="fixed inset-0 z-[1200] flex items-center justify-center p-4 sm:p-6"
         initial={{ opacity: 0 }}
@@ -250,7 +250,7 @@ export default function QPayModal({
           onClick={onClose}
         />
 
-        <motion.div
+        <m.div
           key="qpay-modal-content"
           initial={{ opacity: 0, y: 20, scale: 0.97 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -396,8 +396,8 @@ export default function QPayModal({
               </button>
             </div>
           </div>
-        </motion.div>
-      </motion.div>
+        </m.div>
+      </m.div>
     </AnimatePresence>
   );
 }

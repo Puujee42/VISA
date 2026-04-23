@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Link } from "@/navigation";
-import { AnimatePresence, Variants } from "framer-motion";
+import { AnimatePresence, m, Variants } from "framer-motion";
 import { Motion as motion } from "./MotionProxy";
 import Image from "next/image";
 import {
@@ -182,7 +182,7 @@ const HeroSection = () => {
   return (
     <section className="relative w-full min-h-[95vh] flex items-center bg-slate-50 overflow-hidden py-24 lg:py-0">
       <div className="absolute inset-0 z-0">
-        <motion.div
+        <m.div
           animate={{ backgroundColor: active.colors.secondary }}
           transition={{ duration: 1 }}
           className="absolute inset-0"
@@ -190,7 +190,7 @@ const HeroSection = () => {
         <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-soft-light" />
         {mounted && !isMobile && (
           <>
-            <motion.div
+            <m.div
               animate={{
                 backgroundColor: active.colors.primary,
                 x: [0, 100, -100, 0],
@@ -199,7 +199,7 @@ const HeroSection = () => {
               transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
               className="absolute -top-[20%] -right-[10%] w-[600px] h-[600px] rounded-full blur-[80px] opacity-20 mix-blend-multiply"
             />
-            <motion.div
+            <m.div
               animate={{ backgroundColor: active.colors.primary }}
               className="absolute -bottom-[20%] -left-[10%] w-[500px] h-[500px] rounded-full blur-[80px] opacity-15 mix-blend-multiply"
             />
@@ -210,7 +210,7 @@ const HeroSection = () => {
       <div className="container mx-auto px-6 relative z-10 grid lg:grid-cols-2 gap-16 h-full items-center">
         <div className="flex flex-col justify-center order-2 lg:order-1">
           <AnimatePresence mode="wait">
-            <motion.div
+            <m.div
               key={index}
               variants={textContainerVariant}
               initial="hidden"
@@ -218,7 +218,7 @@ const HeroSection = () => {
               exit="exit"
               className="space-y-8"
             >
-              <motion.div
+              <m.div
                 variants={textItemVariant}
                 className="flex items-center gap-3"
               >
@@ -228,9 +228,9 @@ const HeroSection = () => {
                 >
                   <FaGlobeEurope /> {active.stat}
                 </span>
-              </motion.div>
+              </m.div>
 
-              <motion.div variants={textItemVariant} className="relative z-20">
+              <m.div variants={textItemVariant} className="relative z-20">
                 <h2 className="text-6xl md:text-7xl lg:text-8xl font-black text-slate-900 leading-[0.95] tracking-tight">
                   {common("explore")} <br />
                   <span
@@ -239,30 +239,30 @@ const HeroSection = () => {
                     {t(`${active.key}.title`)}
                   </span>
                 </h2>
-                <motion.div
+                <m.div
                   initial={{ width: 0 }}
                   animate={{ width: isMobile ? 80 : 120 }}
                   transition={{ delay: 0.4, duration: 0.8 }}
                   className="h-2 mt-4 rounded-full"
                   style={{ backgroundColor: active.colors.primary }}
                 />
-              </motion.div>
+              </m.div>
 
-              <motion.div variants={textItemVariant} className="max-w-xl">
+              <m.div variants={textItemVariant} className="max-w-xl">
                 <h3 className="text-xl font-bold text-slate-800 mb-2">
                   {t(`${active.key}.subtitle`)}
                 </h3>
                 <p className="text-lg text-slate-600 leading-relaxed font-medium">
                   {t(`${active.key}.desc`)}
                 </p>
-              </motion.div>
+              </m.div>
 
-              <motion.div
+              <m.div
                 variants={textItemVariant}
                 className="flex flex-wrap items-center gap-4 pt-2"
               >
                 <Link href={active.link}>
-                  <motion.button
+                  <m.button
                     whileHover={
                       !isMobile ? { scale: 1.05, paddingRight: "2.5rem" } : {}
                     }
@@ -274,7 +274,7 @@ const HeroSection = () => {
                     </span>
                     <FaArrowRight className="absolute right-6 opacity-0 group-hover:opacity-100 transition-all transform translate-x-4 group-hover:translate-x-0" />
                     <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500 ease-in-out z-0" />
-                  </motion.button>
+                  </m.button>
                 </Link>
 
                 <button className="flex items-center gap-3 px-6 py-4 rounded-full bg-white border border-slate-200 shadow-sm hover:shadow-lg transition-all text-slate-600 font-bold group">
@@ -283,9 +283,9 @@ const HeroSection = () => {
                   </div>
                   <span>{common("howItWorks")}</span>
                 </button>
-              </motion.div>
+              </m.div>
 
-              <motion.div
+              <m.div
                 variants={textItemVariant}
                 className="flex items-center gap-4 pt-6 opacity-80"
               >
@@ -299,13 +299,13 @@ const HeroSection = () => {
                 <div className="text-xs font-semibold text-slate-500">
                   {common("trusted")}
                 </div>
-              </motion.div>
-            </motion.div>
+              </m.div>
+            </m.div>
           </AnimatePresence>
         </div>
 
         <div className="relative order-1 lg:order-2 h-[500px] lg:h-[600px] flex items-center justify-center lg:justify-end perspective-[2000px]">
-          <motion.div
+          <m.div
             key={`iso-${active.iso}`}
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 0.1, x: 0 }}
@@ -315,7 +315,7 @@ const HeroSection = () => {
             style={{ color: active.colors.primary }}
           >
             {active.iso}
-          </motion.div>
+          </m.div>
 
           <div className="relative w-[320px] md:w-[380px] aspect-[3/4] z-20">
             <AnimatePresence
@@ -323,7 +323,7 @@ const HeroSection = () => {
               custom={direction}
               mode="popLayout"
             >
-              <motion.div
+              <m.div
                 key={index}
                 custom={direction}
                 variants={cardVariants}
@@ -368,7 +368,7 @@ const HeroSection = () => {
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </m.div>
             </AnimatePresence>
 
             <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 flex gap-4 z-30">
@@ -391,7 +391,7 @@ const HeroSection = () => {
           </div>
 
           {mounted && !isMobile && (
-            <motion.div
+            <m.div
               animate={{
                 rotate: [6, 8, 6],
                 backgroundColor: active.colors.secondary,

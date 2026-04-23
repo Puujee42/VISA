@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import Link from "next/link";
-import { useScroll, useTransform, Variants, useSpring } from "framer-motion";
+import { useScroll, useTransform, Variants, useSpring, m } from "framer-motion";
 import { useIsMobile, Motion as motion } from "./MotionProxy";
 import CountUp from "react-countup";
 import Image from "next/image";
@@ -35,7 +35,7 @@ const ParallaxBackground = ({ containerRef }: { containerRef: React.RefObject<an
   const yBackground = useSpring(useTransform(scrollYProgress, [0, 1], [0, 150]), springConfig);
 
   return (
-    <motion.div
+    <m.div
       style={{ y: yBackground }}
       className="absolute -top-[20%] -right-[10%] w-[1000px] h-[1000px] bg-gradient-to-b from-red-100/40 via-orange-50/20 to-transparent rounded-full blur-[100px] mix-blend-multiply"
     />
@@ -110,7 +110,7 @@ const UsSection = () => {
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
 
           {/* ────────────────── 2. LEFT: NARRATIVE CONTENT ────────────────── */}
-          <motion.div
+          <m.div
             variants={containerVar}
             initial="hidden"
             whileInView="visible"
@@ -118,21 +118,21 @@ const UsSection = () => {
             className="flex flex-col relative"
           >
             {/* Badge */}
-            <motion.div variants={textVar} className="mb-8 flex items-center gap-3">
+            <m.div variants={textVar} className="mb-8 flex items-center gap-3">
               <span className="flex items-center justify-center w-8 h-8 rounded-full bg-red-100 text-[#E31B23]">
                 <FaAward size={14} />
               </span>
               <span className="text-sm font-bold uppercase tracking-widest text-slate-500 font-sans">
                 {t("badge")}
               </span>
-            </motion.div>
+            </m.div>
 
             {/* Headline with TypeAnimation */}
-            <motion.h2 variants={textVar} className="text-4xl lg:text-6xl font-black text-slate-900 leading-[1.1] mb-8 min-h-[3.3em] lg:min-h-[2.5em]">
+            <m.h2 variants={textVar} className="text-4xl lg:text-6xl font-black text-slate-900 leading-[1.1] mb-8 min-h-[3.3em] lg:min-h-[2.5em]">
               {t("heading_pre")} <br className="hidden md:block" />
               <span className="inline-block relative">
                 {/* Highlighter Effect */}
-                <motion.span
+                <m.span
                   initial={{ scaleX: 0 }}
                   whileInView={{ scaleX: 1 }}
                   transition={{ delay: isMobile ? 0.2 : 0.5, duration: 0.8 }}
@@ -148,29 +148,29 @@ const UsSection = () => {
                 />
               </span>
               <span className="text-[#E31B23] ml-1">{t("heading_post")}</span>
-            </motion.h2>
+            </m.h2>
 
             {/* Paragraphs */}
             <div className="space-y-6 text-lg text-slate-600 leading-relaxed font-medium">
-              <motion.p variants={textVar} className="border-l-2 border-transparent hover:border-slate-300 pl-0 hover:pl-6 transition-all duration-300">
+              <m.p variants={textVar} className="border-l-2 border-transparent hover:border-slate-300 pl-0 hover:pl-6 transition-all duration-300">
                 {t("desc1")}
-              </motion.p>
-              <motion.p variants={textVar} className="border-l-2 border-transparent hover:border-slate-300 pl-0 hover:pl-6 transition-all duration-300">
+              </m.p>
+              <m.p variants={textVar} className="border-l-2 border-transparent hover:border-slate-300 pl-0 hover:pl-6 transition-all duration-300">
                 {t("desc2")}
-              </motion.p>
+              </m.p>
             </div>
 
             {/* Quote Box */}
-            <motion.div variants={textVar} className="mt-10 p-6 bg-white border border-slate-100 rounded-2xl shadow-sm relative italic text-slate-700 flex gap-4">
+            <m.div variants={textVar} className="mt-10 p-6 bg-white border border-slate-100 rounded-2xl shadow-sm relative italic text-slate-700 flex gap-4">
               <div className="text-4xl text-red-200"><FaQuoteRight /></div>
               <div>
                 <p className="relative z-10 font-semibold text-lg">"{t("quote")}"</p>
                 <p className="text-xs font-bold text-slate-600 mt-2 uppercase tracking-wide">— {t("founder")}</p>
               </div>
-            </motion.div>
+            </m.div>
 
             {/* CTA Button */}
-            <motion.div variants={textVar} className="mt-12">
+            <m.div variants={textVar} className="mt-12">
               <Link href="/contact" className="inline-block group">
                 <div className="relative overflow-hidden rounded-full px-10 py-4 bg-[#E31B23] text-white font-bold text-lg shadow-xl shadow-red-500/30 hover:shadow-2xl hover:shadow-red-500/40 transition-all duration-300 transform hover:-translate-y-1">
                   <span className="relative z-10 flex items-center gap-3">
@@ -181,14 +181,14 @@ const UsSection = () => {
                   <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500 ease-in-out" />
                 </div>
               </Link>
-            </motion.div>
-          </motion.div>
+            </m.div>
+          </m.div>
 
           {/* ────────────────── 3. RIGHT: VISUAL COMPOSITION ────────────────── */}
           <div className="relative h-full flex items-center justify-center lg:pt-12 perspective-[1000px]">
 
             {/* Main Image Layer */}
-            <motion.div
+            <m.div
               style={isMobile ? {} : { rotate: rotateImage, y: yImage }}
               initial={{ opacity: 0, y: 50, rotate: -2 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -218,7 +218,7 @@ const UsSection = () => {
               </div>
 
               {/* Floating Glass Element - Stats/Experience */}
-              <motion.div
+              <m.div
                 animate={isMobile ? {} : { y: [0, -15, 0] }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
                 className="absolute -bottom-8 -right-8 md:-right-12 bg-white/90 backdrop-blur-md p-6 rounded-[1.5rem] shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] border border-white/60 max-w-[240px]"
@@ -232,10 +232,10 @@ const UsSection = () => {
                 <p className="text-sm text-slate-600 font-semibold leading-snug">
                   Recognized by international Au Pair associations for safety & quality.
                 </p>
-              </motion.div>
+              </m.div>
 
               {/* Floating Decorative Stamp (Spinning Text) */}
-              <motion.div
+              <m.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: isMobile ? 60 : 25, repeat: Infinity, ease: "linear" }}
                 className="absolute -top-10 -left-10 w-32 h-32 bg-[#E31B23] rounded-full flex items-center justify-center shadow-xl shadow-red-500/30 border-4 border-white z-20"
@@ -252,14 +252,14 @@ const UsSection = () => {
                   </svg>
                 </div>
                 <div className="font-black text-3xl text-white">20</div>
-              </motion.div>
+              </m.div>
 
-            </motion.div>
+            </m.div>
           </div>
         </div>
 
         {/* ────────────────── 4. STATS BAR ────────────────── */}
-        <motion.div
+        <m.div
           variants={{
             hidden: { opacity: 0 },
             visible: { opacity: 1, transition: { staggerChildren: isMobile ? 0.05 : 0.1, delayChildren: 0.2 } }
@@ -270,7 +270,7 @@ const UsSection = () => {
           className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-6"
         >
           {stats.map((stat: any, idx: number) => (
-            <motion.div
+            <m.div
               key={stat.id}
               variants={cardVar}
               whileHover={!isMobile ? { y: -8 } : {}}
@@ -290,9 +290,9 @@ const UsSection = () => {
               <p className="text-xs font-bold text-slate-600 uppercase tracking-widest group-hover:text-slate-800 transition-colors">
                 {stat.label}
               </p>
-            </motion.div>
+            </m.div>
           ))}
-        </motion.div>
+        </m.div>
 
       </div>
     </section>
