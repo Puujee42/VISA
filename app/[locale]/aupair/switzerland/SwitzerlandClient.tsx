@@ -72,7 +72,7 @@ export default function SwitzerlandClient() {
    return (
       <div ref={containerRef} className="min-h-[100dvh] bg-white text-slate-800 font-sans selection:bg-red-500 selection:text-white overflow-hidden">
 
-         <section className="relative pt-32 pb-24 lg:pt-48 lg:pb-32 px-6 overflow-hidden">
+         <section className="relative pt-32 pb-24 lg:pt-48 lg:pb-32 px-6 overflow-hidden" aria-labelledby="swiss-hero-title">
             <div className="absolute inset-0 bg-[radial-gradient(#d1d5db_1px,transparent_1px)] [background-size:32px_32px] opacity-30 pointer-events-none" />
             <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-gradient-to-b from-red-100 to-transparent rounded-full blur-[100px] opacity-80" />
             <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-gradient-to-t from-emerald-100 to-transparent rounded-full blur-[100px] opacity-80" />
@@ -112,7 +112,7 @@ export default function SwitzerlandClient() {
                <div className="relative h-[600px] hidden lg:block perspective-1000">
                   <m.div style={{ y: yHero, rotateY: -10, rotateX: 5 }} className="absolute right-8 top-8 w-[420px] h-[550px] bg-white p-4 rounded-[2rem] shadow-2xl border border-red-100 z-20">
                      <div className="relative w-full h-full rounded-[1.5rem] overflow-hidden">
-                        <Image src="https://images.unsplash.com/photo-1527668752968-14dc70a27c95?auto=format&fit=crop&w=800&q=80" alt="Swiss Alps" fill className="object-cover" />
+                        <Image src="https://images.unsplash.com/photo-1527668752968-14dc70a27c95?auto=format&fit=crop&w=800&q=80" alt="Swiss Alps mountain landscape with lake — stunning nature awaiting Mongolian au pairs in Switzerland" fill className="object-cover" />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
                         <div className="absolute bottom-8 left-8 text-white">
                            <div className="flex items-center gap-2 mb-2 text-emerald-300">
@@ -127,13 +127,13 @@ export default function SwitzerlandClient() {
             </div>
          </section>
 
-         <section className="py-24 px-6 bg-white relative">
+         <section className="py-24 px-6 bg-white relative" aria-labelledby="swiss-info-title">
             <div className="max-w-7xl mx-auto">
                <div className="grid lg:grid-cols-2 gap-20 items-center mb-20">
                   <m.div initial="hidden" whileInView="visible" variants={containerVar} viewport={{ once: true }}>
                      <div className="flex items-center gap-3 mb-6">
                         <div className="w-12 h-12 rounded-xl bg-red-600 flex items-center justify-center text-white text-xl shadow-lg shadow-red-200"><FaGlobeEurope /></div>
-                        <h2 className="text-4xl font-black text-slate-900">{t("info.title")}</h2>
+                        <h2 id="swiss-info-title" className="text-4xl font-black text-slate-900">{t("info.title")}</h2>
                      </div>
                      <p className="text-lg text-slate-600 leading-relaxed font-medium border-l-4 border-red-500 pl-6 mb-8 bg-red-50 py-4 rounded-r-xl">{t("info.desc")}</p>
                      <div className="grid grid-cols-3 gap-4">
@@ -169,10 +169,10 @@ export default function SwitzerlandClient() {
             </div>
          </section>
 
-         <section className="py-24 bg-gradient-to-br from-emerald-500 to-emerald-600 text-white relative overflow-hidden">
+         <section className="py-24 bg-gradient-to-br from-emerald-500 to-emerald-600 text-white relative overflow-hidden" aria-labelledby="swiss-contract-title">
             <div className="max-w-7xl mx-auto px-6 relative z-10">
                <div className="text-center mb-16">
-                  <h2 className="text-4xl md:text-5xl font-black mb-6">{t("contract.title_pre")} <span className="text-emerald-100">{t("contract.title_post")}</span></h2>
+                  <h2 id="swiss-contract-title" className="text-4xl md:text-5xl font-black mb-6">{t("contract.title_pre")} <span className="text-emerald-100">{t("contract.title_post")}</span></h2>
                   <p className="text-white/80 font-medium">{t("contract.desc")}</p>
                </div>
                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">

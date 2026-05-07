@@ -58,7 +58,7 @@ export default function AustriaClient() {
    return (
       <div ref={containerRef} className="min-h-[100dvh] bg-white text-slate-800 font-sans selection:bg-[#E3002D] selection:text-white overflow-hidden">
 
-         <section className="relative pt-32 pb-24 lg:pt-48 lg:pb-32 px-6 overflow-hidden">
+         <section className="relative pt-32 pb-24 lg:pt-48 lg:pb-32 px-6 overflow-hidden" aria-labelledby="austria-hero-title">
             <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:20px_20px] opacity-60 pointer-events-none" />
             <div className="absolute top-20 right-[-10%] w-[600px] h-[600px] bg-gradient-to-br from-[#FFD100] via-[#FDE047] to-transparent rounded-full blur-[100px] opacity-40 mix-blend-multiply" />
             <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-gradient-to-tr from-[#E3002D] via-rose-300 to-transparent rounded-full blur-[100px] opacity-30 mix-blend-multiply" />
@@ -71,7 +71,7 @@ export default function AustriaClient() {
                      <span className="text-xs font-black uppercase tracking-widest ml-1">{t("hero.tag")}</span>
                   </m.div>
 
-                  <m.h1 variants={itemVar} className="text-6xl md:text-8xl font-black leading-[0.95] tracking-tight text-slate-900">
+                  <m.h1 id="austria-hero-title" variants={itemVar} className="text-6xl md:text-8xl font-black leading-[0.95] tracking-tight text-slate-900">
                      <span className="block text-slate-800">{t("hero.title")}</span>
                      <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#E3002D] via-orange-500 to-yellow-500">
                         {t("hero.highlight")}
@@ -101,7 +101,7 @@ export default function AustriaClient() {
                <div className="relative h-[600px] hidden lg:block perspective-1000">
                   <m.div style={{ y: yHero, rotateY: -12, rotateX: 6 }} className="absolute right-8 top-8 w-[420px] h-[550px] bg-white p-3 rounded-[3rem] shadow-2xl border-[6px] border-white z-20">
                      <div className="relative w-full h-full rounded-[2.5rem] overflow-hidden bg-slate-100">
-                        <Image src="https://www.worldatlas.com/r/w1200/upload/33/28/b8/shutterstock-1046467867.jpg" alt="Vienna" fill className="object-cover" />
+                        <Image src="https://www.worldatlas.com/r/w1200/upload/33/28/b8/shutterstock-1046467867.jpg" alt="Historic architecture in Vienna, Austria — top destination for Mongolian au pairs in Europe" fill className="object-cover" />
                         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/50" />
                         <div className="absolute bottom-8 left-8 text-white">
                            <p className="font-serif italic text-lg opacity-90">Explore</p>
@@ -136,7 +136,7 @@ export default function AustriaClient() {
             </div>
          </section>
 
-         <section className="py-24 px-6 bg-white relative">
+         <section className="py-24 px-6 bg-white relative" aria-labelledby="austria-info-title">
             <div className="max-w-6xl mx-auto">
                <div className="grid lg:grid-cols-2 gap-20 items-center">
                   <m.div
@@ -148,7 +148,7 @@ export default function AustriaClient() {
                         <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center text-2xl shadow-sm text-[#E3002D]">
                            <FaGlobeEurope />
                         </div>
-                        <h2 className="text-3xl font-black text-slate-900">{t("info.title")}</h2>
+                        <h2 id="austria-info-title" className="text-3xl font-black text-slate-900">{t("info.title")}</h2>
                      </div>
                      <p className="text-slate-600 leading-relaxed mb-8">{t("info.desc")}</p>
                      <div className="grid grid-cols-3 gap-6">
@@ -184,10 +184,10 @@ export default function AustriaClient() {
             </div>
          </section>
 
-         <section className="py-24 bg-white relative">
+         <section className="py-24 bg-white relative" aria-labelledby="austria-contract-title">
             <div className="max-w-7xl mx-auto px-6">
                <div className="text-center mb-16">
-                  <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6">{t("contract.title_pre")} <span className="text-[#00C1B6]">{t("contract.title_post")}</span></h2>
+                  <h2 id="austria-contract-title" className="text-4xl md:text-5xl font-black text-slate-900 mb-6">{t("contract.title_pre")} <span className="text-[#00C1B6]">{t("contract.title_post")}</span></h2>
                   <p className="text-slate-500 font-medium">{t("contract.desc")}</p>
                </div>
 

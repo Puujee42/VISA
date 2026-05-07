@@ -1,8 +1,9 @@
 {
   "HomePage": {
     "metadata": {
-      "title": "Mongolian Au Pair | Gateway to Europe",
-      "description": "Connecting Mongolian youth with international Au Pair opportunities in Germany, Austria, Switzerland, and Belgium since 2005."
+      "title": "Mongolian Au Pair — Gateway to Europe | Cultural Exchange Since 2005",
+      "description": "Mongolia's leading au pair agency connecting youth with host families in Germany, Austria, Switzerland, Belgium & France. 3000+ successful placements. IAPA member. Start your European adventure today.",
+      "keywords": "Mongolian au pair, au pair Mongolia, cultural exchange Europe, host family Europe, au pair agency Mongolia, IAPA member"
     }
   },
   "common": {
@@ -40,8 +41,8 @@
   },
   "EventsPage": {
     "metadata": {
-      "title": "Events | Mongolian Au Pair",
-      "description": "Discover upcoming events, workshops, and language clubs."
+      "title": "Events — Workshops, Language Clubs & Au Pair Meetups",
+      "description": "Discover upcoming au pair events, German language workshops, cultural exchange meetups, and information sessions. Join the Mongolian Au Pair community!"
     },
     "upcoming": "Upcoming Events 2025",
     "heroTitle": "Grow",
@@ -138,8 +139,8 @@
   },
   "NewsPage": {
     "metadata": {
-      "title": "News & Blog | Mongolian Au Pair",
-      "description": "Stay updated with the latest news, tips, and stories from Europe."
+      "title": "News & Blog — Au Pair Tips, Stories & European Life Updates",
+      "description": "Stay updated with the latest au pair news, success stories from Mongolia, tips for living in Europe, language learning advice, and program announcements from Mongolian Au Pair."
     },
     "badge": "Mongolian Au Pair Blog",
     "heroTitle": "News &",
@@ -156,8 +157,8 @@
   },
   "LessonsPage": {
     "metadata": {
-      "title": "Language Lessons | Mongolian Au Pair",
-      "description": "Access exclusive language and culture lessons for Au Pairs."
+      "title": "Language Lessons — German, French & Culture Courses for Au Pairs",
+      "description": "Access exclusive online language lessons and cultural courses designed for Mongolian au pairs. Prepare for your European journey with our expert instructors."
     },
     "badge": "Au Pair Academy",
     "heroTitle": "Language",
@@ -260,8 +261,9 @@
   },
   "GermanyPage": {
     "metadata": {
-      "title": "Au Pair in Germany | Mongolian Au Pair",
-      "description": "Experience life in the heart of Europe. Master German, explore culture, and kickstart your future career."
+      "title": "Au Pair in Germany — Live, Learn & Grow in Europe's Heart",
+      "description": "Become an au pair in Germany with Mongolian Au Pair. Earn €280/month, learn German for free, live with a host family in Berlin, Munich or Hamburg. Ages 18-26. IAPA certified. Apply today!",
+      "keywords": "au pair Germany, au pair Berlin, au pair Munich, German host family, learn German abroad, au pair visa Germany"
     },
     "hero": {
       "tag": "Germany Program",
@@ -381,8 +383,9 @@
   },
   "AustriaPage": {
     "metadata": {
-      "title": "Au Pair in Austria | Mongolian Au Pair",
-      "description": "Live amidst the Alps and Viennese waltzes. Improve your German and experience European culture."
+      "title": "Au Pair in Austria — Alpine Culture & German Language",
+      "description": "Au pair program in Austria for Mongolian youth aged 18-27. Live with Viennese host families, learn German, explore the Alps. Free language courses, accommodation & meals included. Register now!",
+      "keywords": "au pair Austria, au pair Vienna, Austrian host family, learn German Austria, Alps au pair, au pair program Austria"
     },
     "hero": {
       "tag": "Austria Program",
@@ -477,8 +480,9 @@
   },
   "BelgiumPage": {
     "metadata": {
-      "title": "Au Pair in Belgium | Mongolian Au Pair",
-      "description": "Join a host family in the heart of Europe. Learn French, Dutch, or German while exploring Belgium."
+      "title": "Au Pair in Belgium — Learn 3 Languages in the Heart of Europe",
+      "description": "Au pair in Belgium — learn French, Dutch, or German while living in the EU capital. 20h/week, host family accommodation, cultural immersion in Brussels, Bruges & beyond. Apply with Mongolian Au Pair!",
+      "keywords": "au pair Belgium, au pair Brussels, learn French Belgium, learn Dutch Belgium, Belgian host family, EU capital au pair"
     },
     "hero": {
       "tag": "Live in Europe",
@@ -550,8 +554,9 @@
   },
   "SwitzerlandPage": {
     "metadata": {
-      "title": "Au Pair in Switzerland | Mongolian Au Pair",
-      "description": "High quality of life and stunning nature. Learn languages in one of the world's wealthiest countries."
+      "title": "Au Pair in Switzerland — Highest Salary, Stunning Alps & 4 Languages",
+      "description": "Au pair in Switzerland with 990 CHF/month salary — the highest in Europe! 120h free language courses, 4 weeks paid vacation, Alpine nature. Learn German, French, or Italian. IAPA certified agency.",
+      "keywords": "au pair Switzerland, au pair Zurich, au pair salary Switzerland, Swiss host family, learn German Switzerland, 990 CHF au pair"
     },
     "hero": {
       "tag": "Swiss Excellence 2025",
@@ -630,8 +635,9 @@
   },
   "FrancePage": {
     "metadata": {
-      "title": "Au Pair in France | Mongolian Au Pair",
-      "description": "Live with a host family in France, improve your French, and experience European culture in one of the world’s most iconic destinations."
+      "title": "Au Pair in France — Live in Paris, Learn French & Explore Culture",
+      "description": "Become an au pair in France with Mongolian Au Pair. Earn €350/month pocket money, live with a French host family, attend language courses. From Paris to Provence — your French adventure starts here!",
+      "keywords": "au pair France, au pair Paris, learn French abroad, French host family, au pair program France, live in France"
     },
     "hero": {
       "tag": "France Program",
@@ -729,8 +735,8 @@
   },
   "ContactPage": {
     "metadata": {
-      "title": "Contact Us | Mongolian Au Pair",
-      "description": "Get in touch with our experts for any questions about the Au Pair program or your application."
+      "title": "Contact Mongolian Au Pair — Get Expert Help for Your Au Pair Journey",
+      "description": "Contact our au pair experts at +976 7711 6906 or info@mongolianaupair.com. Visit us in Ulaanbaatar. Get answers about programs in Germany, Austria, Switzerland, Belgium & France."
     },
     "badge": "Contact Us",
     "heroTitle": "GET IN",
@@ -790,8 +796,9 @@
     "stat_iapa_years": "Years",
     "stat_iapa_member": "IAPA Member",
     "metadata": {
-      "title": "Au Pair Program | Mongolian Au Pair",
-      "description": "Comprehensive guide to the international Au Pair program. Benefits, requirements, and how to join."
+      "title": "Au Pair Programs in Europe — Germany, Austria, Switzerland, Belgium & France",
+      "description": "Explore au pair opportunities across 5 European countries. Learn languages, experience new cultures, earn pocket money, and build your international career. Apply now with Mongolia's top IAPA-certified agency.",
+      "keywords": "au pair program Europe, au pair countries, cultural exchange program, language learning abroad, au pair application"
     },
     "whatIsTitle": "What is",
     "whatIsTitleHighlight": "Au-Pair?",
@@ -846,8 +853,8 @@
   },
   "About": {
     "metadata": {
-      "title": "About Us | Mongolian Au Pair",
-      "description": "Learn about our mission to empower youth through cultural exchange and education in Europe."
+      "title": "About Mongolian Au Pair — 20+ Years Empowering Mongolian Youth",
+      "description": "Since 2005, Mongolian Au Pair has connected 3000+ young Mongolians with European host families. IAPA member, ECAPS certified. Learn about our mission, team, and cultural exchange vision."
     },
     "tag": "About Us",
     "heroTitle": "Empowering",
@@ -1305,11 +1312,31 @@
       "initialRequest": "Initial Request"
     },
     "requirements": {
-      "germany": ["Age 18-26", "Basic German (A1)", "Single"],
-      "belgium": ["Age 18-25", "English or French", "High School Diploma"],
-      "austria": ["Age 18-27", "Basic German", "Experience with kids"],
-      "switzerland": ["Age 18-25", "German/French", "Driving License"],
-      "france": ["Age 18-27", "French or English", "Childcare Experience"]
+      "germany": [
+        "Age 18-26",
+        "Basic German (A1)",
+        "Single"
+      ],
+      "belgium": [
+        "Age 18-25",
+        "English or French",
+        "High School Diploma"
+      ],
+      "austria": [
+        "Age 18-27",
+        "Basic German",
+        "Experience with kids"
+      ],
+      "switzerland": [
+        "Age 18-25",
+        "German/French",
+        "Driving License"
+      ],
+      "france": [
+        "Age 18-27",
+        "French or English",
+        "Childcare Experience"
+      ]
     },
     "steps": {
       "choose": "Choose Program",

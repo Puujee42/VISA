@@ -1,8 +1,9 @@
 {
   "HomePage": {
     "metadata": {
-      "title": "Mongolian Au Pair | Tor nach Europa",
-      "description": "Verbindet mongolische Jugendliche seit 2005 mit internationalen Au-Pair-Möglichkeiten in Deutschland, Österreich, der Schweiz und Belgien."
+      "title": "Mongolian Au Pair — Tor nach Europa | Kulturaustausch seit 2005",
+      "description": "Mongoliens führende Au-Pair-Agentur verbindet Jugendliche mit Gastfamilien in Deutschland, Österreich, der Schweiz, Belgien & Frankreich. 3000+ erfolgreiche Vermittlungen. IAPA-Mitglied.",
+      "keywords": "Au-Pair Mongolei, mongolisches Au-Pair, Kulturaustausch Europa, Gastfamilie Europa, Au-Pair-Agentur Mongolei, IAPA-Mitglied"
     }
   },
   "common": {
@@ -263,8 +264,9 @@
   },
   "GermanyPage": {
     "metadata": {
-      "title": "Au-Pair in Deutschland | Mongolian Au Pair",
-      "description": "Erleben Sie das Leben im Herzen Europas. Meistern Sie Deutsch, entdecken Sie die Kultur und starten Sie Ihre Karriere."
+      "title": "Au-Pair in Deutschland — Leben, Lernen & Wachsen im Herzen Europas",
+      "description": "Werden Sie Au-Pair in Deutschland mit Mongolian Au Pair. €280/Monat verdienen, kostenlos Deutsch lernen, bei einer Gastfamilie in Berlin, München oder Hamburg leben. Alter 18-26. IAPA-zertifiziert.",
+      "keywords": "Au-Pair Deutschland, Au-Pair Berlin, Au-Pair München, deutsche Gastfamilie, Deutsch lernen im Ausland, Au-Pair-Visum Deutschland"
     },
     "hero": {
       "tag": "Deutschland Programm",
@@ -384,8 +386,9 @@
   },
   "AustriaPage": {
     "metadata": {
-      "title": "Au-Pair in Österreich | Mongolian Au Pair",
-      "description": "Leben Sie inmitten der Alpen und Wiener Walzer. Verbessern Sie Ihr Deutsch und erleben Sie die europäische Kultur."
+      "title": "Au-Pair in Österreich — Alpine Kultur & Deutsche Sprache",
+      "description": "Au-Pair-Programm in Österreich für mongolische Jugendliche von 18-27 Jahren. Leben Sie bei Wiener Gastfamilien, lernen Sie Deutsch, erkunden Sie die Alpen. Kostenlose Sprachkurse inklusive.",
+      "keywords": "Au-Pair Österreich, Au-Pair Wien, österreichische Gastfamilie, Deutsch lernen Österreich, Alpen Au-Pair"
     },
     "hero": {
       "tag": "Österreich Programm",
@@ -480,8 +483,9 @@
   },
   "BelgiumPage": {
     "metadata": {
-      "title": "Au-Pair in Belgien | Mongolian Au Pair",
-      "description": "Werden Sie Teil einer Gastfamilie im Herzen Europas. Lernen Sie Französisch, Niederländisch oder Deutsch."
+      "title": "Au-Pair in Belgien — 3 Sprachen lernen im Herzen Europas",
+      "description": "Au-Pair in Belgien — lernen Sie Französisch, Niederländisch oder Deutsch in der EU-Hauptstadt. 20h/Woche, Gastfamilienunterkunft, kulturelle Erlebnisse in Brüssel, Brügge & darüber hinaus.",
+      "keywords": "Au-Pair Belgien, Au-Pair Brüssel, Französisch lernen Belgien, belgische Gastfamilie, EU-Hauptstadt Au-Pair"
     },
     "hero": {
       "tag": "Leben in Europa",
@@ -553,8 +557,9 @@
   },
   "SwitzerlandPage": {
     "metadata": {
-      "title": "Au-Pair in der Schweiz | Mongolian Au Pair",
-      "description": "Hohe Lebensqualität und atemberaubende Natur. Lernen Sie Sprachen in einem der reichsten Länder der Welt."
+      "title": "Au-Pair in der Schweiz — Höchstes Gehalt, Atemberaubende Alpen & 4 Sprachen",
+      "description": "Au-Pair in der Schweiz mit 990 CHF/Monat Gehalt — das höchste in Europa! 120h kostenlose Sprachkurse, 4 Wochen bezahlter Urlaub. Deutsch, Französisch oder Italienisch lernen. IAPA-zertifiziert.",
+      "keywords": "Au-Pair Schweiz, Au-Pair Zürich, Au-Pair Gehalt Schweiz, Schweizer Gastfamilie, 990 CHF Au-Pair"
     },
     "hero": {
       "tag": "Swiss Excellence 2025",
@@ -633,8 +638,9 @@
   },
   "FrancePage": {
     "metadata": {
-      "title": "Au-Pair in Frankreich | Mongolian Au Pair",
-      "description": "Lebe mit einer Gastfamilie in Frankreich, verbessere dein Französisch und entdecke die europäische Kultur in einem der ikonischsten Länder der Welt."
+      "title": "Au-Pair in Frankreich — In Paris leben, Französisch lernen & Kultur entdecken",
+      "description": "Werden Sie Au-Pair in Frankreich mit Mongolian Au Pair. €350/Monat Taschengeld, bei einer französischen Gastfamilie leben, Sprachkurse besuchen. Von Paris bis Provence — Ihr französisches Abenteuer beginnt!",
+      "keywords": "Au-Pair Frankreich, Au-Pair Paris, Französisch lernen im Ausland, französische Gastfamilie, in Frankreich leben"
     },
     "hero": {
       "tag": "Frankreich-Programm",
@@ -793,8 +799,9 @@
     "stat_iapa_years": "Jahre",
     "stat_iapa_member": "IAPA Mitglied",
     "metadata": {
-      "title": "Au-Pair-Programm | Mongolian Au Pair",
-      "description": "Umfassender Leitfaden zum internationalen Au-Pair-Programm. Vorteile, Voraussetzungen und Anmeldung."
+      "title": "Au-Pair-Programme in Europa — Deutschland, Österreich, Schweiz, Belgien & Frankreich",
+      "description": "Entdecken Sie Au-Pair-Möglichkeiten in 5 europäischen Ländern. Sprachen lernen, Kulturen erleben, Taschengeld verdienen und internationale Karriere aufbauen. Jetzt bewerben bei Mongoliens IAPA-zertifizierter Agentur.",
+      "keywords": "Au-Pair-Programm Europa, Au-Pair Länder, Kulturaustausch-Programm, Sprachenlernen im Ausland"
     },
     "whatIsTitle": "Was ist",
     "whatIsTitleHighlight": "Au-Pair?",
@@ -1303,10 +1310,26 @@
       "initialRequest": "Erstanfrage"
     },
     "requirements": {
-      "germany": ["Alter 18-26", "Deutsch A1", "Ledig"],
-      "belgium": ["Alter 18-25", "Englisch oder Französisch", "Abitur"],
-      "austria": ["Alter 18-27", "Deutschkenntnisse", "Erfahrung mit Kindern"],
-      "switzerland": ["Alter 18-25", "Deutsch/Französisch", "Führerschein"],
+      "germany": [
+        "Alter 18-26",
+        "Deutsch A1",
+        "Ledig"
+      ],
+      "belgium": [
+        "Alter 18-25",
+        "Englisch oder Französisch",
+        "Abitur"
+      ],
+      "austria": [
+        "Alter 18-27",
+        "Deutschkenntnisse",
+        "Erfahrung mit Kindern"
+      ],
+      "switzerland": [
+        "Alter 18-25",
+        "Deutsch/Französisch",
+        "Führerschein"
+      ],
       "france": [
         "Alter 18-27",
         "Französisch oder Englisch",

@@ -96,7 +96,7 @@ export default function AuPairPage() {
          </div>
 
          {/* ─── 2. HERO SECTION ─── */}
-         <section className="relative z-10 pt-40 pb-20 px-6">
+         <section className="relative z-10 pt-40 pb-20 px-6" aria-labelledby="aupair-hero-title">
             <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
                <m.div
                   initial="hidden"
@@ -110,7 +110,7 @@ export default function AuPairPage() {
                      <span className="text-xs font-black uppercase tracking-widest text-emerald-800">{t("cultureExchange")}</span>
                   </m.div>
 
-                  <m.h1 variants={fadeUp} className="text-6xl md:text-8xl font-black leading-[0.9] tracking-tighter text-slate-900">
+                  <m.h1 id="aupair-hero-title" variants={fadeUp} className="text-6xl md:text-8xl font-black leading-[0.9] tracking-tighter text-slate-900">
                      <span className="block">{t("heroTitlePrefix")}</span>
                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-[#10B981] to-[#D93644]">
                         {t("heroTitleHighlight")}
@@ -137,7 +137,7 @@ export default function AuPairPage() {
                      <div className="relative w-full h-full rounded-[3rem] overflow-hidden border-[8px] border-white shadow-2xl bg-slate-100">
                         <Image
                            src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80"
-                           alt="Happy Au Pairs" fill className="object-cover"
+                           alt="Mongolian au pair participants enjoying cultural exchange in Europe — happy young people from diverse backgrounds" fill className="object-cover"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/60 to-transparent mix-blend-multiply" />
 
@@ -155,7 +155,7 @@ export default function AuPairPage() {
          </section>
 
          {/* ─── 3. STATS STRIP ─── */}
-         <section className="py-12 border-y border-dashed border-slate-200 bg-white/50 backdrop-blur-sm relative z-20">
+         <section className="py-12 border-y border-dashed border-slate-200 bg-white/50 backdrop-blur-sm relative z-20" aria-label="Au Pair program statistics">
             <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
                {stats.map((stat, i) => (
                   <div key={i} className="text-center group">
@@ -170,7 +170,7 @@ export default function AuPairPage() {
          </section>
 
          {/* ─── 4. WHAT IS AU PAIR & HISTORY ─── */}
-         <section className="py-32 px-6 relative z-10">
+         <section className="py-32 px-6 relative z-10" aria-labelledby="aupair-what-is-title">
             <div className="max-w-7xl mx-auto">
                <div className="grid lg:grid-cols-2 gap-20">
                   {/* Left: Definition */}
@@ -181,7 +181,7 @@ export default function AuPairPage() {
                      transition={{ duration: 0.8 }}
                      className="space-y-8"
                   >
-                     <h2 className="text-4xl md:text-5xl font-black text-slate-900 leading-tight">
+                     <h2 id="aupair-what-is-title" className="text-4xl md:text-5xl font-black text-slate-900 leading-tight">
                         {t("whatIsTitle")} <span className="text-[#D93644]">{t("whatIsTitleHighlight")}</span>
                      </h2>
                      <div className="space-y-6 text-lg text-slate-600 leading-relaxed">
@@ -223,10 +223,10 @@ export default function AuPairPage() {
          </section>
 
          {/* ─── 5. BENEFITS (3D CARDS) ─── */}
-         <section className="py-24 bg-slate-50/50 relative">
+         <section className="py-24 bg-slate-50/50 relative" aria-labelledby="aupair-benefits-title">
             <div className="max-w-7xl mx-auto px-6">
                <div className="text-center mb-16">
-                  <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6">{t("benefitsTitle")} <span className="text-emerald-500">{t("benefitsHighlight")}</span></h2>
+                  <h2 id="aupair-benefits-title" className="text-4xl md:text-5xl font-black text-slate-900 mb-6">{t("benefitsTitle")} <span className="text-emerald-500">{t("benefitsHighlight")}</span></h2>
                   <p className="text-slate-500 max-w-2xl mx-auto">{t("benefitsSub")}</p>
                </div>
 
@@ -239,9 +239,9 @@ export default function AuPairPage() {
          </section>
 
          {/* ─── 6. STEPS (Timeline) ─── */}
-         <section className="py-32 px-6 relative overflow-hidden">
+         <section className="py-32 px-6 relative overflow-hidden" aria-labelledby="aupair-steps-title">
             <div className="max-w-5xl mx-auto relative z-10">
-               <h2 className="text-4xl font-black text-center mb-20">{t("stepsTitle")} <span className="text-[#D93644]">{t("stepsHighlight")}</span></h2>
+               <h2 id="aupair-steps-title" className="text-4xl font-black text-center mb-20">{t("stepsTitle")} <span className="text-[#D93644]">{t("stepsHighlight")}</span></h2>
 
                <div className="space-y-12 relative">
                   {/* Vertical Line */}
@@ -274,7 +274,7 @@ export default function AuPairPage() {
          </section>
 
          {/* ─── 7. IAPA & ECAPS (Authority) ─── */}
-         <section className="py-24 bg-[#052e16] text-white relative overflow-hidden rounded-t-[3rem] mt-12">
+         <section className="py-24 bg-[#052e16] text-white relative overflow-hidden rounded-t-[3rem] mt-12" aria-labelledby="aupair-iapa-title">
             {/* Background Glows */}
             <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald-600/30 rounded-full blur-[120px]" />
             <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#D93644]/20 rounded-full blur-[100px]" />

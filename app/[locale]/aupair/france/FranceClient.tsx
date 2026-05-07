@@ -122,7 +122,7 @@ export default function FranceClient() {
       className="min-h-[100dvh] bg-white text-slate-800 font-sans selection:bg-blue-600 selection:text-white overflow-hidden"
     >
       {/* HERO */}
-      <section className="relative pt-32 pb-24 lg:pt-48 lg:pb-32 px-6 overflow-hidden">
+      <section className="relative pt-32 pb-24 lg:pt-48 lg:pb-32 px-6 overflow-hidden" aria-labelledby="france-hero-title">
         <div className="absolute inset-0 bg-[radial-gradient(#dbeafe_1px,transparent_1px)] [background-size:30px_30px] opacity-40 pointer-events-none" />
         <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-gradient-to-b from-blue-100 to-transparent rounded-full blur-[100px] opacity-80" />
         <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-gradient-to-t from-red-100 to-transparent rounded-full blur-[100px] opacity-80" />
@@ -188,7 +188,7 @@ export default function FranceClient() {
               <div className="relative w-full h-full rounded-[1.5rem] overflow-hidden">
                 <Image
                   src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=900&q=80"
-                  alt="France"
+                  alt="Eiffel Tower and Parisian cityscape in France — dream destination for Mongolian au pairs learning French"
                   fill
                   className="object-cover"
                 />
@@ -209,7 +209,7 @@ export default function FranceClient() {
       </section>
 
       {/* INFO + CULTURE */}
-      <section className="py-24 px-6 bg-white relative">
+      <section className="py-24 px-6 bg-white relative" aria-labelledby="france-info-title">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-20 items-center mb-20">
             <m.div
@@ -222,7 +222,7 @@ export default function FranceClient() {
                 <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center text-white text-xl shadow-lg shadow-blue-200">
                   <FaGlobeEurope />
                 </div>
-                <h2 className="text-4xl font-black text-slate-900">
+                <h2 id="france-info-title" className="text-4xl font-black text-slate-900">
                   {t("info.title")}
                 </h2>
               </div>
@@ -299,10 +299,10 @@ export default function FranceClient() {
       </section>
 
       {/* CONTRACT */}
-      <section className="py-24 bg-gradient-to-br from-blue-600 to-blue-700 text-white relative overflow-hidden">
+      <section className="py-24 bg-gradient-to-br from-blue-600 to-blue-700 text-white relative overflow-hidden" aria-labelledby="france-contract-title">
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-black mb-6">
+            <h2 id="france-contract-title" className="text-4xl md:text-5xl font-black mb-6">
               {t("contract.title_pre")}{" "}
               <span className="text-blue-100">{t("contract.title_post")}</span>
             </h2>

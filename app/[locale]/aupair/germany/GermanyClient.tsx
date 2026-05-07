@@ -79,7 +79,7 @@ export default function GermanyClient() {
    return (
       <div ref={containerRef} className="min-h-[100dvh] bg-white text-slate-800 font-sans selection:bg-[#E3002D] selection:text-white overflow-hidden">
 
-         <section className="relative pt-32 pb-24 lg:pt-48 lg:pb-32 px-6 overflow-hidden">
+         <section className="relative pt-32 pb-24 lg:pt-48 lg:pb-32 px-6 overflow-hidden" aria-labelledby="germany-hero-title">
             <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:20px_20px] opacity-60 pointer-events-none" />
             <div className="absolute top-20 right-[-10%] w-[600px] h-[600px] bg-gradient-to-br from-[#00C1B6] via-teal-100 to-transparent rounded-full blur-[100px] opacity-30 mix-blend-multiply" />
             <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-gradient-to-tr from-[#E3002D] via-rose-200 to-transparent rounded-full blur-[100px] opacity-30 mix-blend-multiply" />
@@ -92,7 +92,7 @@ export default function GermanyClient() {
                      <span className="text-xs font-black uppercase tracking-widest ml-1">{t("hero.tag")}</span>
                   </m.div>
 
-                  <m.h1 variants={itemVar} className="text-6xl md:text-8xl font-black leading-[0.95] tracking-tight text-slate-900">
+                  <m.h1 id="germany-hero-title" variants={itemVar} className="text-6xl md:text-8xl font-black leading-[0.95] tracking-tight text-slate-900">
                      <span className="block text-slate-800">{t("hero.title")}</span>
                      <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#E3002D] via-teal-500 to-[#00C1B6]">
                         {t("hero.highlight")}
@@ -122,7 +122,7 @@ export default function GermanyClient() {
                <div className="relative h-[600px] hidden lg:block perspective-1000">
                   <m.div style={{ y: yHero, rotateY: -10, rotateX: 5 }} className="absolute right-8 top-8 w-[420px] h-[550px] bg-white p-3 rounded-[3rem] shadow-2xl border-[6px] border-white z-20">
                      <div className="relative w-full h-full rounded-[2.5rem] overflow-hidden bg-slate-100">
-                        <Image src="https://1001traveldestinations.wordpress.com/wp-content/uploads/2013/02/1001-travel-destinations-berliner-dom-frontansicht-wallpaper.jpg?w=625&h=390" alt="Berlin" fill className="object-cover" />
+                        <Image src="https://1001traveldestinations.wordpress.com/wp-content/uploads/2013/02/1001-travel-destinations-berliner-dom-frontansicht-wallpaper.jpg?w=625&h=390" alt="Berliner Dom cathedral in Berlin, Germany — iconic destination for Mongolian au pairs" fill className="object-cover" />
                         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/40" />
                         <div className="absolute bottom-8 left-8 text-white">
                            <p className="font-serif italic text-lg opacity-90">Discover</p>
@@ -153,7 +153,7 @@ export default function GermanyClient() {
             </div>
          </section>
 
-         <section className="py-24 px-6 bg-white relative">
+         <section className="py-24 px-6 bg-white relative" aria-labelledby="germany-info-title">
             <div className="max-w-6xl mx-auto">
                <div className="grid lg:grid-cols-2 gap-20 items-center">
                   <m.div
@@ -165,7 +165,7 @@ export default function GermanyClient() {
                         <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center text-2xl shadow-sm text-[#00C1B6]">
                            <FaGlobeEurope />
                         </div>
-                        <h2 className="text-3xl font-black text-slate-900">{t("info.title")}</h2>
+                        <h2 id="germany-info-title" className="text-3xl font-black text-slate-900">{t("info.title")}</h2>
                      </div>
                      <p className="text-slate-600 leading-relaxed mb-8 font-medium">{t("info.desc")}</p>
                      <div className="grid grid-cols-3 gap-6">
@@ -197,11 +197,11 @@ export default function GermanyClient() {
             </div>
          </section>
 
-         <section className="py-24 bg-slate-50 relative">
+         <section className="py-24 bg-slate-50 relative" aria-labelledby="germany-programs-title">
             <div className="max-w-7xl mx-auto px-6">
                <div className="text-center mb-16">
                   <span className="text-[#00C896] font-bold tracking-widest text-sm uppercase block mb-3">{t("programs.tag")}</span>
-                  <h2 className="text-5xl font-black text-slate-900">{t("programs.title_pre")} <span className="text-[#E31B23]">{t("programs.title_post")}</span></h2>
+                  <h2 id="germany-programs-title" className="text-5xl font-black text-slate-900">{t("programs.title_pre")} <span className="text-[#E31B23]">{t("programs.title_post")}</span></h2>
                </div>
 
                <div className="grid md:grid-cols-3 gap-8">
@@ -228,10 +228,10 @@ export default function GermanyClient() {
             </div>
          </section>
 
-         <section className="py-24 bg-white relative">
+         <section className="py-24 bg-white relative" aria-labelledby="germany-contract-title">
             <div className="max-w-7xl mx-auto px-6">
                <div className="text-center mb-16">
-                  <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6">{t("contract.title_pre")} <span className="text-[#00C1B6]">{t("contract.title_post")}</span></h2>
+                  <h2 id="germany-contract-title" className="text-4xl md:text-5xl font-black text-slate-900 mb-6">{t("contract.title_pre")} <span className="text-[#00C1B6]">{t("contract.title_post")}</span></h2>
                   <p className="text-slate-500 font-medium">{t("contract.desc")}</p>
                </div>
 

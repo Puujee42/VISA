@@ -77,7 +77,7 @@ export default function BelgiumClient() {
             style={{ scaleX }}
          />
 
-         <section className="relative pt-32 pb-24 px-6 min-h-[90vh] flex items-center justify-center overflow-hidden">
+         <section className="relative pt-32 pb-24 px-6 min-h-[90vh] flex items-center justify-center overflow-hidden" aria-labelledby="belgium-hero-title">
             <div className="absolute inset-0 w-full h-full">
                <m.div animate={{ x: [0, 100, 0], y: [0, -50, 0], scale: [1, 1.2, 1] }} transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }} className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-yellow-200 rounded-full blur-[100px] opacity-60 mix-blend-multiply" />
                <m.div animate={{ x: [0, -80, 0], y: [0, 50, 0], scale: [1, 1.3, 1] }} transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }} className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-rose-200 rounded-full blur-[100px] opacity-60 mix-blend-multiply" />
@@ -93,7 +93,7 @@ export default function BelgiumClient() {
                      <span className="text-xs font-black uppercase tracking-widest">{t("hero.tag")}</span>
                   </m.div>
 
-                  <h1 className="text-6xl md:text-8xl font-black tracking-tight leading-[0.9]">
+                  <h1 id="belgium-hero-title" className="text-6xl md:text-8xl font-black tracking-tight leading-[0.9]">
                      <span className="block text-slate-800">{t("hero.title")}</span>
                      <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 via-orange-500 to-rose-500">
                         {t("hero.highlight")}
@@ -118,7 +118,7 @@ export default function BelgiumClient() {
                   <m.div animate={{ y: [0, -20, 0] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} className="absolute right-0 top-0 w-[450px] h-[550px]">
                      <div className="w-full h-full bg-white p-4 rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/50 backdrop-blur-sm transform rotate-3">
                         <div className="relative w-full h-full rounded-[2.5rem] overflow-hidden">
-                           <Image src="https://images.unsplash.com/photo-1549144511-f099e773c147?auto=format&fit=crop&w=800&q=80" alt="Belgium" fill className="object-cover" />
+                           <Image src="https://images.unsplash.com/photo-1549144511-f099e773c147?auto=format&fit=crop&w=800&q=80" alt="Grand Place in Brussels, Belgium — historic square and iconic destination for au pairs living in Belgium" fill className="object-cover" />
                            <div className="absolute inset-0 bg-gradient-to-t from-slate-800/40 to-transparent" />
                            <div className="absolute bottom-8 left-8 text-white">
                               <div className="flex items-center gap-2 mb-2">
@@ -147,11 +147,11 @@ export default function BelgiumClient() {
             </div>
          </section>
 
-         <section className="py-24 px-6 relative">
+         <section className="py-24 px-6 relative" aria-labelledby="belgium-info-title">
             <div className="max-w-7xl mx-auto">
                <div className="text-center mb-16">
                   <m.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} className="inline-block p-3 rounded-full bg-indigo-50 mb-4"><FaGlobeEurope className="text-indigo-600 text-3xl" /></m.div>
-                  <h2 className="text-4xl md:text-5xl font-black text-slate-800 mb-6">{t("info.title")}</h2>
+                  <h2 id="belgium-info-title" className="text-4xl md:text-5xl font-black text-slate-800 mb-6">{t("info.title")}</h2>
                   <p className="text-lg text-slate-600 max-w-2xl mx-auto">{t("info.desc")}</p>
                </div>
                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
@@ -166,9 +166,9 @@ export default function BelgiumClient() {
             </div>
          </section>
 
-         <section className="py-24 bg-slate-50 relative">
+         <section className="py-24 bg-slate-50 relative" aria-labelledby="belgium-benefits-title">
             <div className="max-w-7xl mx-auto px-6 text-center mb-16">
-               <h2 className="text-4xl md:text-5xl font-black text-slate-800 mb-12">Program Benefits</h2>
+               <h2 id="belgium-benefits-title" className="text-4xl md:text-5xl font-black text-slate-800 mb-12">Program Benefits</h2>
                <div className="grid md:grid-cols-3 gap-8">
                   {benefits.map((item, i) => (
                      <m.div key={i} whileHover={{ y: -10 }} className="bg-white p-8 rounded-[2.5rem] shadow-sm flex flex-col items-center">
