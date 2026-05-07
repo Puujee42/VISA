@@ -65,6 +65,27 @@ const nextConfig: NextConfig = {
       "react-type-animation",
     ],
   },
+  async redirects() {
+    return [
+      // Redirect old Cyrillic scholarship page to homepage (301 permanent)
+      {
+        source: '/:locale/mongolian-au-pair-2024-тэтгэлгийн-эзэн-тодорлоо',
+        destination: '/:locale',
+        permanent: true,
+      },
+      {
+        source: '/mongolian-au-pair-2024-тэтгэлгийн-эзэн-тодорлоо',
+        destination: '/en',
+        permanent: true,
+      },
+      // URL-encoded version of the same Cyrillic path
+      {
+        source: '/:locale/mongolian-au-pair-2024-%D1%82%D1%8D%D1%82%D0%B3%D1%8D%D0%BB%D0%B3%D0%B8%D0%B9%D0%BD-%D1%8D%D0%B7%D1%8D%D0%BD-%D1%82%D0%BE%D0%B4%D0%BE%D1%80%D0%BB%D0%BE%D0%BE',
+        destination: '/:locale',
+        permanent: true,
+      },
+    ];
+  },
   async rewrites() {
     return [
       {
