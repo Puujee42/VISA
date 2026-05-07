@@ -24,22 +24,34 @@ const isProtectedRoute = createRouteMatcher([
 
 // 1. Mark the function as 'async'
 export default clerkMiddleware(async (auth, req) => {
+    const { pathname } = req.nextUrl;
     console.log('[Middleware] Processing URL:', req.url);
 
-    // 2. Await the auth() call to get the actual data
+    // 2. Skip middleware entirely for SEO/static files
+    if (
+        pathname === '/robots.txt' ||
+        pathname === '/sitemap.xml' ||
+        pathname === '/favicon.ico' ||
+        pathname === '/manifest.json' ||
+        pathname === '/image.png'
+    ) {
+        return;
+    }
+
+    // 3. Await the auth() call to get the actual data
     const authObj = await auth();
     const userId = authObj.userId;
     const redirectToSignIn = authObj.redirectToSignIn;
 
-    // 3. Protect Private Routes explicitly
+    // 4. Protect Private Routes explicitly
     // If the route IS protected AND the user is NOT logged in
     if (isProtectedRoute(req) && !userId) {
         console.log('[Middleware] Protected route accessed without user, redirecting');
         return redirectToSignIn({ returnBackUrl: req.url });
     }
 
-    // 4. Run i18n Middleware
-    if (req.nextUrl.pathname.startsWith('/api')) {
+    // 5. Run i18n Middleware (skip for API routes)
+    if (pathname.startsWith('/api')) {
         console.log('[Middleware] API route detected, skipping intlMiddleware');
         return; // Pass through to Next.js handler
     }
