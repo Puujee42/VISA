@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import connectToDB from "@/lib/db";
+import { connectToDB } from "@/lib/db";
 import User from "@/lib/models/User";
 import Event from "@/lib/models/Events";
 

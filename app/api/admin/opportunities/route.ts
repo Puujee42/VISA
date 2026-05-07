@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import connectToDB from "@/lib/db";
+import { connectToDB } from "@/lib/db";
 import Opportunity from "@/lib/models/Opportunity";
 import { v2 as cloudinary } from 'cloudinary';
 import { withAdminAuth } from "@/lib/adminAuth";
