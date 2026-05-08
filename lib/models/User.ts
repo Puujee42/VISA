@@ -12,6 +12,8 @@ const UserSchema = new mongoose.Schema(
     // --- NEW FIELDS FOR TRACKING ---
     country: { type: String, default: "-" }, // e.g. "Germany"
     step: { type: String, default: "-" },    // e.g. "Visa Process"
+    studentId: { type: String, default: '' },
+    university: { type: String, default: 'MNUMS' },
 
     badges: { type: [String], default: [] },
 

@@ -9,7 +9,8 @@ const PROGRAM_MAP: Record<string, string> = {
   "DE": "Germany",
   "BE": "Belgium",
   "AT": "Austria",
-  "CH": "Switzerland"
+  "CH": "Switzerland",
+  "FR": "France"
 };
 
 export const GET = withAdminAuth(async () => {

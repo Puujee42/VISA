@@ -1,52 +1,55 @@
-import { auth } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 import { connectToDB } from "@/lib/db";
 import User from "@/lib/models/User";
 import { NextResponse } from "next/server";
 
-export function withAdminAuth(handler: (req: Request, context: any) => Promise<NextResponse>) {
+export function withAdminAuth(
+  handler: (req: Request, context: any) => Promise<NextResponse>
+) {
   return async (req: Request, context: any) => {
     try {
-      // Step 1: Authenticate with Clerk
-      let userId: string | null = null;
+      // Step 1: Verify session via Clerk — reads raw cookie, no middleware context needed
+      let clerkUser: any = null;
       try {
-        const authResult = await auth();
-        userId = authResult.userId;
+        clerkUser = await currentUser();
       } catch (authError) {
-        console.error("[AdminAuth] Clerk auth() failed:", authError);
+        console.error("[AdminAuth] currentUser() failed:", authError);
         return NextResponse.json(
           { error: "Authentication service unavailable" },
           { status: 503 }
         );
       }
 
-      if (!userId) {
+      if (!clerkUser) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
       }
 
-      // Step 2: Connect to database
+      // Step 2: Fast path — check publicMetadata set at role-update time
+      if (clerkUser.publicMetadata?.role === "admin") {
+        return handler(req, context);
+      }
+
+      // Step 3: Fallback — verify in MongoDB
       try {
         await connectToDB();
       } catch (dbError) {
-        console.error("[AdminAuth] Database connection failed:", dbError);
+        console.error("[AdminAuth] DB connection failed:", dbError);
         return NextResponse.json(
           { error: "Database connection failed" },
           { status: 503 }
         );
       }
 
-      // Step 3: Verify admin role
-      const user = await User.findOne({ clerkId: userId });
+      const dbUser = await User.findOne({ clerkId: clerkUser.id }).lean();
 
-      if (!user) {
-        console.error(`[AdminAuth] No user found for clerkId: ${userId}`);
+      if (!dbUser) {
         return NextResponse.json(
-          { error: "Forbidden: User not found in database" },
+          { error: "Forbidden: User not found" },
           { status: 403 }
         );
       }
 
-      if (user.role !== "admin") {
-        console.error(`[AdminAuth] User ${userId} has role "${user.role}", not admin`);
+      if ((dbUser as any).role !== "admin") {
         return NextResponse.json(
           { error: "Forbidden: Admin access required" },
           { status: 403 }

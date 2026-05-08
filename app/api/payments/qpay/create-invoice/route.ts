@@ -3,6 +3,7 @@ import { connectToDBWithRetry } from "@/lib/db";
 import ShoppingItem from "@/lib/models/ShoppingItem";
 import Order from "@/lib/models/Order";
 import { createQPayInvoice } from "@/lib/qpay";
+import { auth } from "@clerk/nextjs/server";
 
 type CreateInvoiceBody = {
   itemId?: string;
@@ -38,6 +39,11 @@ function isDbConnectionError(err: any): boolean {
 
 export async function POST(req: Request) {
   try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     // ── 1. Parse + validate body ─────────────────────────────────────────────
     let body: CreateInvoiceBody;
     try {
@@ -207,20 +213,8 @@ export async function POST(req: Request) {
 }
 
 export async function GET() {
-  return NextResponse.json(
-    {
-      ok: true,
-      endpoint: "create-qpay-invoice",
-      acceptedEnvVars: {
-        preferred: [
-          "QPAY_USERNAME",
-          "QPAY_PASSWORD",
-          "QPAY_INVOICE_CODE",
-          "QPAY_BASE_URL",
-        ],
-        fallback: ["MERCHANT_ID", "PASSWORD", "INVOICE_CODE", "QPAY_URL"],
-      },
-    },
-    { status: 200 },
-  );
+  if (process.env.NODE_ENV !== 'development') {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
+  return NextResponse.json({ ok: true, note: 'dev only' });
 }

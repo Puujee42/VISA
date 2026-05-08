@@ -170,8 +170,8 @@ export async function GET(req: Request) {
 
     if (transitioned) {
       await ShoppingItem.updateOne(
-        { _id: transitioned.itemId, stock: { $gt: 0 } },
-        { $inc: { stock: -1 } },
+        { _id: transitioned.itemId, stock: { $gte: transitioned.quantity } },
+        { $inc: { stock: -transitioned.quantity } },
       );
     }
 

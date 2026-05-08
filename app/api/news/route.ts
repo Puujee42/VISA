@@ -7,7 +7,7 @@ export const revalidate = 60;
 export async function GET() {
   try {
     await connectToDB();
-    const news = await News.find({}).sort({ publishedDate: -1 });
+    const news = await News.find({ status: 'published' }).sort({ publishedDate: -1 });
     return NextResponse.json(news, { 
       status: 200,
       headers: {

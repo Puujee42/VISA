@@ -23,12 +23,17 @@ export const GET = withAdminAuth(async (req: Request) => {
   // Fetch all users sorted by role (Students first) then by update date
   const mongoUsers = await User.find({}).lean();
 
-  // Fetch all users from Clerk
+  // Fetch all users from Clerk using pagination
   const client = await clerkClient();
-  const clerkUsersResponse = await client.users.getUserList({
-    limit: 500, // Adjust as needed
-  });
-  const clerkUsers = clerkUsersResponse.data;
+  let clerkUsers: any[] = [];
+  let offset = 0;
+  const limit = 100;
+  while (true) {
+    const res = await client.users.getUserList({ limit, offset });
+    clerkUsers = clerkUsers.concat(res.data);
+    if (res.data.length < limit) break;
+    offset += limit;
+  }
 
   // Merge them
   const mergedUsers = clerkUsers.map((cu: any) => {
@@ -117,9 +122,16 @@ export const PUT = withAdminAuth(async (req: Request) => {
       // Clean the data to avoid updating immutable fields if any, though MongoDB handles _id
       const { _id, clerkId, createdAt, ...updateData } = data;
 
+      const ALLOWED_FIELDS = ['role','country','step','status','fullName',
+        'phone','badges','documentsSubmitted','documentsReviewedBy'];
+      
+      const safeUpdate = Object.fromEntries(
+        Object.entries(updateData).filter(([key]) => ALLOWED_FIELDS.includes(key))
+      );
+
       const updatedUser = await User.findOneAndUpdate(
         query,
-        { $set: { ...updateData, ...(isMongoId ? {} : { clerkId: userId }) } },
+        { $set: { ...safeUpdate, ...(isMongoId ? {} : { clerkId: userId }) } },
         { new: true, upsert: true }
       );
 
@@ -173,41 +185,54 @@ export const DELETE = withAdminAuth(async (req: Request) => {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
 
-    if (!id) return NextResponse.json({ error: "ID missing" }, { status: 400 });
+    if (!id) {
+      return NextResponse.json({ error: "ID missing" }, { status: 400 });
+    }
 
-    // Find user to get Clerk ID
     const isMongoId = /^[0-9a-fA-F]{24}$/.test(id);
     const query = isMongoId ? { _id: id } : { clerkId: id };
 
     const userToDelete = await User.findOne(query);
+
+    // Handle case where only a Clerk ID was passed and no DB record exists yet
     if (!userToDelete && !isMongoId) {
-      // If we only have a Clerk ID and no DB record, we still need the Clerk ID to delete from Clerk
       try {
         const client = await clerkClient();
         await client.users.deleteUser(id);
-        return NextResponse.json({ success: true, message: "Deleted from Clerk only" });
-      } catch (err) {
-        return NextResponse.json({ error: "Clerk user not found" }, { status: 404 });
+        return NextResponse.json({
+          success: true,
+          message: "Deleted from Clerk only (no DB record found)",
+        });
+      } catch {
+        return NextResponse.json(
+          { error: "Clerk user not found" },
+          { status: 404 }
+        );
       }
     }
 
-    if (!userToDelete) return NextResponse.json({ error: "User not found" }, { status: 404 });
+    if (!userToDelete) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
 
-    // Delete from Clerk
+    // 1. Delete from Clerk first
     if (userToDelete.clerkId) {
       try {
         const client = await clerkClient();
         await client.users.deleteUser(userToDelete.clerkId);
       } catch (err) {
-        console.log("Clerk delete error (ignoring):", err);
+        // Log but don't block — user may already be deleted from Clerk
+        console.warn("[DELETE] Clerk delete warning:", err);
       }
     }
 
-    // Delete from MongoDB
-    await User.findByIdAndDelete(id);
+    // 2. Delete from MongoDB using the ObjectId we already fetched
+    //    (never use the raw `id` param here — it could be a Clerk ID string)
+    await User.findByIdAndDelete(userToDelete._id);
 
     return NextResponse.json({ success: true });
   } catch (error) {
+    console.error("[DELETE] User delete failed:", error);
     return NextResponse.json({ error: "Delete failed" }, { status: 500 });
   }
 });

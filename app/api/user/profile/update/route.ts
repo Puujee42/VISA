@@ -67,17 +67,16 @@ export async function POST(req: Request) {
       "profile.childcareExperience": childcareExperience,
       "profile.householdTasks": householdTasks,
       "profile.motivation": motivation,
-      documentsSubmitted: true,
     };
 
     const user = await User.findOneAndUpdate(
       { clerkId },
       { $set: profileUpdate },
-      { new: true, upsert: true, setDefaultsOnInsert: true }
+      { new: true }
     );
 
     if (!user) {
-      return NextResponse.json({ error: "Failed to update profile" }, { status: 500 });
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     return NextResponse.json(user, { status: 200 });

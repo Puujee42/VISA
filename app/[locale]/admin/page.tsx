@@ -25,6 +25,8 @@ import {
   ClipboardList,
   Calendar,
   ShoppingBag,
+  ShoppingCart,
+  Building,
 } from "lucide-react";
 import {
   FaBook,
@@ -44,6 +46,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import LessonsManager from "@/app/components/admin/LessonsManager";
 import ShoppingManager from "@/app/components/admin/ShoppingManager";
+import ClubsManager from "@/app/components/admin/ClubsManager";
 import { Link } from "@/navigation";
 
 // --- CONSTANTS ---
@@ -793,6 +796,8 @@ export default function AdminDashboard() {
   const [events, setEvents] = useState<any[]>([]);
   const [opportunities, setOpportunities] = useState<any[]>([]);
   const [lessons, setLessons] = useState<any[]>([]);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [clubs, setClubs] = useState<any[]>([]);
 
   const [stats, setStats] = useState({
     totalUsers: 0,
@@ -823,6 +828,8 @@ export default function AdminDashboard() {
         eventsRes,
         oppsRes,
         lessonsRes,
+        ordersRes,
+        clubsRes,
       ] = await Promise.all([
         fetch("/api/admin/users"),
         fetch("/api/admin/news"),
@@ -832,6 +839,8 @@ export default function AdminDashboard() {
         fetch("/api/admin/events"),
         fetch("/api/admin/opportunities"),
         fetch("/api/admin/lessons"),
+        fetch("/api/admin/orders"),
+        fetch("/api/admin/clubs"),
       ]);
 
       if (usersRes.ok) {
@@ -913,6 +922,8 @@ export default function AdminDashboard() {
       if (eventsRes.ok) setEvents(await eventsRes.json());
       if (oppsRes.ok) setOpportunities(await oppsRes.json());
       if (lessonsRes.ok) setLessons(await lessonsRes.json());
+      if (ordersRes.ok) setOrders(await ordersRes.json());
+      if (clubsRes.ok) setClubs(await clubsRes.json());
 
       if (statsRes.ok) {
         const s = await statsRes.json();
@@ -923,7 +934,7 @@ export default function AdminDashboard() {
           studentsCount: s.studentsCount || 0,
           adminsCount: s.adminsCount || 0,
           guestsCount: s.guestsCount || 0,
-          todaysBookings: 0,
+          todaysBookings: s.todaysBookings || 0,
         });
       }
     } catch (error) {
@@ -1093,6 +1104,24 @@ export default function AdminDashboard() {
               active={activeTab === "shopping"}
               onClick={() => setActiveTab("shopping")}
             />
+            <SidebarItem
+              icon={Calendar}
+              label={t("sidebar.bookings")}
+              active={activeTab === "bookings"}
+              onClick={() => setActiveTab("bookings")}
+            />
+            <SidebarItem
+              icon={ShoppingCart}
+              label="Orders"
+              active={activeTab === "orders"}
+              onClick={() => setActiveTab("orders")}
+            />
+            <SidebarItem
+              icon={Building}
+              label="Clubs"
+              active={activeTab === "clubs"}
+              onClick={() => setActiveTab("clubs")}
+            />
           </nav>
         </div>
         <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-3">
@@ -1169,6 +1198,12 @@ export default function AdminDashboard() {
                 val={stats.articles}
                 icon={FileText}
                 colorClass="bg-blue-500"
+              />
+              <StatCard
+                label={t("dashboard.stats.todaysBookings")}
+                val={stats.todaysBookings}
+                icon={Calendar}
+                colorClass="bg-indigo-500"
               />
             </div>
 
@@ -1326,6 +1361,22 @@ export default function AdminDashboard() {
 
         {/* ─── SHOPPING MANAGEMENT ─── */}
         {activeTab === "shopping" && <ShoppingManager />}
+
+        {activeTab === "bookings" && (
+          <BookingsManager
+            upcomingBookings={upcomingBookings}
+            pastBookings={pastBookings}
+            onUpdate={handleUpdateBooking}
+          />
+        )}
+
+        {activeTab === "orders" && (
+          <OrdersManager orders={orders} onRefresh={refreshData} />
+        )}
+
+        {activeTab === "clubs" && (
+          <ClubsManager clubs={clubs} onRefresh={refreshData} />
+        )}
 
         {/* ─── APPLICATIONS MANAGEMENT ─── */}
         {activeTab === "applications" && (
@@ -2646,6 +2697,213 @@ function ContentManager({ blogs, onRefresh }: any) {
                 </td>
               </tr>
             ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function BookingsManager({ upcomingBookings, pastBookings, onUpdate }: any) {
+  const t = useTranslations("admin");
+  const [activeTab, setActiveTab] = useState<"upcoming" | "past">("upcoming");
+  const list = activeTab === "upcoming" ? upcomingBookings : pastBookings;
+
+  return (
+    <div className="space-y-6">
+      <div className="flex bg-slate-100 p-1 rounded-xl w-fit">
+        {(["upcoming", "past"] as const).map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`px-6 py-2 rounded-lg text-xs font-black uppercase transition-all ${
+              activeTab === tab
+                ? "bg-white text-slate-900 shadow-sm"
+                : "text-slate-400 hover:text-slate-600"
+            }`}
+          >
+            {tab === "upcoming" ? t("dashboard.bookings.upcoming") : t("dashboard.bookings.history")}
+          </button>
+        ))}
+      </div>
+
+      <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
+        <table className="w-full text-left min-w-[700px]">
+          <thead className="bg-[#FAFAFA] text-slate-400 text-[10px] uppercase font-black tracking-widest">
+            <tr>
+              <th className="px-8 py-4">User</th>
+              <th className="px-8 py-4">Service</th>
+              <th className="px-8 py-4">Date & Time</th>
+              <th className="px-8 py-4">Contact</th>
+              <th className="px-8 py-4">Status</th>
+              <th className="px-8 py-4 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-50">
+            {list.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="px-8 py-10 text-center text-sm text-slate-400 italic">
+                  No bookings found.
+                </td>
+              </tr>
+            ) : (
+              list.map((b: any) => (
+                <tr key={b.id} className="hover:bg-slate-50 transition-colors">
+                  <td className="px-8 py-5">
+                    <p className="font-bold text-sm text-slate-900">{b.user}</p>
+                    <p className="text-xs text-slate-400">{b.email}</p>
+                  </td>
+                  <td className="px-8 py-5 text-sm font-medium text-slate-700">{b.type}</td>
+                  <td className="px-8 py-5">
+                    <p className="font-bold text-sm">{new Date(b.date).toLocaleDateString()}</p>
+                    <p className="text-xs text-slate-400">{b.time}</p>
+                  </td>
+                  <td className="px-8 py-5 text-xs text-slate-500">{b.phone}</td>
+                  <td className="px-8 py-5">
+                    <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase ${
+                      b.status === "confirmed" ? "bg-green-50 text-[#00C896]"
+                      : b.status === "rejected" || b.status === "cancelled" ? "bg-red-50 text-[#E31B23]"
+                      : b.status === "completed" ? "bg-blue-50 text-blue-600"
+                      : "bg-amber-50 text-amber-500"
+                    }`}>
+                      {b.status}
+                    </span>
+                  </td>
+                  <td className="px-8 py-5 text-right">
+                    <div className="flex justify-end gap-2">
+                      {b.status === "pending" && (
+                        <>
+                          <button
+                            onClick={() => onUpdate(b.id, "confirmed")}
+                            className="p-2 bg-green-50 text-[#00C896] hover:bg-[#00C896] hover:text-white rounded-xl transition-colors"
+                          >
+                            <Check size={16} />
+                          </button>
+                          <button
+                            onClick={() => onUpdate(b.id, "rejected")}
+                            className="p-2 bg-red-50 text-[#E31B23] hover:bg-[#E31B23] hover:text-white rounded-xl transition-colors"
+                          >
+                            <X size={16} />
+                          </button>
+                        </>
+                      )}
+                      {b.status === "confirmed" && (
+                        <button
+                          onClick={() => onUpdate(b.id, "completed")}
+                          className="px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-xl text-[10px] font-black uppercase transition-colors"
+                        >
+                          Complete
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function OrdersManager({ orders, onRefresh }: any) {
+  const handleUpdateOrder = async (id: string, status: string) => {
+    await fetch("/api/admin/orders", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ orderId: id, status }),
+    });
+    onRefresh();
+  };
+
+  const handleDeleteOrder = async (id: string) => {
+    if (!confirm("Delete this order?")) return;
+    await fetch(`/api/admin/orders?id=${id}`, { method: "DELETE" });
+    onRefresh();
+  };
+
+  const statusColors: Record<string, string> = {
+    paid: "bg-green-50 text-[#00C896]",
+    pending: "bg-amber-50 text-amber-500",
+    cancelled: "bg-red-50 text-[#E31B23]",
+    failed: "bg-red-50 text-[#E31B23]",
+    expired: "bg-slate-100 text-slate-400",
+    processing: "bg-blue-50 text-blue-500",
+  };
+
+  return (
+    <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
+      <div className="p-6 border-b border-slate-50">
+        <h2 className="text-xl font-black text-slate-900">Orders & Payments</h2>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-left min-w-[700px]">
+          <thead className="bg-[#FAFAFA] text-slate-400 text-[10px] uppercase font-black tracking-widest">
+            <tr>
+              <th className="px-8 py-4">Item</th>
+              <th className="px-8 py-4">Qty</th>
+              <th className="px-8 py-4">Amount</th>
+              <th className="px-8 py-4">Status</th>
+              <th className="px-8 py-4">Date</th>
+              <th className="px-8 py-4 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-50">
+            {orders.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="px-8 py-10 text-center text-sm text-slate-400 italic">
+                  No orders yet.
+                </td>
+              </tr>
+            ) : (
+              orders.map((o: any) => (
+                <tr key={o._id} className="hover:bg-slate-50 transition-colors">
+                  <td className="px-8 py-5">
+                    <p className="font-bold text-sm">{o.itemName}</p>
+                    <p className="text-[10px] text-slate-400 font-mono">{o.qpayInvoiceId?.slice(0, 16)}…</p>
+                  </td>
+                  <td className="px-8 py-5 text-sm font-medium">{o.quantity}</td>
+                  <td className="px-8 py-5 font-bold text-sm">
+                    {o.amount?.toLocaleString()} {o.currency}
+                  </td>
+                  <td className="px-8 py-5">
+                    <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase ${statusColors[o.status] || "bg-slate-100 text-slate-400"}`}>
+                      {o.status}
+                    </span>
+                  </td>
+                  <td className="px-8 py-5 text-xs text-slate-500">
+                    {new Date(o.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="px-8 py-5 text-right">
+                    <div className="flex justify-end gap-2">
+                      {o.status === "pending" && (
+                        <button
+                          onClick={() => handleUpdateOrder(o._id, "paid")}
+                          className="px-3 py-1.5 rounded-lg bg-green-50 text-[#00C896] text-[10px] font-black uppercase hover:bg-[#00C896] hover:text-white transition-colors"
+                        >
+                          Mark Paid
+                        </button>
+                      )}
+                      {o.status !== "cancelled" && o.status !== "paid" && (
+                        <button
+                          onClick={() => handleUpdateOrder(o._id, "cancelled")}
+                          className="px-3 py-1.5 rounded-lg bg-red-50 text-[#E31B23] text-[10px] font-black uppercase hover:bg-[#E31B23] hover:text-white transition-colors"
+                        >
+                          Cancel
+                        </button>
+                      )}
+                      <button
+                        onClick={() => handleDeleteOrder(o._id)}
+                        className="p-2 text-slate-300 hover:text-[#E31B23] transition-colors"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

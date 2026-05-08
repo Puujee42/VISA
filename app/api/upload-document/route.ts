@@ -15,6 +15,15 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'No file provided' }, { status: 400 });
         }
 
+        if (file.size > 10 * 1024 * 1024) {
+            return NextResponse.json({ error: 'File size must be less than 10MB' }, { status: 400 });
+        }
+
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
+        if (!allowedTypes.includes(file.type)) {
+            return NextResponse.json({ error: 'Invalid file type. Only JPEG, PNG, WEBP, and PDF are allowed.' }, { status: 400 });
+        }
+
         // Upload to Cloudinary (supports both images and PDFs)
         const uploadFormData = new FormData();
         uploadFormData.append('file', file);

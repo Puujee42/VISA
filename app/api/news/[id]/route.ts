@@ -9,7 +9,7 @@ export async function GET(
   try {
     const { id } = await params;
     await connectToDB();
-    const article = await News.findById(id);
+    const article = await News.findOne({ _id: id, status: 'published' });
 
     if (!article) {
       return NextResponse.json({ error: "News article not found" }, { status: 404 });

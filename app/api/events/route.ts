@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/db";
 import Event from "@/lib/models/Events";
-import { auth } from "@clerk/nextjs/server";
+import { withAdminAuth } from "@/lib/adminAuth";
 
 export const revalidate = 60;
 
@@ -9,19 +9,19 @@ export const revalidate = 60;
 export async function GET(req: Request) {
   try {
     await connectToDB();
-    
+
     const { searchParams } = new URL(req.url);
     const category = searchParams.get('category');
-    
+
     let query = {};
     if (category && category !== 'all') {
       query = { category };
     }
 
-    // Sort by date (newest first)
+    // Sort by date ascending (upcoming events first)
     const events = await Event.find(query).sort({ date: 1 });
 
-    return NextResponse.json(events, { 
+    return NextResponse.json(events, {
       status: 200,
       headers: {
         'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=30'
@@ -33,18 +33,12 @@ export async function GET(req: Request) {
 }
 
 // POST: Create a new event (Protected: Members/Admins only)
-export async function POST(req: Request) {
+export const POST = withAdminAuth(async (req: Request) => {
   try {
-    // 1. Check Auth
-    const { userId } = await auth();
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
     await connectToDB();
-    
+
     const body = await req.json();
-    
+
     // 1. Trim and format string/object fields
     let title = body.title;
     if (typeof title === 'string') {
@@ -90,10 +84,10 @@ export async function POST(req: Request) {
     }
 
     // 4. Validate Category (зөвшөөрөгдсөн утгууд)
-    const allowedCategories = ['campaign', 'workshop', 'fundraiser'];
+    const allowedCategories = ['campaign', 'workshop', 'fundraiser', 'meeting'];
     if (!allowedCategories.includes(category)) {
-      return NextResponse.json({ 
-        error: `Invalid category. Allowed values: ${allowedCategories.join(', ')}` 
+      return NextResponse.json({
+        error: `Invalid category. Allowed values: ${allowedCategories.join(', ')}`
       }, { status: 400 });
     }
 
@@ -105,7 +99,7 @@ export async function POST(req: Request) {
       category,
       date: eventDate,
     };
-    
+
     const newEvent = await Event.create(cleanedBody);
 
     return NextResponse.json(newEvent, { status: 201 });
@@ -113,4 +107,4 @@ export async function POST(req: Request) {
     console.error(error);
     return NextResponse.json({ error: "Failed to create event" }, { status: 500 });
   }
-}
+})

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { MOCK_OPPORTUNITIES } from "@/lib/data/mockOpportunities";
+import { connectToDB } from "@/lib/db";
+import Opportunity from "@/lib/models/Opportunity";
 
 export async function GET(
   request: Request,
@@ -7,7 +8,8 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const opportunity = MOCK_OPPORTUNITIES.find((opp) => opp.id === id);
+    await connectToDB();
+    const opportunity = await Opportunity.findById(id);
 
     if (!opportunity) {
       return NextResponse.json({ error: "Opportunity not found" }, { status: 404 });

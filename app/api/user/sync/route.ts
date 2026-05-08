@@ -4,31 +4,23 @@ import { connectToDB } from "@/lib/db";
 import User from "@/lib/models/User";
 
 export async function POST(req: Request) {
-  console.log("--------------- STARTING USER SYNC ---------------");
   try {
     // 1. Connect DB
-    console.log("1. Connecting to DB...");
     await connectToDB();
-    console.log("   - Connected.");
 
     // 2. Check Auth
-    console.log("2. Checking Clerk Auth...");
     const clerkUser = await currentUser();
     
     if (!clerkUser) {
-      console.log("   - No Clerk user found!");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    console.log("   - User Authenticated:", clerkUser.id);
 
     // 3. Parse Body
     const body = await req.json();
-    console.log("3. Payload Received:", body);
     
     const { fullName, studentId, university } = body;
 
     // 4. Database Operation
-    console.log("4. Attempting MongoDB Update/Create...");
     
     const user = await User.findOneAndUpdate(
       { clerkId: clerkUser.id },
@@ -47,15 +39,11 @@ export async function POST(req: Request) {
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
 
-    console.log("5. SUCCESS! User Saved:", user._id);
-    console.log("--------------------------------------------------");
-
     return NextResponse.json({ success: true, user }, { status: 200 });
 
   } catch (error: any) {
     console.error("!!!!! SYNC FAILED !!!!!");
     console.error(error);
-    // Return the actual error message so you can see it in the browser Console/Network tab
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

@@ -19,7 +19,7 @@ const BookingSchema = new Schema(
       enum: ['pending', 'confirmed', 'rejected', 'completed', 'cancelled'],
       default: 'pending'
     },
-
+    livekitRoom: { type: String, default: '' },
 
   },
   { timestamps: true }
