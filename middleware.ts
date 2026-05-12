@@ -1,3 +1,4 @@
+import { NextResponse } from 'next/server';
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import createMiddleware from 'next-intl/middleware';
 
@@ -49,7 +50,7 @@ export default clerkMiddleware(async (auth, req) => {
 
   // API routes: auth context is now set, skip i18n and pass through
   if (pathname.startsWith('/api')) {
-    return;
+    return NextResponse.next();
   }
 
   // Pages: run i18n middleware

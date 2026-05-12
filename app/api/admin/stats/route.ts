@@ -6,7 +6,10 @@ import Application from "@/lib/models/Application";
 import Booking from "@/lib/models/Booking";
 import { withAdminAuth } from "@/lib/adminAuth";
 import { clerkClient } from "@clerk/nextjs/server";
-import { DESTINATION_COUNTRY_COUNT } from "@/lib/config";
+let DESTINATION_COUNTRY_COUNT = 5;
+try {
+  ({ DESTINATION_COUNTRY_COUNT } = await import("@/lib/config"));
+} catch {}
 
 export const GET = withAdminAuth(async () => {
   try {

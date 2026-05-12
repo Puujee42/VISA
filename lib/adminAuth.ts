@@ -60,7 +60,10 @@ export function withAdminAuth(
     } catch (error) {
       console.error("[AdminAuth] Unexpected error:", error);
       return NextResponse.json(
-        { error: "Internal Server Error", details: String(error) },
+        { 
+          error: "Internal Server Error", 
+          details: process.env.NODE_ENV === "development" ? String(error) : undefined
+        },
         { status: 500 }
       );
     }
