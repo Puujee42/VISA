@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { getUserId } from "@/lib/auth";
-import { getSupabaseAdmin } from "@/lib/supabase/admin";
-import { toApi } from "@/lib/supabase/mappers";
 import { normalizePhone } from "@/lib/phone";
+import { connectToDB } from "@/lib/mongodb";
+import Application from "@/lib/models/Application";
 
 export async function POST(req: Request) {
   try {
@@ -27,47 +27,40 @@ export async function POST(req: Request) {
       );
     }
 
-    const supabase = getSupabaseAdmin();
-    const { data: row, error } = await supabase
-      .from("applications")
-      .insert({
-        program_id: programId,
-        first_name: firstName,
-        last_name: lastName,
-        email,
-        phone,
-        age,
-        level,
-        message,
-        answers,
-        user_id: userId,
-        status: "pending",
-      })
-      .select()
-      .single();
+    await connectToDB();
+    const row = await Application.create({
+      programId,
+      firstName,
+      lastName,
+      email,
+      phone,
+      age,
+      level,
+      message,
+      answers,
+      userId: userId || undefined,
+      status: "pending",
+    });
 
-    if (error) throw error;
-
-    // In-app admin notification
-    try {
-      await supabase.from("admin_notifications").insert({
-        type: "application",
-        title: `Шинэ өргөдөл: ${firstName} ${lastName}`,
-        body: `${programId} · ${phone} · ${email} · түвшин ${level}`,
-        link: "/admin?tab=applications",
-        meta: {
-          applicationId: row.id,
-          programId,
-          phone,
-          email,
-        },
-        is_read: false,
-      });
-    } catch (notifyErr) {
-      console.error("[applications/create] notification failed", notifyErr);
-    }
-
-    return NextResponse.json(toApi(row), { status: 201 });
+    return NextResponse.json(
+      {
+        _id: row._id.toString(),
+        id: row._id.toString(),
+        programId: row.programId,
+        firstName: row.firstName,
+        lastName: row.lastName,
+        email: row.email,
+        phone: row.phone,
+        age: row.age,
+        level: row.level,
+        message: row.message,
+        answers: row.answers,
+        status: row.status,
+        userId: row.userId,
+        createdAt: row.createdAt,
+      },
+      { status: 201 },
+    );
   } catch (error) {
     console.error("Application creation error:", error);
     return NextResponse.json(

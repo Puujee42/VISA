@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import { getSupabaseAdmin } from "@/lib/supabase/admin";
-import { toApi } from "@/lib/supabase/mappers";
 import { withAdminAuth } from "@/lib/adminAuth";
+import { connectToDB } from "@/lib/mongodb";
+import Application from "@/lib/models/Application";
+import User from "@/lib/models/User";
 
 const PROGRAM_MAP: Record<string, string> = {
   DE: "Germany",
@@ -11,35 +12,56 @@ const PROGRAM_MAP: Record<string, string> = {
   FR: "France",
 };
 
+function serializeApp(app: any, userProfile: unknown = null) {
+  return {
+    _id: app._id.toString(),
+    id: app._id.toString(),
+    programId: app.programId,
+    firstName: app.firstName,
+    lastName: app.lastName,
+    email: app.email,
+    phone: app.phone,
+    age: app.age,
+    level: app.level,
+    message: app.message,
+    answers: app.answers || {},
+    status: app.status,
+    userId: app.userId || null,
+    createdAt: app.createdAt,
+    updatedAt: app.updatedAt,
+    userProfile,
+  };
+}
+
 export const GET = withAdminAuth(async () => {
   try {
-    const supabase = getSupabaseAdmin();
-    const { data: applications, error } = await supabase
-      .from("applications")
-      .select("*")
-      .order("created_at", { ascending: false });
+    await connectToDB();
+    const applications = await Application.find()
+      .sort({ createdAt: -1 })
+      .lean();
 
-    if (error) throw error;
-
-    const enrichedApplications = await Promise.all(
-      (applications ?? []).map(async (app) => {
-        const api = toApi(app)!;
-        if (app.user_id) {
-          const { data: user } = await supabase
-            .from("users")
+    const enriched = await Promise.all(
+      applications.map(async (app: any) => {
+        let userProfile = null;
+        if (app.userId) {
+          const user = await User.findOne({
+            $or: [{ clerkId: app.userId }, { _id: app.userId }],
+          })
             .select("profile")
-            .eq("clerk_id", app.user_id)
-            .maybeSingle();
-          return { ...api, userProfile: user?.profile ?? null };
+            .lean();
+          userProfile = (user as any)?.profile ?? null;
         }
-        return { ...api, userProfile: null };
+        return serializeApp(app, userProfile);
       }),
     );
 
-    return NextResponse.json(enrichedApplications);
+    return NextResponse.json(enriched);
   } catch (error) {
     console.error("Fetch applications error:", error);
-    return NextResponse.json({ error: "Failed to fetch applications" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch applications" },
+      { status: 500 },
+    );
   }
 });
 
@@ -48,65 +70,43 @@ export const PUT = withAdminAuth(async (req: Request) => {
     const body = await req.json();
     const { applicationId, status } = body;
 
-    const supabase = getSupabaseAdmin();
-    const { data: application, error: fetchErr } = await supabase
-      .from("applications")
-      .select("*")
-      .eq("id", applicationId)
-      .maybeSingle();
-
-    if (fetchErr) throw fetchErr;
+    await connectToDB();
+    const application = await Application.findById(applicationId);
     if (!application) {
       return NextResponse.json({ error: "Application not found" }, { status: 404 });
     }
 
-    const { data: updatedApp, error: updateErr } = await supabase
-      .from("applications")
-      .update({ status })
-      .eq("id", applicationId)
-      .select()
-      .single();
+    application.status = status;
+    await application.save();
 
-    if (updateErr) throw updateErr;
-
-    if (status === "approved" && application.user_id) {
-      const country = PROGRAM_MAP[application.program_id] || "General";
-      const profilePatch = {
-        phone: application.phone,
-        languages: `Level: ${application.level}`,
-        motivation: application.message,
-      };
-
-      const { data: existingUser } = await supabase
-        .from("users")
-        .select("profile")
-        .eq("clerk_id", application.user_id)
-        .maybeSingle();
-
-      const mergedProfile = {
-        ...(typeof existingUser?.profile === "object" && existingUser.profile !== null
-          ? existingUser.profile
-          : {}),
-        ...profilePatch,
-      };
-
-      await supabase.from("users").upsert(
+    if (status === "approved" && application.userId) {
+      const country = PROGRAM_MAP[application.programId] || "General";
+      await User.findOneAndUpdate(
         {
-          clerk_id: application.user_id,
-          email: application.email,
-          full_name: `${application.first_name} ${application.last_name}`,
-          role: "student",
-          country,
-          step: "Documents",
-          profile: mergedProfile,
+          $or: [
+            { clerkId: application.userId },
+            { _id: application.userId },
+          ],
         },
-        { onConflict: "clerk_id" },
+        {
+          $set: {
+            role: "student",
+            country,
+            step: "Documents",
+            "profile.phone": application.phone,
+            "profile.languages": `Level: ${application.level}`,
+            "profile.motivation": application.message || "",
+          },
+        },
       );
     }
 
-    return NextResponse.json(toApi(updatedApp));
+    return NextResponse.json(serializeApp(application.toObject()));
   } catch (error) {
     console.error("Update application error:", error);
-    return NextResponse.json({ error: "Failed to update application" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to update application" },
+      { status: 500 },
+    );
   }
 });
