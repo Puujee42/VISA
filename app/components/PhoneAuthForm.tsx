@@ -94,17 +94,26 @@ export default function PhoneAuthForm({ mode, redirectTo }: Props) {
       if (!res.ok) throw new Error(data.error || "Амжилтгүй");
 
       if (!data.sessionSet) {
-        const supabase = createClient();
-        const { error: signInErr } = await supabase.auth.signInWithPassword({
-          email: data.email || phoneToEmail(normalized),
-          password,
-        });
-        if (signInErr) {
+        // Only needed for Supabase path; local auth already set cookies
+        try {
+          const supabase = createClient();
+          const { error: signInErr } = await supabase.auth.signInWithPassword({
+            email: data.email || phoneToEmail(normalized),
+            password,
+          });
+          if (signInErr) {
+            if (mode === "sign-up") {
+              router.push("/sign-in");
+              return;
+            }
+            throw signInErr;
+          }
+        } catch (clientErr) {
           if (mode === "sign-up") {
             router.push("/sign-in");
             return;
           }
-          throw signInErr;
+          throw clientErr;
         }
       }
 

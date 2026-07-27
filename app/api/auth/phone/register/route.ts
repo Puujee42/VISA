@@ -7,13 +7,37 @@ import {
   phoneToEmail,
 } from "@/lib/phone";
 import { withSupabaseTimeout } from "@/lib/supabase/timeout";
+import {
+  LOCAL_SESSION_COOKIE,
+  localRegister,
+  localSessionCookieOptions,
+  signLocalSession,
+} from "@/lib/localAuth";
 
-function unreachableError(error: unknown) {
+function isUnreachable(error: unknown) {
   const msg = error instanceof Error ? error.message : String(error || "");
-  if (/ENOTFOUND|fetch failed|timed out|timeout|Failed to fetch/i.test(msg)) {
-    return "Supabase сервертэй холбогдож чадсангүй. .env доторх NEXT_PUBLIC_SUPABASE_URL-ийг шалгана уу.";
-  }
-  return null;
+  return /ENOTFOUND|fetch failed|timed out|timeout|Failed to fetch|getaddrinfo/i.test(
+    msg,
+  );
+}
+
+async function registerLocal(
+  phone: string,
+  password: string,
+  fullName: string,
+) {
+  const user = await localRegister({ phone, password, fullName });
+  const token = signLocalSession(user);
+  const res = NextResponse.json({
+    ok: true,
+    role: user.role,
+    phone: user.phone,
+    email: user.email,
+    sessionSet: true,
+    local: true,
+  });
+  res.cookies.set(LOCAL_SESSION_COOKIE, token, localSessionCookieOptions());
+  return res;
 }
 
 export async function POST(req: Request) {
@@ -42,85 +66,104 @@ export async function POST(req: Request) {
 
     const email = phoneToEmail(phone);
     const role = isAdminPhone(phone) ? "admin" : "guest";
-    const admin = getSupabaseAdmin();
 
-    const { data: created, error: createErr } = await admin.auth.admin.createUser({
-      email,
-      password,
-      email_confirm: true,
-      phone: phoneE164(phone),
-      phone_confirm: true,
-      user_metadata: {
-        phone,
-        full_name: fullName,
-        role,
-      },
-    });
-
-    if (createErr) {
-      const msg = createErr.message || "";
-      if (/already|registered|exists/i.test(msg)) {
-        return NextResponse.json(
-          { error: "Энэ утасны дугаар бүртгэлтэй байна. Нэвтэрнэ үү." },
-          { status: 409 },
-        );
-      }
-      throw createErr;
-    }
-
-    const authUserId = created.user.id;
-
-    await withSupabaseTimeout(
-      admin.from("users").upsert(
-        {
-          clerk_id: authUserId,
+    try {
+      const admin = getSupabaseAdmin();
+      const { data: created, error: createErr } =
+        await admin.auth.admin.createUser({
           email,
-          phone,
-          full_name: fullName,
+          password,
+          email_confirm: true,
+          phone: phoneE164(phone),
+          phone_confirm: true,
+          user_metadata: {
+            phone,
+            full_name: fullName,
+            role,
+          },
+        });
+
+      if (createErr) {
+        const msg = createErr.message || "";
+        if (/already|registered|exists/i.test(msg)) {
+          return NextResponse.json(
+            { error: "Энэ утасны дугаар бүртгэлтэй байна. Нэвтэрнэ үү." },
+            { status: 409 },
+          );
+        }
+        throw createErr;
+      }
+
+      const authUserId = created.user.id;
+
+      await withSupabaseTimeout(
+        admin.from("users").upsert(
+          {
+            clerk_id: authUserId,
+            email,
+            phone,
+            full_name: fullName,
+            role,
+            profile: { phone },
+          },
+          { onConflict: "clerk_id" },
+        ),
+      );
+
+      const { createClient: createServerSupabase } = await import(
+        "@/utils/supabase/server"
+      );
+      const serverClient = await createServerSupabase();
+      const { error: signInErr } = await serverClient.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (signInErr) {
+        console.error("[phone/register] auto sign-in", signInErr);
+        return NextResponse.json({
+          ok: true,
           role,
-          profile: { phone },
-        },
-        { onConflict: "clerk_id" },
-      ),
-    );
+          phone,
+          email,
+          sessionSet: false,
+          message: "Бүртгэл амжилттай. Нэвтрэх хуудас руу орно уу.",
+        });
+      }
 
-    // Set session cookies
-    const { createClient: createServerSupabase } = await import(
-      "@/utils/supabase/server"
-    );
-    const serverClient = await createServerSupabase();
-    const { error: signInErr } = await serverClient.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (signInErr) {
-      console.error("[phone/register] auto sign-in", signInErr);
       return NextResponse.json({
         ok: true,
         role,
         phone,
         email,
-        sessionSet: false,
-        message: "Бүртгэл амжилттай. Нэвтрэх хуудас руу орно уу.",
+        sessionSet: true,
       });
+    } catch (supabaseErr) {
+      if (!isUnreachable(supabaseErr)) {
+        const msg =
+          supabaseErr instanceof Error ? supabaseErr.message : "";
+        if (/already|registered|exists/i.test(msg)) {
+          return NextResponse.json(
+            { error: "Энэ утасны дугаар бүртгэлтэй байна. Нэвтэрнэ үү." },
+            { status: 409 },
+          );
+        }
+        console.error("[phone/register] supabase", supabaseErr);
+      } else {
+        console.warn(
+          "[phone/register] Supabase unreachable — using local auth fallback",
+        );
+      }
+      return registerLocal(phone, password, fullName);
     }
-
-    return NextResponse.json({
-      ok: true,
-      role,
-      phone,
-      email,
-      sessionSet: true,
-    });
   } catch (error) {
     console.error("[phone/register]", error);
+    const msg = error instanceof Error ? error.message : "";
+    if (/бүртгэлтэй/i.test(msg)) {
+      return NextResponse.json({ error: msg }, { status: 409 });
+    }
     return NextResponse.json(
-      {
-        error:
-          unreachableError(error) ||
-          "Бүртгэл амжилтгүй. Дахин оролдоно уу.",
-      },
+      { error: msg || "Бүртгэл амжилтгүй. Дахин оролдоно уу." },
       { status: 500 },
     );
   }

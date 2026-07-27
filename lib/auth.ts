@@ -15,6 +15,29 @@ export type SessionUser = {
 
 export async function getSessionUser(): Promise<SessionUser | null> {
   try {
+    // Local fallback session (when Supabase is unreachable)
+    try {
+      const { cookies } = await import("next/headers");
+      const {
+        LOCAL_SESSION_COOKIE,
+        verifyLocalSession,
+      } = await import("@/lib/localAuth");
+      const cookieStore = await cookies();
+      const local = verifyLocalSession(
+        cookieStore.get(LOCAL_SESSION_COOKIE)?.value,
+      );
+      if (local) {
+        return {
+          id: local.id,
+          email: local.email,
+          fullName: local.fullName,
+          role: local.role,
+        };
+      }
+    } catch {
+      /* ignore cookie read failures */
+    }
+
     const supabase = await createClient();
     const {
       data: { user },

@@ -63,6 +63,19 @@ export async function proxy(request: NextRequest) {
   let user = null as { id: string } | null;
   let supabaseResponse: NextResponse | null = null;
 
+  // Local auth fallback cookie
+  try {
+    const { LOCAL_SESSION_COOKIE, verifyLocalSession } = await import(
+      "@/lib/localAuth"
+    );
+    const local = verifyLocalSession(
+      request.cookies.get(LOCAL_SESSION_COOKIE)?.value,
+    );
+    if (local) user = { id: local.id };
+  } catch {
+    /* ignore */
+  }
+
   try {
     const hasSupabase =
       !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
@@ -71,11 +84,20 @@ export async function proxy(request: NextRequest) {
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
       );
 
-    if (hasSupabase) {
+    if (hasSupabase && !user) {
       const client = createClient(request);
       supabaseResponse = client.response;
       const { data } = await client.supabase.auth.getUser();
       user = data.user;
+    } else if (hasSupabase && user) {
+      // Still refresh supabase cookies if present, but don't block on failure
+      try {
+        const client = createClient(request);
+        supabaseResponse = client.response;
+        await client.supabase.auth.getUser();
+      } catch {
+        /* ignore */
+      }
     }
   } catch (error) {
     console.error("[proxy] Supabase auth refresh failed:", error);
