@@ -1,6 +1,7 @@
+
 export function optimizeCloudinaryUrl(url: string): string {
   if (!url || !url.includes('res.cloudinary.com')) return url;
-  
+
   // If already optimized, return as is
   if (url.includes('f_auto,q_auto')) return url;
 

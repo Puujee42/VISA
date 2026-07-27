@@ -25,7 +25,7 @@ import {
 import { m, useScroll, useSpring } from "framer-motion";
 import { useTheme } from "next-themes";
 import { useTranslations, useLocale } from "next-intl";
-import { useUser } from "@clerk/nextjs";
+import { useAuth } from "@/lib/useAuth";
 import { optimizeCloudinaryUrl } from "@/lib/cloudinary";
 
 interface EventDetail {
@@ -48,7 +48,7 @@ export default function EventDetailPage() {
    const locale = useLocale() as "en" | "mn" | "de";
    const params = useParams();
    const router = useRouter();
-   const { user, isLoaded: userLoaded } = useUser();
+   const { user, isLoaded: userLoaded } = useAuth();
    const { theme } = useTheme();
    const { scrollYProgress } = useScroll();
    const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
@@ -80,7 +80,7 @@ export default function EventDetailPage() {
 
    const handleJoinEvent = async () => {
       if (!user) {
-         router.push('/sign-in');
+         router.push('/apply');
          return;
       }
 

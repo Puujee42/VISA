@@ -180,34 +180,22 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative w-full min-h-[95vh] flex items-center bg-slate-50 overflow-hidden py-24 lg:py-0">
+    <section
+      className="relative w-full min-h-[72vh] flex items-center overflow-hidden py-8 lg:min-h-[95vh] lg:py-24"
+      style={{ background: 'linear-gradient(160deg, #FFF8F8 0%, #FAFFFE 50%, #F8FFFB 100%)' }}
+    >
       <div className="absolute inset-0 z-0">
-        <m.div
-          animate={{ backgroundColor: active.colors.secondary }}
-          transition={{ duration: 1 }}
-          className="absolute inset-0"
-        />
         <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-soft-light" />
-        {mounted && !isMobile && (
-          <>
-            <m.div
-              animate={{
-                backgroundColor: active.colors.primary,
-                x: [0, 100, -100, 0],
-                y: [0, -50, 50, 0],
-              }}
-              transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -top-[20%] -right-[10%] w-[600px] h-[600px] rounded-full blur-[80px] opacity-20 mix-blend-multiply"
-            />
-            <m.div
-              animate={{ backgroundColor: active.colors.primary }}
-              className="absolute -bottom-[20%] -left-[10%] w-[500px] h-[500px] rounded-full blur-[80px] opacity-15 mix-blend-multiply"
-            />
-          </>
-        )}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: `radial-gradient(ellipse 60% 50% at 80% 20%, ${active.colors.primary}18 0%, transparent 70%),
+                         radial-gradient(ellipse 40% 40% at 10% 80%, #00C89614 0%, transparent 60%)`,
+          }}
+        />
       </div>
 
-      <div className="container mx-auto px-6 relative z-10 grid lg:grid-cols-2 gap-16 h-full items-center">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10 grid lg:grid-cols-2 gap-8 lg:gap-16 h-full items-center">
         <div className="flex flex-col justify-center order-2 lg:order-1">
           <AnimatePresence mode="wait">
             <m.div
@@ -223,19 +211,23 @@ const HeroSection = () => {
                 className="flex items-center gap-3"
               >
                 <span
-                  className="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest bg-white shadow-sm border border-slate-100 flex items-center gap-2"
-                  style={{ color: active.colors.accent }}
+                  className="px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-widest flex items-center gap-2"
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.70)',
+                    backdropFilter: 'blur(16px)',
+                    WebkitBackdropFilter: 'blur(16px)',
+                    border: '0.5px solid rgba(255, 255, 255, 0.80)',
+                    color: active.colors.accent,
+                  }}
                 >
                   <FaGlobeEurope /> {active.stat}
                 </span>
               </m.div>
 
               <m.div variants={textItemVariant} className="relative z-20">
-                <h2 className="text-6xl md:text-7xl lg:text-8xl font-black text-slate-900 leading-[0.95] tracking-tight">
+                <h2 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-slate-900 leading-[0.95] tracking-tight">
                   {common("explore")} <br />
-                  <span
-                    className={`text-transparent bg-clip-text bg-gradient-to-r ${active.colors.gradient}`}
-                  >
+                  <span style={{ color: active.colors.primary }}>
                     {t(`${active.key}.title`)}
                   </span>
                 </h2>
@@ -249,10 +241,10 @@ const HeroSection = () => {
               </m.div>
 
               <m.div variants={textItemVariant} className="max-w-xl">
-                <h3 className="text-xl font-bold text-slate-800 mb-2">
+                <h3 className="text-lg sm:text-xl font-bold text-slate-800 mb-2">
                   {t(`${active.key}.subtitle`)}
                 </h3>
-                <p className="text-lg text-slate-600 leading-relaxed font-medium">
+                <p className="text-base sm:text-lg text-slate-600 leading-relaxed font-medium">
                   {t(`${active.key}.desc`)}
                 </p>
               </m.div>
@@ -267,7 +259,10 @@ const HeroSection = () => {
                       !isMobile ? { scale: 1.05, paddingRight: "2.5rem" } : {}
                     }
                     whileTap={{ scale: 0.95 }}
-                    className={`group relative px-8 py-4 rounded-full text-white font-bold text-lg shadow-xl overflow-hidden flex items-center transition-all bg-gradient-to-r ${active.colors.gradient}`}
+                    className={`group relative px-6 sm:px-8 py-3.5 sm:py-4 rounded-full text-white font-bold text-base sm:text-lg overflow-hidden flex items-center transition-all bg-gradient-to-r ${active.colors.gradient}`}
+                    style={{
+                      boxShadow: `0 4px 16px -4px ${active.colors.primary}50`,
+                    }}
                   >
                     <span className="relative z-10">
                       {common("startJourney")}
@@ -277,12 +272,14 @@ const HeroSection = () => {
                   </m.button>
                 </Link>
 
-                <button className="flex items-center gap-3 px-6 py-4 rounded-full bg-white border border-slate-200 shadow-sm hover:shadow-lg transition-all text-slate-600 font-bold group">
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center bg-slate-100 group-hover:bg-slate-900 group-hover:text-white transition-colors">
-                    <FaPlayCircle size={14} />
-                  </div>
-                  <span>{common("howItWorks")}</span>
-                </button>
+                <Link href="/about" className="hidden sm:flex">
+                  <button className="flex items-center gap-3 px-6 py-4 rounded-full bg-white border border-slate-200 shadow-sm hover:shadow-lg transition-all text-slate-600 font-bold group">
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center bg-slate-100 group-hover:bg-slate-900 group-hover:text-white transition-colors">
+                      <FaPlayCircle size={14} />
+                    </div>
+                    <span>{common("howItWorks")}</span>
+                  </button>
+                </Link>
               </m.div>
 
               <m.div
@@ -304,7 +301,7 @@ const HeroSection = () => {
           </AnimatePresence>
         </div>
 
-        <div className="relative order-1 lg:order-2 h-[500px] lg:h-[600px] flex items-center justify-center lg:justify-end perspective-[2000px]">
+        <div className="relative order-1 lg:order-2 h-[380px] sm:h-[500px] lg:h-[600px] flex items-center justify-center lg:justify-end perspective-[2000px]">
           <m.div
             key={`iso-${active.iso}`}
             initial={{ opacity: 0, x: 50 }}
@@ -317,7 +314,7 @@ const HeroSection = () => {
             {active.iso}
           </m.div>
 
-          <div className="relative w-[320px] md:w-[380px] aspect-[3/4] z-20">
+          <div className="relative w-[280px] sm:w-[320px] md:w-[380px] aspect-[3/4] z-20">
             <AnimatePresence
               initial={false}
               custom={direction}
@@ -330,9 +327,14 @@ const HeroSection = () => {
                 initial="enter"
                 animate="center"
                 exit="exit"
-                className="absolute inset-0 rounded-[2.5rem] overflow-hidden bg-white shadow-2xl"
+                className="absolute inset-0 overflow-hidden"
                 style={{
-                  boxShadow: `0 30px 60px -12px ${active.colors.primary}60`,
+                  borderRadius: '28px',
+                  background: 'rgba(255, 255, 255, 0.55)',
+                  backdropFilter: 'blur(28px) saturate(1.6)',
+                  WebkitBackdropFilter: 'blur(28px) saturate(1.6)',
+                  border: '0.5px solid rgba(255, 255, 255, 0.7)',
+                  boxShadow: `0 8px 32px -8px ${active.colors.primary}30`,
                 }}
               >
                 <div className="w-full h-full relative group">
@@ -361,7 +363,17 @@ const HeroSection = () => {
                     </div>
                   </div>
                   <div className="absolute bottom-6 left-6 right-6">
-                    <div className="bg-white/10 backdrop-blur-md border border-white/20 p-5 rounded-3xl text-white">
+                    <div
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.18)',
+                        backdropFilter: 'blur(20px) saturate(1.4)',
+                        WebkitBackdropFilter: 'blur(20px) saturate(1.4)',
+                        border: '0.5px solid rgba(255, 255, 255, 0.35)',
+                        borderRadius: '20px',
+                        padding: '1.25rem',
+                      }}
+                      className="text-white"
+                    >
                       <h4 className="text-2xl font-bold mb-1">
                         {t(`${active.key}.title`)}
                       </h4>
@@ -393,11 +405,17 @@ const HeroSection = () => {
           {mounted && !isMobile && (
             <m.div
               animate={{
-                rotate: [6, 8, 6],
-                backgroundColor: active.colors.secondary,
+                rotate: [4, 6, 4],
               }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute top-4 lg:right-4 w-[320px] md:w-[380px] h-full rounded-[2.5rem] opacity-60 -z-10 border-2 border-slate-100"
+              style={{
+                background: 'rgba(255, 255, 255, 0.20)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
+                border: '0.5px solid rgba(255, 255, 255, 0.40)',
+                borderRadius: '28px',
+              }}
+              className="absolute top-4 lg:right-4 w-[320px] md:w-[380px] h-full opacity-60 -z-10"
             />
           )}
         </div>

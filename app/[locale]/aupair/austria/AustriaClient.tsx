@@ -22,7 +22,7 @@ import {
    FaPlaneDeparture
 } from "react-icons/fa";
 import { Clock } from "lucide-react";
-import { useUser } from "@clerk/nextjs";
+import { useAuth } from "@/lib/useAuth";
 import { useTranslations } from "next-intl";
 
 // --- VARIANTS ---
@@ -40,7 +40,7 @@ export default function AustriaClient() {
    const containerRef = useRef(null);
    const { scrollYProgress } = useScroll({ target: containerRef });
    const yHero = useTransform(scrollYProgress, [0, 1], [0, -200]);
-   const { isSignedIn } = useUser();
+   const { isSignedIn } = useAuth();
 
    const stats = [
       { label: t("info.stats.capital.label"), val: t("info.stats.capital.val") },

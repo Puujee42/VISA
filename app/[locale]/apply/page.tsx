@@ -12,7 +12,6 @@ import {
   Loader2,
   Send,
   Plane,
-  Info,
 } from "lucide-react";
 import { FaPassport, FaGraduationCap } from "react-icons/fa";
 import StudentInformation from "@/app/components/StudentInformation";
@@ -91,9 +90,19 @@ export default function ApplyPage() {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1); // 1: Initial Form, 2: Detailed Info
   const [isPreFilled, setIsPreFilled] = useState(false);
+  const [questions, setQuestions] = useState<
+    {
+      fieldKey: string;
+      label: { en?: string; mn?: string; de?: string };
+      type: string;
+      options?: string[];
+      required?: boolean;
+      placeholder?: { en?: string; mn?: string; de?: string };
+    }[]
+  >([]);
 
   // Form State
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<Record<string, string>>({
     firstName: "",
     lastName: "",
     email: "",
@@ -102,6 +111,24 @@ export default function ApplyPage() {
     level: "A1",
     message: "",
   });
+
+  useEffect(() => {
+    fetch("/api/apply-questions")
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data) && data.length) {
+          setQuestions(data);
+          setFormData((prev) => {
+            const next = { ...prev };
+            for (const q of data) {
+              if (next[q.fieldKey] === undefined) next[q.fieldKey] = "";
+            }
+            return next;
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Pre-fill user data from DB
   useEffect(() => {
@@ -160,12 +187,33 @@ export default function ApplyPage() {
     setLoading(true);
 
     try {
+      const coreKeys = new Set([
+        "firstName",
+        "lastName",
+        "email",
+        "phone",
+        "age",
+        "level",
+        "message",
+      ]);
+      const answers: Record<string, string> = {};
+      for (const [k, v] of Object.entries(formData)) {
+        if (!coreKeys.has(k) && v) answers[k] = v;
+      }
+
       const response = await fetch("/api/applications/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           programId: selectedProgram,
-          ...formData,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+          age: formData.age,
+          level: formData.level,
+          message: formData.message || "",
+          answers,
         }),
       });
 
@@ -369,135 +417,108 @@ export default function ApplyPage() {
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                       <div className="grid md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1 flex justify-between">
-                            {t("form.firstName")}
-                            {isPreFilled && formData.firstName && (
-                              <span className="text-[8px] text-emerald-500 font-black tracking-widest bg-emerald-50 px-1.5 rounded uppercase flex items-center gap-1">
-                                {t("form.verified")}
-                              </span>
-                            )}
-                          </label>
-                          <input
-                            required
-                            value={formData.firstName}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                firstName: e.target.value,
-                              })
-                            }
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#E31B23]"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1 flex justify-between">
-                            {t("form.lastName")}
-                            {isPreFilled && formData.lastName && (
-                              <span className="text-[8px] text-emerald-500 font-black tracking-widest bg-emerald-50 px-1.5 rounded uppercase flex items-center gap-1">
-                                {t("form.verified")}
-                              </span>
-                            )}
-                          </label>
-                          <input
-                            required
-                            value={formData.lastName}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                lastName: e.target.value,
-                              })
-                            }
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#E31B23]"
-                          />
-                        </div>
-                      </div>
+                        {(questions.length
+                          ? questions
+                          : [
+                              { fieldKey: "firstName", label: { mn: t("form.firstName") }, type: "text", required: true },
+                              { fieldKey: "lastName", label: { mn: t("form.lastName") }, type: "text", required: true },
+                              { fieldKey: "email", label: { mn: t("form.email") }, type: "email", required: true },
+                              { fieldKey: "phone", label: { mn: t("form.phone") }, type: "phone", required: true },
+                              { fieldKey: "age", label: { mn: t("form.age") }, type: "number", required: true },
+                              {
+                                fieldKey: "level",
+                                label: { mn: t("form.level") },
+                                type: "select",
+                                required: true,
+                                options: ["A1", "A2", "B1", "B2", "C1"],
+                              },
+                            ]
+                        ).map((q) => {
+                          const label =
+                            q.label?.mn || q.label?.en || q.fieldKey;
+                          const value = formData[q.fieldKey] ?? "";
+                          const inputClass =
+                            "w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#E31B23]";
+                          const isEmailLocked =
+                            q.fieldKey === "email" && isPreFilled;
 
-                      <div className="grid md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1 flex justify-between">
-                            {t("form.email")}
-                            {isPreFilled && (
-                              <span className="text-[8px] text-[#E31B23] font-black tracking-widest bg-red-50 px-1.5 rounded uppercase flex items-center gap-1">
-                                <Info size={8} /> {t("form.linked")}
-                              </span>
-                            )}
-                          </label>
-                          <input
-                            type="email"
-                            required
-                            readOnly={isPreFilled}
-                            value={formData.email}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                email: e.target.value,
-                              })
-                            }
-                            className={`w-full border border-slate-200 rounded-xl px-4 py-3 font-bold transition-all focus:outline-none focus:ring-2 focus:ring-[#E31B23]
-                                     ${isPreFilled ? "bg-slate-100 text-slate-500 cursor-not-allowed border-dashed" : "bg-slate-50 text-slate-900"}`}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1 flex justify-between">
-                            {t("form.phone")}
-                            {isPreFilled && formData.phone && (
-                              <span className="text-[8px] text-emerald-500 font-black tracking-widest bg-emerald-50 px-1.5 rounded uppercase flex items-center gap-1">
-                                {t("form.verified")}
-                              </span>
-                            )}
-                          </label>
-                          <input
-                            required
-                            value={formData.phone}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                phone: e.target.value,
-                              })
-                            }
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#E31B23]"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="grid md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">
-                            {t("form.age")}
-                          </label>
-                          <input
-                            required
-                            type="number"
-                            value={formData.age}
-                            onChange={(e) =>
-                              setFormData({ ...formData, age: e.target.value })
-                            }
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#E31B23]"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">
-                            {t("form.level")}
-                          </label>
-                          <select
-                            required
-                            value={formData.level}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                level: e.target.value,
-                              })
-                            }
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#E31B23]"
-                          >
-                            <option value="A1">{t("levels.a1")}</option>
-                            <option value="A2">{t("levels.a2")}</option>
-                            <option value="B1">{t("levels.b1")}</option>
-                            <option value="B2">{t("levels.b2")}</option>
-                            <option value="C1">{t("levels.c1")}</option>
-                          </select>
-                        </div>
+                          return (
+                            <div
+                              key={q.fieldKey}
+                              className={`space-y-2 ${
+                                q.type === "textarea" ? "md:col-span-2" : ""
+                              }`}
+                            >
+                              <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1 flex justify-between">
+                                {label}
+                                {q.required === false && (
+                                  <span className="text-[8px] text-slate-400">optional</span>
+                                )}
+                              </label>
+                              {q.type === "select" ? (
+                                <select
+                                  required={q.required !== false}
+                                  value={value || "A1"}
+                                  onChange={(e) =>
+                                    setFormData({
+                                      ...formData,
+                                      [q.fieldKey]: e.target.value,
+                                    })
+                                  }
+                                  className={inputClass}
+                                >
+                                  {(q.options?.length
+                                    ? q.options
+                                    : ["A1", "A2", "B1", "B2", "C1"]
+                                  ).map((opt) => (
+                                    <option key={opt} value={opt}>
+                                      {opt}
+                                    </option>
+                                  ))}
+                                </select>
+                              ) : q.type === "textarea" ? (
+                                <textarea
+                                  required={q.required !== false}
+                                  value={value}
+                                  rows={3}
+                                  onChange={(e) =>
+                                    setFormData({
+                                      ...formData,
+                                      [q.fieldKey]: e.target.value,
+                                    })
+                                  }
+                                  className={inputClass}
+                                />
+                              ) : (
+                                <input
+                                  type={
+                                    q.type === "number"
+                                      ? "number"
+                                      : q.type === "email"
+                                        ? "email"
+                                        : q.type === "phone"
+                                          ? "tel"
+                                          : "text"
+                                  }
+                                  required={q.required !== false}
+                                  readOnly={isEmailLocked}
+                                  value={value}
+                                  onChange={(e) =>
+                                    setFormData({
+                                      ...formData,
+                                      [q.fieldKey]: e.target.value,
+                                    })
+                                  }
+                                  className={`${inputClass} ${
+                                    isEmailLocked
+                                      ? "bg-slate-100 text-slate-500 cursor-not-allowed border-dashed"
+                                      : ""
+                                  }`}
+                                />
+                              )}
+                            </div>
+                          );
+                        })}
                       </div>
 
                       <button

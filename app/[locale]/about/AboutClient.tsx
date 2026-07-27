@@ -152,7 +152,7 @@ export default function AboutPageRed() {
             >
               <div className="relative w-full h-full group">
                 <Image
-                  src="https://res.cloudinary.com/dc127wztz/image/upload/v1768996172/zu47lypqyoup0ylylou2.webp"
+                  src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&q=80&w=800"
                   alt="Mongolian Youth"
                   fill
                   className="object-cover transition-transform duration-[2s] group-hover:scale-110"

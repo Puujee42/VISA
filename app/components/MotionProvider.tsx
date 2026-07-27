@@ -1,26 +1,13 @@
 "use client";
 
 import { MotionConfig, LazyMotion, domAnimation } from "framer-motion";
-import { useEffect, useState } from "react";
 
 export default function MotionProvider({ children }: { children: React.ReactNode }) {
-    const [isMobile, setIsMobile] = useState(false);
-
-    useEffect(() => {
-        const checkMobile = () => setIsMobile(window.innerWidth < 768);
-        checkMobile();
-        window.addEventListener("resize", checkMobile);
-        return () => window.removeEventListener("resize", checkMobile);
-    }, []);
-
-    return (
-        <LazyMotion features={domAnimation}>
-            <MotionConfig
-                reducedMotion={isMobile ? "always" : "user"}
-                transition={isMobile ? { duration: 0 } : undefined}
-            >
-                {children}
-            </MotionConfig>
-        </LazyMotion>
-    );
+  return (
+    <LazyMotion features={domAnimation} strict>
+      <MotionConfig reducedMotion="user" transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}>
+        {children}
+      </MotionConfig>
+    </LazyMotion>
+  );
 }

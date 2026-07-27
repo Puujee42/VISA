@@ -18,7 +18,7 @@ import {
   FaPassport,
 } from "react-icons/fa";
 import { ShieldCheck, Sparkles } from "lucide-react";
-import { useUser } from "@clerk/nextjs";
+import { useAuth } from "@/lib/useAuth";
 import { useTranslations } from "next-intl";
 
 // --- ANIMATION VARIANTS ---
@@ -37,7 +37,7 @@ export default function FranceClient() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: containerRef });
   const yHero = useTransform(scrollYProgress, [0, 1], [0, -180]);
-  const { isSignedIn } = useUser();
+  const { isSignedIn } = useAuth();
 
   const stats = [
     { label: t("info.stats.capital.label"), val: t("info.stats.capital.val") },

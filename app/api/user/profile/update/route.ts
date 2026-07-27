@@ -1,23 +1,28 @@
 import { NextResponse } from "next/server";
-import { connectToDB } from "@/lib/db";
-import User from "@/lib/models/User";
-import { auth } from "@clerk/nextjs/server";
+import { getUserId } from "@/lib/auth";
+import { getSupabaseAdmin } from "@/lib/supabase/admin";
+import { toApi } from "@/lib/supabase/mappers";
 
 export async function POST(req: Request) {
   try {
-    await connectToDB();
-    const { userId: clerkId } = await auth();
-    if (!clerkId) {
+    const userId = await getUserId();
+    if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const data = await req.json();
-
     const {
+      firstName, lastName, sex, dob, placeOfBirth, nationality, religion,
+      phone, mobile, skype, bestTime, street, number, postalCode, city, country,
+      fatherProfession, motherProfession, brothers, sisters, hobbies, languages,
+      childcareExperience, householdTasks, motivation,
+    } = data;
+
+    const profile = {
       firstName,
       lastName,
       sex,
-      dob,
+      dob: dob ? new Date(dob).toISOString() : null,
       placeOfBirth,
       nationality,
       religion,
@@ -25,11 +30,7 @@ export async function POST(req: Request) {
       mobile,
       skype,
       bestTime,
-      street,
-      number,
-      postalCode,
-      city,
-      country,
+      address: { street, number, postalCode, city, country },
       fatherProfession,
       motherProfession,
       brothers,
@@ -39,52 +40,28 @@ export async function POST(req: Request) {
       childcareExperience,
       householdTasks,
       motivation,
-    } = data;
-
-    const profileUpdate = {
-      firstName,
-      lastName,
-      "profile.sex": sex,
-      "profile.dob": dob ? new Date(dob) : null,
-      "profile.placeOfBirth": placeOfBirth,
-      "profile.nationality": nationality,
-      "profile.religion": religion,
-      "profile.phone": phone,
-      "profile.mobile": mobile,
-      "profile.skype": skype,
-      "profile.bestTime": bestTime,
-      "profile.address.street": street,
-      "profile.address.number": number,
-      "profile.address.postalCode": postalCode,
-      "profile.address.city": city,
-      "profile.address.country": country,
-      "profile.fatherProfession": fatherProfession,
-      "profile.motherProfession": motherProfession,
-      "profile.brothers": brothers,
-      "profile.sisters": sisters,
-      "profile.hobbies": hobbies,
-      "profile.languages": languages,
-      "profile.childcareExperience": childcareExperience,
-      "profile.householdTasks": householdTasks,
-      "profile.motivation": motivation,
     };
 
-    const user = await User.findOneAndUpdate(
-      { clerkId },
-      { $set: profileUpdate },
-      { new: true }
-    );
+    const supabase = getSupabaseAdmin();
+    const fullName = [firstName, lastName].filter(Boolean).join(" ").trim();
+    const updatePayload: Record<string, unknown> = { profile };
+    if (fullName) updatePayload.full_name = fullName;
 
-    if (!user) {
+    const { data: row, error } = await supabase
+      .from("users")
+      .update(updatePayload)
+      .eq("clerk_id", userId)
+      .select()
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!row) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    return NextResponse.json(user, { status: 200 });
-  } catch (error: any) {
+    return NextResponse.json(toApi(row), { status: 200 });
+  } catch (error) {
     console.error("Profile update error:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

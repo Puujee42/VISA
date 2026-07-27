@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useUser } from "@clerk/nextjs";
+import { useAuth } from "@/lib/useAuth";
 import {
    Clock, Calendar, MapPin, ArrowUpRight, Activity,
    CheckCircle2, Shield, MoreHorizontal, Loader2,
@@ -17,7 +17,7 @@ import {
    Baby,
    Heart,
    Video,
-
+   Folder,
 } from "lucide-react";
 import { m } from "framer-motion";
 import { useTranslations, useLocale } from "next-intl";
@@ -177,13 +177,14 @@ const FullSnapshotSection = ({ profile }: { profile: any }) => {
 export default function MemberDashboard() {
    const t = useTranslations("dashboard");
    const locale = useLocale();
-   const { user, isLoaded } = useUser();
+   const { user, isLoaded } = useAuth();
    const router = useRouter();
 
    const [userData, setUserData] = useState<UserData | null>(null);
    const [activities, setActivities] = useState<ActivityLog[]>([]);
    const [userApps, setUserApps] = useState<any[]>([]);
    const [bookings, setBookings] = useState<any[]>([]);
+   const [materials, setMaterials] = useState<any[]>([]);
    const [loading, setLoading] = useState(true);
 
    const formatDate = (date: string) => {
@@ -195,15 +196,24 @@ export default function MemberDashboard() {
    };
 
    useEffect(() => {
-      if (isLoaded && user?.publicMetadata?.role === 'admin') {
-         router.replace('/admin');
+      if (!isLoaded) return;
+
+      if (!user) {
+         router.replace("/sign-in");
+         return;
+      }
+
+      if (user.role === "admin") {
+         router.replace("/admin");
          return;
       }
 
       const init = async () => {
-         if (!isLoaded || !user) return;
          try {
-            const dashRes = await fetch('/api/user/dashboard');
+            const [dashRes, materialsRes] = await Promise.all([
+               fetch('/api/user/dashboard'),
+               fetch('/api/user/materials')
+            ]);
 
             if (dashRes.ok) {
                const data = await dashRes.json();
@@ -216,7 +226,12 @@ export default function MemberDashboard() {
                setBookings(data.bookings || []);
                setUserApps(data.applications || []);
             } else {
-               setUserData({ _id: "new", fullName: user.fullName || "Guest User", email: user.primaryEmailAddress?.emailAddress || "", role: "guest" });
+               setUserData({ _id: "new", fullName: user.fullName || "Guest User", email: user.email || "", role: "guest" });
+            }
+
+            if (materialsRes.ok) {
+               const matData = await materialsRes.json();
+               setMaterials(matData.materials || []);
             }
          } catch (e) {
             console.error("Dashboard Error:", e);
@@ -305,7 +320,7 @@ export default function MemberDashboard() {
                         <div className="flex items-center gap-6">
                            <div className="relative">
                               <div className="w-20 h-20 rounded-3xl p-1 shadow-xl bg-white ring-4 ring-slate-50 -rotate-3">
-                                 <Image src={user?.imageUrl || "/logo.jpg"} alt="User" width={80} height={80} className="rounded-[1.2rem] w-full h-full object-cover" />
+                                 <Image src={user?.imageUrl || "/image.png"} alt="User" width={80} height={80} className="rounded-[1.2rem] w-full h-full object-cover" />
                               </div>
                               {isStudent && <div className="absolute -bottom-2 -right-2 bg-white rounded-full p-1.5 shadow-lg border border-slate-100"><Shield size={14} className="text-[#00C896] fill-[#00C896]/20" /></div>}
                            </div>
@@ -459,6 +474,62 @@ export default function MemberDashboard() {
                   </div>
                </DashboardCard>
             </div>
+
+            {/* ─── MY MATERIALS SECTION ─── */}
+            {materials.length > 0 && (
+               <div className="space-y-6">
+                  <div className="flex items-center gap-4 mb-2">
+                     <div className="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-lg">
+                        <Folder size={20} />
+                     </div>
+                     <div>
+                        <h2 className="text-2xl font-black text-slate-900 leading-tight">Миний материалууд / My Materials</h2>
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Хүлээн авсан гарын авлага, маягтууд</p>
+                     </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                     {materials.map((mat, idx) => {
+                        const dateObj = new Date(mat.createdAt);
+                        const year = dateObj.getFullYear();
+                        const month = dateObj.toLocaleString("default", { month: "short" });
+                        const day = dateObj.getDate();
+                        
+                        return (
+                           <DashboardCard key={mat._id} className="p-8! flex flex-col justify-between" delay={idx * 0.1}>
+                              <div>
+                                 <div className="flex justify-between items-start gap-4 mb-6">
+                                    <div className="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center text-[#E31B23]">
+                                       <FileText size={24} />
+                                    </div>
+                                    <span className="px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider bg-slate-100 text-slate-600">
+                                       {mat.category || "File"}
+                                    </span>
+                                 </div>
+                                 <h3 className="text-lg font-black text-slate-900 mb-2 leading-snug">{mat.title}</h3>
+                                 {mat.description && (
+                                    <p className="text-xs text-slate-500 font-medium leading-relaxed mb-6">{mat.description}</p>
+                                 )}
+                              </div>
+                              
+                              <div className="pt-6 border-t border-slate-50 flex items-center justify-between gap-4">
+                                 <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                                    {month} {day}, {year}
+                                 </div>
+                                 <a
+                                    href={mat.fileUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="px-4 py-2 bg-slate-900 hover:bg-[#E31B23] text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-1.5"
+                                 >
+                                    Татах / Get
+                                 </a>
+                              </div>
+                           </DashboardCard>
+                        );
+                     })}
+                  </div>
+               </div>
+            )}
 
             <FullSnapshotSection profile={userData.profile} />
          </div>

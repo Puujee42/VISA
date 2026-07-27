@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
     formats: ["image/avif", "image/webp"],
+    qualities: [70, 75],
     remotePatterns: [
       {
         protocol: "https",
@@ -27,10 +28,6 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "www.worldatlas.com",
-      },
-      {
-        protocol: "https",
-        hostname: "img.clerk.com",
       },
       {
         protocol: "https",
@@ -54,16 +51,51 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  serverExternalPackages: [
+    "nodemailer",
+    "cloudinary",
+    "livekit-server-sdk",
+  ],
   experimental: {
     optimizePackageImports: [
       "framer-motion",
       "lucide-react",
       "react-icons",
-      "@clerk/nextjs",
       "react-icons/fa",
       "react-countup",
       "react-type-animation",
     ],
+  },
+  async headers() {
+    return [
+      // Security headers on every response
+      {
+        source: '/(.*)',
+        headers: [
+          { key: 'X-DNS-Prefetch-Control', value: 'on' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+        ],
+      },
+      // Next.js owns /_next/static cache headers — do not override (causes stale chunk errors in Turbopack)
+      // Public news feed: 60 s fresh, 5 min stale-while-revalidate
+      {
+        source: '/api/news',
+        headers: [{ key: 'Cache-Control', value: 'public, s-maxage=60, stale-while-revalidate=300' }],
+      },
+      // Public events: same cadence
+      {
+        source: '/api/events',
+        headers: [{ key: 'Cache-Control', value: 'public, s-maxage=60, stale-while-revalidate=300' }],
+      },
+      // Opportunities change rarely – 5 min fresh, 10 min stale
+      {
+        source: '/api/opportunities',
+        headers: [{ key: 'Cache-Control', value: 'public, s-maxage=300, stale-while-revalidate=600' }],
+      },
+    ];
   },
   async redirects() {
     return [

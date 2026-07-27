@@ -4,6 +4,27 @@
       "title": "Mongolian Au Pair — Tor nach Europa | Kulturaustausch seit 2005",
       "description": "Mongoliens führende Au-Pair-Agentur verbindet Jugendliche mit Gastfamilien in Deutschland, Österreich, der Schweiz, Belgien & Frankreich. 3000+ erfolgreiche Vermittlungen. IAPA-Mitglied.",
       "keywords": "Au-Pair Mongolei, mongolisches Au-Pair, Kulturaustausch Europa, Gastfamilie Europa, Au-Pair-Agentur Mongolei, IAPA-Mitglied"
+    },
+    "quickAccess": "Schnellzugriff",
+    "tagline": "Tor nach Europa",
+    "destinationsTitle": "Zielsland wählen",
+    "viewAll": "Alle Programme",
+    "howItWorks": {
+      "label": "Einfacher Ablauf",
+      "title": "So funktioniert es",
+      "cta": "Jetzt bewerben",
+      "step1": {
+        "title": "Online bewerben",
+        "desc": "Formular ausfüllen und Dokumente hochladen"
+      },
+      "step2": {
+        "title": "Familie finden",
+        "desc": "Wir vermitteln eine verifizierte Gastfamilie"
+      },
+      "step3": {
+        "title": "Nach Europa reisen",
+        "desc": "Im Ausland leben, Sprache lernen, wachsen"
+      }
     }
   },
   "common": {
@@ -206,6 +227,7 @@
     "slide3_desc": "Leben Sie mit einer Gastfamilie in Frankreich, verbessern Sie Ihr Französisch im Alltag und sammeln Sie wertvolle internationale Erfahrung für Ihre Zukunft.",
     "slide3_location": "Frankreich",
     "learnMore": "Mehr erfahren",
+    "viewProgram": "Programm ansehen",
     "verified": "Geprüftes Programm"
   },
   "UsSection": {
@@ -889,7 +911,7 @@
     "card4_text": "Förderung der persönlichen und beruflichen Entwicklung durch kulturellen Austausch."
   },
   "navbar": {
-    "logo": "AuPair",
+    "logo": "AUPAIR",
     "home": "Home",
     "about": "Über Uns",
     "program": "Au-Pair-Programm",
@@ -900,6 +922,9 @@
     "dashboard": "Dashboard",
     "signin": "Anmelden",
     "register": "Registrieren",
+    "contact": "Kontakt",
+    "menuTitle": "Menü",
+    "countries": "Länder",
     "germany": "Deutschland",
     "austria": "Österreich",
     "switzerland": "Schweiz",
@@ -1115,6 +1140,7 @@
       "blog": "Blog & Nachrichten",
       "shopping": "Geschäft",
       "bookings": "Buchungen",
+      "websiteInfo": "Website-Editor",
       "role": "Super-Admin",
       "online": "Online"
     },

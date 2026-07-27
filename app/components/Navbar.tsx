@@ -1,36 +1,34 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, usePathname } from "@/navigation";
 import Image from "next/image";
 import {
   Home,
-  Globe,
-  Sun,
-  Moon,
   BookOpen,
-  CalendarClock,
   ShoppingBag,
   Ticket,
   Plane,
   ChevronDown,
+  Menu,
+  X,
+  Info,
+  GraduationCap,
+  Mail,
+  FileText,
+  ChevronRight,
 } from "lucide-react";
-import { useScroll, useMotionValueEvent, AnimatePresence, m } from "framer-motion";
-import { Motion as motion } from "./MotionProxy";
-import { useTheme } from "next-themes";
-import { useTranslations, useLocale } from "next-intl";
+import { AnimatePresence, m } from "framer-motion";
+import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
-import { useIsMobile } from "./MotionProxy";
 import LanguageToggle from "./LanguageToggle";
 import { Capacitor } from "@capacitor/core";
 
-// Dynamically import Clerk components to reduce initial JS bundle
 const AuthActions = dynamic(() => import("./AuthActions"), {
   ssr: false,
   loading: () => <div className="w-[120px] h-9" />,
 });
 
-// --- COLOR PALETTE CONFIGURATION ---
 const BRAND = {
   RED: "#E31B23",
   GREEN: "#00C896",
@@ -39,23 +37,39 @@ const BRAND = {
 
 export default function Navbar() {
   const t = useTranslations("navbar");
-  const locale = useLocale();
   const [isScrolled, setIsScrolled] = useState(false);
   const [hoveredNav, setHoveredNav] = useState<string | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
-  const { scrollY } = useScroll();
-  const isMobile = useIsMobile();
-  const [isNative] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    return Capacitor.isNativePlatform();
-  });
+  const [isNative, setIsNative] = useState(false);
 
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    const shouldBeScrolled = latest > 50;
-    if (shouldBeScrolled !== isScrolled) {
-      setIsScrolled(shouldBeScrolled);
+  useEffect(() => {
+    try {
+      setIsNative(Capacitor.isNativePlatform());
+    } catch {
+      setIsNative(false);
     }
-  });
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [menuOpen]);
+
+  useEffect(() => {
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        setIsScrolled(window.scrollY > 40);
+        ticking = false;
+      });
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const desktopNav = [
     { name: t("home"), href: "/" },
@@ -70,15 +84,16 @@ export default function Navbar() {
   const mobileNav = [
     { id: "home", icon: Home, href: "/", label: t("home") },
     { id: "aupair", icon: Plane, href: "/aupair", label: t("program") },
-    {
-      id: "booking",
-      icon: ShoppingBag,
-      href: "/shop",
-      label: t("shop"),
-      isMain: true,
-    },
+    { id: "shop", icon: ShoppingBag, href: "/shop", label: t("shop") },
     { id: "events", icon: Ticket, href: "/events", label: t("events") },
     { id: "news", icon: BookOpen, href: "/news", label: t("news") },
+  ];
+
+  const menuLinks = [
+    { icon: Info, label: t("about"), href: "/about" },
+    { icon: GraduationCap, label: t("lessons"), href: "/lessons" },
+    { icon: FileText, label: t("register"), href: "/apply" },
+    { icon: Mail, label: t("contact"), href: "/contact" },
   ];
 
   const AU_PAIR_COUNTRIES = [
@@ -118,42 +133,44 @@ export default function Navbar() {
       flag: "🇫🇷",
     },
   ];
-  const language = locale === "mn" ? "mn" : locale === "en" ? "en" : "de";
+
+  const isHome = pathname === "/";
+  const showBottomTabs = !isNative;
+
   return (
     <>
-      <m.header
-        className="fixed top-5 left-0 right-0 hidden lg:flex justify-center pointer-events-none z-[999]"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
+      <header
+        className={`fixed left-0 right-0 hidden lg:flex justify-center pointer-events-none z-[999] ${
+          isHome ? "top-0 pt-5" : "top-4"
+        }`}
       >
         <nav
           onMouseLeave={() => setHoveredNav(null)}
-          style={{ WebkitBackdropFilter: "blur(12px)" }}
           className={`
-          z-[100] transform-gpu pointer-events-auto flex items-center justify-between transition-[background-color,border-color,shadow,padding] duration-700 relative
-          w-[98%] xl:w-[1250px] py-3 px-6 rounded-full border backdrop-blur-md text-[#001829]
-          ${
-            isScrolled
-              ? "bg-white/95 border-emerald-100 shadow-[0_20px_40px_-15px_rgba(0,200,150,0.2)]"
-              : "bg-white/80 border-white/20 shadow-none"
-          }
-        `}
+            z-[100] pointer-events-auto flex items-center justify-between
+            transition-[background-color,box-shadow,border-color] duration-300 relative
+            w-[min(1240px,calc(100%-2rem))] py-2.5 px-5 rounded-2xl
+            border text-[#001829] isolate
+            ${isScrolled || !isHome
+              ? "bg-white/95 border-slate-200/80 shadow-[0_8px_30px_-12px_rgba(15,23,42,0.18)]"
+              : "bg-white/92 border-white/80 shadow-[0_10px_40px_-16px_rgba(15,23,42,0.28)]"
+            }
+          `}
         >
-          <Link href="/" className="flex items-center gap-3 group shrink-0">
-            <div className="relative w-10 h-10 overflow-hidden rounded-full border-2 border-white/50 shadow-md bg-white">
+          <Link href="/" className="relative z-10 flex items-center gap-2.5 group shrink-0">
+            <div className="relative w-9 h-9 overflow-hidden rounded-full border border-slate-200/80 shadow-sm bg-white shrink-0">
               <Image
                 src="/image.png"
-                alt="AuPair Logo"
+                alt="AUPAIR"
                 fill
                 priority
-                sizes="40px"
+                sizes="36px"
                 className="object-cover transition-transform duration-500 group-hover:scale-110"
                 quality={75}
               />
             </div>
             <span
-              className="font-sans font-black text-lg tracking-tight uppercase"
+              className="relative z-10 font-sans font-black text-[17px] tracking-[0.04em] uppercase leading-none"
               style={{ color: BRAND.RED }}
             >
               {t("logo")}
@@ -176,11 +193,10 @@ export default function Navbar() {
                 >
                   <Link
                     href={item.href}
-                    className={`flex items-center gap-1 px-3 py-2 rounded-full text-[10px] font-bold uppercase tracking-wide transition-[color,background-color,shadow] duration-300 whitespace-nowrap
-                      ${
-                        isActive
-                          ? "bg-white text-[#00C896] shadow-[0_0_15px_rgba(0,200,150,0.4)]"
-                          : "opacity-80 hover:opacity-100 hover:text-[#00C896] hover:bg-[#00C896]/5 hover:shadow-[0_0_20px_rgba(0,200,150,0.6)]"
+                    className={`flex items-center gap-1 px-3 py-2 rounded-full text-[10px] font-bold uppercase tracking-wide transition-[color,background-color] duration-300 whitespace-nowrap
+                      ${isActive
+                        ? "bg-white/80 backdrop-blur-sm text-[#00C896] border border-white/60"
+                        : "opacity-80 hover:opacity-100 hover:text-[#00C896] hover:bg-white/50 hover:border-white/60"
                       }`}
                   >
                     {item.name}
@@ -192,12 +208,11 @@ export default function Navbar() {
                   <AnimatePresence>
                     {item.hasDropdown && hoveredNav === item.href && (
                       <m.div
-                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        transition={{ duration: 0.2 }}
-                        style={{ WebkitBackdropFilter: "blur(16px)" }}
-                        className="transform-gpu absolute top-full left-1/2 -translate-x-1/2 mt-4 w-[600px] p-4 rounded-3xl border shadow-xl z-[100] backdrop-blur-lg bg-white/95 border-emerald-50 text-slate-800"
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 8 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-[560px] p-4 text-slate-800 bg-white border border-slate-100 shadow-xl rounded-2xl"
                       >
                         <div className="grid grid-cols-2 gap-3">
                           {AU_PAIR_COUNTRIES.map((country) => (
@@ -244,102 +259,158 @@ export default function Navbar() {
             <AuthActions BRAND={BRAND} isMobile={false} />
           </div>
         </nav>
-      </m.header>
+      </header>
 
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-[100]">
+      {/* ── Mobile Top Bar ── */}
+      <header
+        className={`lg:hidden fixed top-0 inset-x-0 z-[100] transition-all duration-500 ${
+          isHome ? "bg-transparent border-none" : "mobile-top-bar"
+        }`}
+      >
         <div
-          style={{ WebkitBackdropFilter: "blur(20px)" }}
-          className="flex justify-between items-center w-full px-5 pb-3 pt-[max(env(safe-area-inset-top),12px)] bg-[#FDFBF7]/90 border-b border-black/5 shadow-sm transition-all duration-500"
+          className="flex items-center justify-between px-4"
+          style={{ height: "calc(var(--app-header-height) + env(safe-area-inset-top, 0px))", paddingTop: "env(safe-area-inset-top, 0px)" }}
         >
-          <Link href="/" className="flex items-center gap-3 outline-none">
-            <div className="relative w-8 h-8 rounded-full overflow-hidden shadow-sm bg-white">
-              <Image
-                src="/image.png"
-                alt="Logo"
-                fill
-                priority
-                sizes="32px"
-                className="object-cover"
-                quality={75}
-              />
-            </div>
-            <span
-              className="text-[17px] font-bold tracking-tight"
-              style={{ color: BRAND.RED }}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setMenuOpen(true)}
+              className={`flex items-center justify-center w-9 h-9 rounded-full active:scale-90 transition-all ${
+                isHome
+                  ? "bg-white/15 backdrop-blur-md text-white border border-white/20"
+                  : "bg-slate-100/90 text-slate-700"
+              }`}
+              aria-label="Menu"
             >
-              {t("logo") || "AuPair"}
-            </span>
-          </Link>
-
-          <div className="flex items-center gap-3">
-            <LanguageToggle />
+              <Menu size={17} strokeWidth={2.5} />
+            </button>
+            <Link href="/" className="flex items-center gap-2 outline-none">
+              <div className={`relative w-8 h-8 rounded-[10px] overflow-hidden ring-1 ${isHome ? "ring-white/30" : "ring-black/5"}`}>
+                <Image src="/image.png" alt="Logo" fill priority sizes="32px" className="object-cover" quality={75} />
+              </div>
+              {!isHome && (
+                <span className="text-[15px] font-black tracking-tight" style={{ color: BRAND.RED }}>
+                  {t("logo")}
+                </span>
+              )}
+            </Link>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <LanguageToggle variant={isHome ? "light" : "dark"} />
             <AuthActions BRAND={BRAND} isMobile={true} />
           </div>
         </div>
-      </div>
+      </header>
 
-      {!isNative && (
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[100]">
-          <nav
-            style={{ WebkitBackdropFilter: "blur(20px)" }}
-            className="w-full grid grid-cols-5 items-center justify-items-center px-4 pt-2 bg-[#FDFBF7]/90 border-t border-black/5 text-slate-500 pb-[max(env(safe-area-inset-bottom),12px)] transition-all duration-500 shadow-[0_-4px_24px_rgba(0,0,0,0.04)]"
-          >
-            {mobileNav.map((item) => {
-              const isActive =
-                item.href === "/"
-                  ? pathname === "/"
-                  : pathname.startsWith(item.href);
-              if (item.isMain) {
+      {/* ── Mobile Floating Dock ── */}
+      {showBottomTabs && (
+        <div className="lg:hidden fixed bottom-0 inset-x-0 z-[100] px-3 pointer-events-none" style={{ paddingBottom: "max(env(safe-area-inset-bottom), 10px)" }}>
+          <nav className="mobile-dock pointer-events-auto mx-auto max-w-md">
+            <div className="grid grid-cols-5 items-center px-1 py-1.5">
+              {mobileNav.map((item) => {
+                const isActive =
+                  item.href === "/"
+                    ? pathname === "/"
+                    : pathname.startsWith(item.href);
+
                 return (
-                  <div
+                  <Link
                     key={item.id}
-                    className="relative flex items-center justify-center"
+                    href={item.href}
+                    className={`mobile-dock-item ${isActive ? "mobile-dock-item--active" : ""}`}
                   >
-                    <Link
-                      href={item.href}
-                      className="flex items-center justify-center group outline-none -mt-5"
-                    >
+                    {isActive && (
                       <m.div
-                        whileTap={{ scale: 0.9 }}
-                        className="w-[52px] h-[52px] rounded-full flex items-center justify-center text-white transition-all shadow-md group-hover:shadow-lg"
-                        style={{
-                          backgroundColor: BRAND.RED,
-                          boxShadow: isActive
-                            ? `0 8px 16px -4px ${BRAND.RED}80`
-                            : `0 4px 12px -4px ${BRAND.RED}60`,
-                        }}
-                      >
-                        <item.icon size={22} strokeWidth={isActive ? 2.5 : 2} />
-                      </m.div>
-                    </Link>
-                  </div>
-                );
-              }
-              return (
-                <Link
-                  key={item.id}
-                  href={item.href}
-                  className="flex flex-col items-center justify-center relative p-2 w-full h-[52px] transition-all group outline-none"
-                >
-                  <div
-                    className={`transition-all duration-300 ${isActive ? "-translate-y-0.5 scale-110" : "opacity-60 group-hover:opacity-100 group-hover:scale-105"}`}
-                    style={{ color: isActive ? BRAND.GREEN : "currentColor" }}
-                  >
-                    <item.icon size={22} strokeWidth={isActive ? 2.5 : 2} />
-                  </div>
-                  {isActive && (
-                    <m.div
-                      layoutId="mobileActiveDot"
-                      className="absolute bottom-1 w-1 h-1 rounded-full"
-                      style={{ backgroundColor: BRAND.GREEN }}
+                        layoutId="dockActive"
+                        className="mobile-dock-active-bg"
+                        transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                      />
+                    )}
+                    <item.icon
+                      size={21}
+                      strokeWidth={isActive ? 2.4 : 1.8}
+                      className={`relative z-10 transition-colors ${isActive ? "text-[var(--brand-green)]" : "text-slate-500"}`}
                     />
-                  )}
-                </Link>
-              );
-            })}
+                    <span className={`relative z-10 text-[9px] font-semibold leading-none mt-0.5 ${isActive ? "text-[var(--brand-green)]" : "text-slate-400"}`}>
+                      {item.label}
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
           </nav>
         </div>
       )}
+
+      {/* ── Mobile Menu Sheet ── */}
+      <AnimatePresence>
+        {menuOpen && (
+          <>
+            <m.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="lg:hidden fixed inset-0 z-[200] bg-black/40 backdrop-blur-[2px]"
+              onClick={() => setMenuOpen(false)}
+            />
+            <m.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", stiffness: 380, damping: 36 }}
+              className="lg:hidden fixed bottom-0 inset-x-0 z-[201] mobile-sheet pb-[max(env(safe-area-inset-bottom),16px)]"
+            >
+              <div className="mobile-sheet-handle" />
+              <div className="flex items-center justify-between px-5 pt-2 pb-4">
+                <h2 className="text-lg font-black text-slate-900">{t("menuTitle")}</h2>
+                <button
+                  type="button"
+                  onClick={() => setMenuOpen(false)}
+                  className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 active:scale-90 transition-transform"
+                  aria-label="Close"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+
+              <div className="px-4 pb-2 space-y-1">
+                {menuLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3.5 rounded-2xl active:bg-slate-100/80 transition-colors"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00C896]/15 to-[#E31B23]/10 flex items-center justify-center text-[var(--brand-green)]">
+                      <link.icon size={18} />
+                    </div>
+                    <span className="flex-1 text-[15px] font-semibold text-slate-800">{link.label}</span>
+                    <ChevronRight size={16} className="text-slate-400" />
+                  </Link>
+                ))}
+              </div>
+
+              <div className="px-5 pt-3 pb-2">
+                <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-3">{t("countries")}</p>
+                <div className="grid grid-cols-3 gap-2">
+                  {AU_PAIR_COUNTRIES.map((country) => (
+                    <Link
+                      key={country.code}
+                      href={country.href}
+                      onClick={() => setMenuOpen(false)}
+                      className="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-slate-50/80 border border-slate-100 active:scale-95 transition-transform"
+                    >
+                      <span className="text-2xl">{country.flag}</span>
+                      <span className="text-[11px] font-bold text-slate-700 text-center leading-tight">{country.name}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </m.div>
+          </>
+        )}
+      </AnimatePresence>
     </>
   );
 }

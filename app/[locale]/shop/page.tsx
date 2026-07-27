@@ -1,7 +1,7 @@
-import { connectToDB } from "@/lib/db";
-import ShoppingItem from "@/lib/models/ShoppingItem";
+import { getSupabaseAdmin } from "@/lib/supabase/admin";
+import { toApiList } from "@/lib/supabase/mappers";
+import { withSupabaseTimeout } from "@/lib/supabase/timeout";
 import ShopClient from "./ShopClient";
-import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
 import { generateAlternates, generateOpenGraph, generateTwitter } from "@/lib/seo";
 import { BreadcrumbJsonLd } from "@/app/components/JsonLd";
@@ -34,14 +34,30 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 export default async function ShopPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  
-  await connectToDB();
-  const res = await ShoppingItem.find({ isActive: true }).sort({ createdAt: -1 }).lean();
-  const items = res.map((item: any) => ({
+
+  let data: unknown[] | null = null;
+  try {
+    const supabase = getSupabaseAdmin();
+    const result = await withSupabaseTimeout(
+      supabase
+        .from("shopping_items")
+        .select("*")
+        .eq("is_active", true)
+        .order("created_at", { ascending: false }),
+    );
+    if (result.error) {
+      console.error("Shop page fetch error:", result.error);
+    } else {
+      data = result.data;
+    }
+  } catch (error) {
+    console.error("Shop page fetch error:", error);
+  }
+
+  const items = toApiList(data).map((item) => ({
     ...item,
-    _id: item._id.toString(),
-    createdAt: item.createdAt?.toISOString(),
-    updatedAt: item.updatedAt?.toISOString(),
+    createdAt: item.createdAt ? String(item.createdAt) : undefined,
+    updatedAt: item.updatedAt ? String(item.updatedAt) : undefined,
   }));
 
   return (

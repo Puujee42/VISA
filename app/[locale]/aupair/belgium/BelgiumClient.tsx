@@ -24,7 +24,7 @@ import {
    FaHandshake
 } from "react-icons/fa";
 import { Clock } from "lucide-react";
-import { useUser } from "@clerk/nextjs";
+import { useAuth } from "@/lib/useAuth";
 import { useTranslations } from "next-intl";
 
 // --- ANIMATIONS ---
@@ -42,7 +42,7 @@ export default function BelgiumClient() {
    const t = useTranslations("BelgiumPage");
    const containerRef = useRef<HTMLDivElement>(null);
    const { scrollYProgress } = useScroll({ target: containerRef });
-   const { isSignedIn } = useUser();
+   const { isSignedIn } = useAuth();
 
    const scaleX = useSpring(scrollYProgress, {
       stiffness: 100,

@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "../globals.css";
 import Navbar from "../components/Navbar";
-import { ClerkProvider } from "@clerk/nextjs";
-import SmoothScroll from "../components/SmoothScroll";
 import dynamic from "next/dynamic";
 import MotionProvider from "../components/MotionProvider";
 import PushNotificationManager from "../components/PushNotificationManager";
@@ -12,12 +10,25 @@ import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { OrganizationJsonLd } from "../components/JsonLd";
 
-const Footer = dynamic(() => import("../components/Footer"));
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover" as const,
+  themeColor: "#ffffff",
+};
+
+const Footer = dynamic(() => import("../components/Footer"), {
+  ssr: true,
+  loading: () => null,
+});
 
 const inter = Inter({
-  subsets: ["latin"],
-  display: 'swap',
-  variable: '--font-inter',
+  subsets: ["latin", "cyrillic"],
+  display: "swap",
+  variable: "--font-inter",
+  preload: true,
 });
 
 export const metadata: Metadata = {
@@ -49,6 +60,15 @@ export const metadata: Metadata = {
     "work in Europe Mongolia",
   ],
   applicationName: "Mongolian Au Pair",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "AuPair",
+  },
+  formatDetection: {
+    telephone: true,
+    email: true,
+  },
   category: "Education",
   robots: {
     index: true,
@@ -112,33 +132,26 @@ export default async function RootLayout({
   
 
   return (
-    <ClerkProvider>
-      <html lang={locale} suppressHydrationWarning>
-        <head>
-          <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
-          <link rel="preconnect" href="https://careful-beetle-54.clerk.accounts.dev" crossOrigin="anonymous" />
-          <link rel="preconnect" href="https://grainy-gradients.vercel.app" crossOrigin="anonymous" />
-          <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="anonymous" />
-          <link rel="dns-prefetch" href="https://res.cloudinary.com" />
-          <link rel="dns-prefetch" href="https://careful-beetle-54.clerk.accounts.dev" />
-          <link rel="dns-prefetch" href="https://grainy-gradients.vercel.app" />
-          <link rel="dns-prefetch" href="https://images.unsplash.com" />
-          <OrganizationJsonLd />
-        </head>
-        <body className={`${inter.variable} font-sans`}>
-          <NextIntlClientProvider messages={messages}>
-            <MotionProvider>
-              <SmoothScroll />
-              <PushNotificationManager />
-              <Navbar />
-              <main className="min-h-[100dvh] pb-24 lg:pb-0">
-                {children}
-              </main>
+    <html lang={locale} suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+        <OrganizationJsonLd />
+      </head>
+      <body className={`${inter.variable} font-sans app-page-shell`}>
+        <NextIntlClientProvider messages={messages}>
+          <MotionProvider>
+            <PushNotificationManager />
+            <Navbar />
+            <main className="min-h-[100dvh] pt-[calc(var(--app-header-height)+env(safe-area-inset-top,0px))] pb-[calc(var(--app-bottom-nav-height)+env(safe-area-inset-bottom,0px)+8px)] lg:pt-0 lg:pb-0">
+              {children}
+            </main>
+            <div className="hidden lg:block">
               <Footer />
-            </MotionProvider>
-          </NextIntlClientProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+            </div>
+          </MotionProvider>
+        </NextIntlClientProvider>
+      </body>
+    </html>
   );
 }

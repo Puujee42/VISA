@@ -4,6 +4,27 @@
       "title": "Mongolian Au Pair — Gateway to Europe | Cultural Exchange Since 2005",
       "description": "Mongolia's leading au pair agency connecting youth with host families in Germany, Austria, Switzerland, Belgium & France. 3000+ successful placements. IAPA member. Start your European adventure today.",
       "keywords": "Mongolian au pair, au pair Mongolia, cultural exchange Europe, host family Europe, au pair agency Mongolia, IAPA member"
+    },
+    "quickAccess": "Quick Access",
+    "tagline": "Gateway to Europe",
+    "destinationsTitle": "Choose your destination",
+    "viewAll": "View all programs",
+    "howItWorks": {
+      "label": "Simple Process",
+      "title": "How It Works",
+      "cta": "Start Application",
+      "step1": {
+        "title": "Apply Online",
+        "desc": "Fill out the form and upload your documents"
+      },
+      "step2": {
+        "title": "Get Matched",
+        "desc": "We connect you with a verified host family"
+      },
+      "step3": {
+        "title": "Travel to Europe",
+        "desc": "Live abroad, learn a language, and grow"
+      }
     }
   },
   "common": {
@@ -203,6 +224,7 @@
     "slide3_desc": "Experience daily life with a host family in France, improve your French in real-world settings, and build international confidence through cultural exchange.",
     "slide3_location": "France",
     "learnMore": "Learn More",
+    "viewProgram": "View program",
     "verified": "Verified Program"
   },
   "UsSection": {
@@ -886,7 +908,7 @@
     "card4_text": "Fostering personal and professional development through cultural exchange."
   },
   "navbar": {
-    "logo": "AuPair",
+    "logo": "AUPAIR",
     "home": "Home",
     "about": "About Us",
     "program": "Au Pair Program",
@@ -897,6 +919,9 @@
     "dashboard": "Dashboard",
     "signin": "Sign In",
     "register": "Register",
+    "contact": "Contact",
+    "menuTitle": "Menu",
+    "countries": "Countries",
     "germany": "Germany",
     "austria": "Austria",
     "switzerland": "Switzerland",
@@ -1117,6 +1142,7 @@
       "blog": "Blog & News",
       "shopping": "Shopping",
       "bookings": "Bookings",
+      "websiteInfo": "Website Editor",
       "role": "Super Admin",
       "online": "Online"
     },

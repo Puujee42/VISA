@@ -1,6 +1,4 @@
 import HomePageContent from "@/app/components/HomePageContent";
-import { currentUser } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
 import { generateAlternates, generateOpenGraph, generateTwitter } from "@/lib/seo";
@@ -24,12 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = await params;
-  const user = await currentUser();
-
-  if (user?.publicMetadata?.role === "admin") {
-    redirect(`/${locale}/admin`);
-  }
+  await params;
 
   return (
     <>

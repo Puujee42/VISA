@@ -1,3 +1,5 @@
+import 'server-only';
+
 type QPayUrls = {
   name?: string;
   description?: string;
@@ -140,8 +142,7 @@ async function qpayFetch<T>(
 
   if (!res.ok) {
     throw new Error(
-      `QPay API error ${res.status}: ${
-        typeof payload === "string" ? payload : JSON.stringify(payload)
+      `QPay API error ${res.status}: ${typeof payload === "string" ? payload : JSON.stringify(payload)
       }`,
     );
   }

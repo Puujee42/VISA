@@ -3,52 +3,17 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "@/navigation";
 import Image from "next/image";
-import { AnimatePresence, m, Variants } from "framer-motion";
-import { Motion as motion } from "./MotionProxy";
-import {
-  FaMapMarkerAlt,
-  FaClock,
-  FaArrowRight,
-  FaGlobeEurope,
-  FaUserCheck,
-} from "react-icons/fa";
-import dynamic from "next/dynamic";
-import { useTranslations, useLocale } from "next-intl";
+import { FaMapMarkerAlt, FaClock, FaArrowRight, FaGlobeEurope, FaUserCheck } from "react-icons/fa";
+import { useTranslations } from "next-intl";
 
-const CloudinaryPlayer = dynamic(() => import("./CloudinaryPlayer"), {
-  ssr: false,
-});
+const AUTOPLAY_DURATION = 7000;
+const HERO_IMG =
+  "https://res.cloudinary.com/dxoxdiuwr/video/upload/f_auto,q_auto:eco,w_1920,c_fill,so_0/v1/A_cinematic_highquality_202601201908_j5s2n_kkoosh.jpg";
 
-/* ────────────────────── Configuration ────────────────────── */
-const AUTOPLAY_DURATION = 8000; // 8 Seconds per slide
-
-/* ────────────────────── Animation Variants ────────────────────── */
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.2 },
-  },
-  exit: { opacity: 0, transition: { duration: 0.5 } },
-};
-
-const textVariants: Variants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
-  },
-};
-
-/* ────────────────────── Main Component ────────────────────── */
 const HeroSlider = () => {
   const t = useTranslations("HeroSlider");
-  const locale = useLocale();
   const [slideIndex, setSlideIndex] = useState(0);
-  const containerRef = useRef<HTMLElement>(null);
-  const [inView, setInView] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const slides = [
     {
@@ -77,225 +42,182 @@ const HeroSlider = () => {
     },
   ];
 
-  // Auto-play logic
   useEffect(() => {
-    setMounted(true);
-    const timer = setInterval(() => {
+    timerRef.current = setInterval(() => {
       setSlideIndex((prev) => (prev + 1) % slides.length);
     }, AUTOPLAY_DURATION);
-    return () => clearInterval(timer);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
   }, [slides.length]);
 
   const activeSlide = slides[slideIndex];
 
-  useEffect(() => {
-    // Intersection Observer to lazy load video
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setInView(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 },
-    );
-
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
-
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
+  const goTo = (index: number) => {
+    setSlideIndex(index);
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setSlideIndex((prev) => (prev + 1) % slides.length);
+    }, AUTOPLAY_DURATION);
+  };
 
   return (
-    <section
-      ref={containerRef}
-      className="relative h-[100dvh] min-h-[700px] w-full bg-slate-900 text-white flex items-center justify-center overflow-hidden selection:bg-red-500 selection:text-white"
-    >
-      {/* ─── 1. Background (Video/Image) ─── */}
+    <section className="relative w-full bg-slate-950 text-white overflow-hidden h-[100svh] min-h-[560px] -mt-[calc(var(--app-header-height)+env(safe-area-inset-top,0px))] lg:mt-0 lg:h-[100dvh] lg:min-h-[100dvh] lg:max-h-none lg:flex lg:items-center">
       <div className="absolute inset-0 z-0">
-        {/* Desktop Video Background */}
-        <div className="hidden md:block absolute inset-0 w-full h-full">
-          {mounted && inView && (
-            <CloudinaryPlayer
-              publicId="A_cinematic_highquality_202601201908_j5s2n_kkoosh"
-              cloudName="dxoxdiuwr"
-              poster="https://res.cloudinary.com/dxoxdiuwr/video/upload/f_auto,q_30,so_0/v1/A_cinematic_highquality_202601201908_j5s2n_kkoosh.jpg"
-              className="w-full h-full object-cover opacity-50 scale-105 pointer-events-none"
-            />
-          )}
-        </div>
-
-        {/* Mobile Static Image Background */}
-        <div className="block md:hidden absolute inset-0 w-full h-full">
-          <Image
-            src="https://res.cloudinary.com/dxoxdiuwr/video/upload/f_auto,q_auto,so_0/v1/A_cinematic_highquality_202601201908_j5s2n_kkoosh.jpg"
-            alt="Hero Background"
-            fill
-            className="object-cover opacity-50 transition-transform duration-700 will-change-transform"
-            priority
-            loading="eager"
-            placeholder="blur"
-            blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
-            sizes="100vw"
-            style={{ transform: "scale(1.05)" }}
-          />
-        </div>
-
-        {/* Gradient Overlay for Text Readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/60 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-80" />
+        <Image
+          src={HERO_IMG}
+          alt="AUPAIR"
+          fill
+          priority
+          quality={75}
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/35 to-black/90 lg:bg-[linear-gradient(105deg,rgba(2,12,22,0.92)_0%,rgba(2,12,22,0.72)_42%,rgba(2,12,22,0.28)_70%,rgba(2,12,22,0.45)_100%)]" />
+        <div className="hidden lg:block absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/50 to-transparent" />
+        <div className="hidden lg:block absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-slate-950/90 to-transparent" />
       </div>
 
-      {/* ─── 2. Main Content ─── */}
-      <div className="relative z-10 container mx-auto px-5 md:px-6 max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 items-center h-full">
-        {/* LEFT COLUMN: Text Content */}
-        <div className="lg:col-span-8 pt-24 pb-20 lg:pt-0 lg:pb-0">
-          <AnimatePresence mode="wait">
-            <m.div
-              key={activeSlide.id}
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              className="max-w-4xl text-left"
-            >
-              {/* Floating Badges */}
-              <m.div
-                variants={textVariants}
-                className="flex flex-wrap items-center gap-3 mb-8"
-              >
-                {/* Location Badge */}
-                <span className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-bold uppercase tracking-widest text-white shadow-lg">
-                  <FaGlobeEurope className="text-[#00C896]" size={14} />
-                  {activeSlide.location}
-                </span>
+      {/* Mobile */}
+      <div className="lg:hidden relative z-10 flex flex-col justify-end h-full px-4 pb-[calc(var(--app-bottom-nav-height)+env(safe-area-inset-bottom,0px)+16px)]">
+        <div key={activeSlide.id} className="hero-fade">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/35 border border-white/15 text-[11px] font-semibold backdrop-blur-sm">
+              <FaGlobeEurope className="text-[#00C896]" size={11} />
+              {activeSlide.location}
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#00C896]/20 border border-[#00C896]/35 text-[11px] font-semibold text-[#00C896] backdrop-blur-sm">
+              <FaUserCheck size={11} />
+              {t("verified")}
+            </span>
+          </div>
 
-                {/* Verified Badge */}
-                <span className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#00C896]/10 backdrop-blur-md border border-[#00C896]/20 text-xs font-bold uppercase tracking-widest text-[#00C896] shadow-lg">
-                  <FaUserCheck size={14} />
-                  {t("verified")}
-                </span>
-              </m.div>
-
-              {/* Headline */}
-              <m.h1
-                variants={textVariants}
-                className="text-[40px] sm:text-[48px] md:text-[64px] font-bold leading-[1.05] tracking-tight mb-5 md:mb-8 drop-shadow-lg text-slate-50"
-              >
-                {activeSlide.title.split(" ").map((word: string, i: number) => (
-                  <span key={i} className="inline-block mr-2 md:mr-3">
-                    {word === "Au" || word === "Pair" ? (
-                      <span className="text-transparent bg-clip-text bg-gradient-to-br from-white to-slate-300 drop-shadow-sm">
-                        {word}
-                      </span>
-                    ) : (
-                      word
-                    )}
-                  </span>
-                ))}
-              </m.h1>
-
-              {/* Description with Vertical Accent Line */}
-              <m.div
-                variants={textVariants}
-                className="flex gap-6 mb-10 pl-2"
-              >
-                <div className="w-1 rounded-full bg-gradient-to-b from-[#E31B23] to-transparent h-auto min-h-[60px]" />
-                <p className="text-lg md:text-xl text-slate-300 max-w-xl leading-relaxed font-medium">
-                  {activeSlide.desc}
-                </p>
-              </m.div>
-
-              {/* Metadata Stats */}
-              <m.div
-                variants={textVariants}
-                className="flex items-center gap-8 mb-10 text-sm font-bold text-slate-300"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="p-2.5 rounded-xl bg-slate-800 border border-slate-700 text-[#E31B23]">
-                    <FaClock />
-                  </div>
-                  <span>{activeSlide.duration}</span>
-                </div>
-                <div className="w-px h-8 bg-slate-700" />
-                <div className="flex items-center gap-3">
-                  <div className="p-2.5 rounded-xl bg-slate-800 border border-slate-700 text-[#00C896]">
-                    <FaMapMarkerAlt />
-                  </div>
-                  <span>{activeSlide.location}</span>
-                </div>
-              </m.div>
-
-              {/* CTA Button */}
-              <m.div variants={textVariants}>
-                <Link href={activeSlide.path}>
-                  <m.button
-                    whileHover={{
-                      scale: 1.02,
-                      boxShadow: "0 20px 40px -10px rgba(227, 27, 35, 0.4)",
-                    }}
-                    whileTap={{ scale: 0.98 }}
-                    className="group relative inline-flex items-center gap-4 px-8 py-4 bg-[#E31B23] text-white rounded-full font-bold text-lg overflow-hidden transition-all duration-300"
-                  >
-                    <span className="relative z-10">{t("learnMore")}</span>
-                    <span className="relative z-10 p-1 bg-white/20 rounded-full group-hover:rotate-45 transition-transform duration-300">
-                      <FaArrowRight size={12} />
-                    </span>
-
-                    {/* Shine Effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-[100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
-                  </m.button>
-                </Link>
-              </m.div>
-            </m.div>
-          </AnimatePresence>
+          <div className="hero-glass-card p-5">
+            <p className="text-[11px] font-black tracking-[0.2em] text-[#E31B23] mb-2">AUPAIR</p>
+            <h1 className="text-[26px] font-black leading-[1.08] tracking-tight mb-2">
+              {activeSlide.title}
+            </h1>
+            <p className="text-[14px] text-white/75 leading-relaxed line-clamp-2 mb-4 font-medium">
+              {activeSlide.desc}
+            </p>
+            <div className="flex items-center gap-3 mb-4 text-[12px] font-semibold text-white/80">
+              <span className="inline-flex items-center gap-1.5">
+                <FaClock size={11} className="text-[#E31B23]" />
+                {activeSlide.duration}
+              </span>
+              <span className="w-px h-3 bg-white/20" />
+              <span className="inline-flex items-center gap-1.5">
+                <FaMapMarkerAlt size={11} className="text-[#00C896]" />
+                {activeSlide.location}
+              </span>
+            </div>
+            <Link href="/apply" className="hero-mobile-cta">
+              {t("learnMore")}
+              <FaArrowRight size={13} />
+            </Link>
+          </div>
         </div>
 
-        {/* RIGHT COLUMN: Cinematic Pagination */}
-        <div className="hidden lg:flex lg:col-span-4 h-full flex-col justify-center items-end pl-12">
-          <div className="flex flex-col gap-6">
-            {slides.map((item, index) => {
-              const isActive = index === slideIndex;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => setSlideIndex(index)}
-                  className="group relative w-72 flex items-center justify-end gap-6 outline-none"
-                >
-                  <div
-                    className={`text-right transition-all duration-500 ${isActive ? "opacity-100 translate-x-0" : "opacity-40 translate-x-4 group-hover:opacity-70"}`}
-                  >
-                    <p className="text-xs font-bold uppercase tracking-widest text-[#E31B23] mb-1">
-                      0{index + 1}
-                    </p>
-                    <h2 className="text-lg font-bold text-white">
-                      {item.location}
-                    </h2>
-                  </div>
+        <div className="flex justify-center gap-1.5 mt-3">
+          {slides.map((slide, index) => (
+            <button
+              key={slide.id}
+              type="button"
+              onClick={() => goTo(index)}
+              aria-label={`Slide ${index + 1}`}
+              className={`h-1.5 rounded-full transition-[width,background-color] duration-300 ${
+                index === slideIndex ? "w-5 bg-[#00C896]" : "w-1.5 bg-white/35"
+              }`}
+            />
+          ))}
+        </div>
+      </div>
 
-                  {/* Vertical Progress Bar */}
-                  <div className="relative w-[6px] h-[80px] rounded-full overflow-hidden transition-all duration-500 bg-slate-800 shrink-0">
-                    {isActive && (
-                      <m.div
-                        layoutId="activeGlow"
-                        className="absolute top-0 left-0 w-full bg-gradient-to-b from-[#00C896] to-[#E31B23]"
-                        initial={{ height: "0%" }}
-                        animate={{ height: "100%" }}
-                        transition={{
-                          duration: AUTOPLAY_DURATION / 1000,
-                          ease: "linear",
-                        }}
-                        key={slideIndex}
-                      />
-                    )}
-                  </div>
-                </button>
-              );
-            })}
+      {/* Desktop — full viewport, content under floating nav */}
+      <div className="hidden lg:grid relative z-10 w-full max-w-[1280px] mx-auto px-8 xl:px-10 pt-24 pb-10 grid-cols-12 items-center gap-6">
+        <div className="col-span-8">
+          <div key={activeSlide.id} className="hero-fade max-w-2xl">
+            <p className="text-xs font-black tracking-[0.28em] text-[#E31B23] mb-4">
+              AUPAIR
+            </p>
+
+            <div className="flex flex-wrap items-center gap-2.5 mb-5">
+              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/30 border border-white/15 text-[11px] font-bold uppercase tracking-widest backdrop-blur-sm">
+                <FaGlobeEurope className="text-[#00C896]" size={12} />
+                {activeSlide.location}
+              </span>
+              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#00C896]/15 border border-[#00C896]/30 text-[11px] font-bold uppercase tracking-widest text-[#00C896] backdrop-blur-sm">
+                <FaUserCheck size={12} />
+                {t("verified")}
+              </span>
+            </div>
+
+            <h1 className="text-[2.75rem] xl:text-6xl font-black leading-[1.02] tracking-tight mb-5 text-white drop-shadow-[0_2px_24px_rgba(0,0,0,0.35)]">
+              {activeSlide.title}
+            </h1>
+
+            <p className="text-base xl:text-lg text-white/80 max-w-lg leading-relaxed font-medium mb-6 border-l-2 border-[#E31B23] pl-4">
+              {activeSlide.desc}
+            </p>
+
+            <div className="flex items-center gap-5 mb-8 text-sm font-bold text-white/85">
+              <span className="inline-flex items-center gap-2">
+                <FaClock size={13} className="text-[#E31B23]" />
+                {activeSlide.duration}
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <FaMapMarkerAlt size={13} className="text-[#00C896]" />
+                {activeSlide.location}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Link
+                href="/apply"
+                className="inline-flex items-center gap-2.5 px-7 py-3.5 bg-[#E31B23] text-white rounded-full font-bold text-sm hover:brightness-110 transition-[filter,transform] active:scale-[0.98] shadow-[0_12px_40px_-12px_rgba(227,27,35,0.65)]"
+              >
+                {t("learnMore")}
+                <FaArrowRight size={11} />
+              </Link>
+              <Link
+                href={activeSlide.path}
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full border border-white/25 bg-white/5 text-white font-bold text-sm hover:bg-white/12 transition-colors backdrop-blur-sm"
+              >
+                {t("viewProgram")}
+              </Link>
+            </div>
           </div>
+        </div>
+
+        <div className="col-span-4 flex flex-col justify-center items-end gap-2.5">
+          {slides.map((item, index) => {
+            const isActive = index === slideIndex;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => goTo(index)}
+                className={`w-full max-w-[240px] text-right px-5 py-3.5 rounded-2xl border transition-[opacity,background-color,border-color,transform] duration-200 outline-none backdrop-blur-md ${
+                  isActive
+                    ? "bg-white/12 border-white/25 opacity-100 scale-[1.02]"
+                    : "bg-black/20 border-white/5 opacity-50 hover:opacity-85"
+                }`}
+              >
+                <p className="text-[10px] font-bold uppercase tracking-widest text-[#E31B23] mb-0.5">
+                  0{index + 1}
+                </p>
+                <p className="text-[15px] font-bold text-white">{item.location}</p>
+                {isActive && (
+                  <div className="mt-2.5 h-1 rounded-full bg-white/10 overflow-hidden">
+                    <div
+                      key={slideIndex}
+                      className="h-full bg-gradient-to-r from-[#00C896] to-[#E31B23] hero-progress"
+                    />
+                  </div>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
     </section>

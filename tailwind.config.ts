@@ -95,6 +95,27 @@ const config: Config = {
           "100%": { transform: "scale(1)", opacity: "1" },
         },
       },
+      backdropBlur: {
+        'glass-nav': '40px',
+        'glass-card': '28px',
+        'glass-sm': '16px',
+      },
+      backdropSaturate: {
+        'glass': '1.8',
+        'card': '1.6',
+      },
+      borderColor: {
+        'glass': 'rgba(255, 255, 255, 0.50)',
+        'glass-card': 'rgba(255, 255, 255, 0.68)',
+      },
+      backgroundColor: {
+        'glass-nav': 'rgba(255, 255, 255, 0.72)',
+        'glass-card': 'rgba(255, 255, 255, 0.55)',
+      },
+      transitionTimingFunction: {
+        'ios-spring': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+        'ios': 'cubic-bezier(0.25, 0.1, 0.25, 1)',
+      }
     },
   },
   plugins: [],

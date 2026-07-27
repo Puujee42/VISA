@@ -1,16 +1,23 @@
 import { NextResponse } from "next/server";
-import { connectToDB } from "@/lib/db";
-import News from "@/lib/models/News";
+import { getSupabaseAdmin } from "@/lib/supabase/admin";
+import { toApi } from "@/lib/supabase/mappers";
 
 export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
-    await connectToDB();
-    const article = await News.findOne({ _id: id, status: 'published' });
+    const supabase = getSupabaseAdmin();
+    const { data, error } = await supabase
+      .from("news")
+      .select("*")
+      .eq("id", id)
+      .eq("status", "published")
+      .maybeSingle();
 
+    if (error) throw error;
+    const article = toApi(data);
     if (!article) {
       return NextResponse.json({ error: "News article not found" }, { status: 404 });
     }

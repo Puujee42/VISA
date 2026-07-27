@@ -1,32 +1,40 @@
 import { NextResponse } from "next/server";
-import { currentUser } from "@clerk/nextjs/server";
-import { connectToDB } from "@/lib/db";
-import Application from "@/lib/models/Application";
-import User from "@/lib/models/User";
+import { getSupabaseAdmin } from "@/lib/supabase/admin";
+import { toApi } from "@/lib/supabase/mappers";
 import { withAdminAuth } from "@/lib/adminAuth";
 
 const PROGRAM_MAP: Record<string, string> = {
-  "DE": "Germany",
-  "BE": "Belgium",
-  "AT": "Austria",
-  "CH": "Switzerland",
-  "FR": "France"
+  DE: "Germany",
+  BE: "Belgium",
+  AT: "Austria",
+  CH: "Switzerland",
+  FR: "France",
 };
 
 export const GET = withAdminAuth(async () => {
   try {
-    await connectToDB();
-    
-    // We want to fetch applications and if they have a userId (clerkId), attach the user's detailed profile
-    const applications = await Application.find({}).sort({ createdAt: -1 }).lean();
-    
-    const enrichedApplications = await Promise.all(applications.map(async (app: any) => {
-      if (app.userId) {
-        const user = await User.findOne({ clerkId: app.userId }).select('profile').lean();
-        return { ...app, userProfile: user?.profile || null };
-      }
-      return { ...app, userProfile: null };
-    }));
+    const supabase = getSupabaseAdmin();
+    const { data: applications, error } = await supabase
+      .from("applications")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    const enrichedApplications = await Promise.all(
+      (applications ?? []).map(async (app) => {
+        const api = toApi(app)!;
+        if (app.user_id) {
+          const { data: user } = await supabase
+            .from("users")
+            .select("profile")
+            .eq("clerk_id", app.user_id)
+            .maybeSingle();
+          return { ...api, userProfile: user?.profile ?? null };
+        }
+        return { ...api, userProfile: null };
+      }),
+    );
 
     return NextResponse.json(enrichedApplications);
   } catch (error) {
@@ -37,41 +45,66 @@ export const GET = withAdminAuth(async () => {
 
 export const PUT = withAdminAuth(async (req: Request) => {
   try {
-    await connectToDB();
     const body = await req.json();
     const { applicationId, status } = body;
 
-    const application = await Application.findById(applicationId);
+    const supabase = getSupabaseAdmin();
+    const { data: application, error: fetchErr } = await supabase
+      .from("applications")
+      .select("*")
+      .eq("id", applicationId)
+      .maybeSingle();
+
+    if (fetchErr) throw fetchErr;
     if (!application) {
       return NextResponse.json({ error: "Application not found" }, { status: 404 });
     }
 
-    application.status = status;
-    await application.save();
+    const { data: updatedApp, error: updateErr } = await supabase
+      .from("applications")
+      .update({ status })
+      .eq("id", applicationId)
+      .select()
+      .single();
 
-    // If approved and user exists, upgrade user to student and sync latest info
-    if (status === 'approved' && application.userId) {
-       const country = PROGRAM_MAP[application.programId] || "General";
-       
-       await User.findOneAndUpdate(
-         { clerkId: application.userId },
-         { 
-            $set: {
-                role: 'student', 
-                country: country,
-                step: "Documents",
-                fullName: `${application.firstName} ${application.lastName}`,
-                email: application.email,
-                "profile.phone": application.phone,
-                "profile.languages": `Level: ${application.level}`,
-                "profile.motivation": application.message
-            }
-         },
-         { new: true, upsert: true }
-       );
+    if (updateErr) throw updateErr;
+
+    if (status === "approved" && application.user_id) {
+      const country = PROGRAM_MAP[application.program_id] || "General";
+      const profilePatch = {
+        phone: application.phone,
+        languages: `Level: ${application.level}`,
+        motivation: application.message,
+      };
+
+      const { data: existingUser } = await supabase
+        .from("users")
+        .select("profile")
+        .eq("clerk_id", application.user_id)
+        .maybeSingle();
+
+      const mergedProfile = {
+        ...(typeof existingUser?.profile === "object" && existingUser.profile !== null
+          ? existingUser.profile
+          : {}),
+        ...profilePatch,
+      };
+
+      await supabase.from("users").upsert(
+        {
+          clerk_id: application.user_id,
+          email: application.email,
+          full_name: `${application.first_name} ${application.last_name}`,
+          role: "student",
+          country,
+          step: "Documents",
+          profile: mergedProfile,
+        },
+        { onConflict: "clerk_id" },
+      );
     }
 
-    return NextResponse.json(application);
+    return NextResponse.json(toApi(updatedApp));
   } catch (error) {
     console.error("Update application error:", error);
     return NextResponse.json({ error: "Failed to update application" }, { status: 500 });

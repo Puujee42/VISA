@@ -1,34 +1,33 @@
 import { NextResponse } from "next/server";
-import { connectToDB } from "@/lib/db";
-import User from "@/lib/models/User";
-import News from "@/lib/models/News";
-import Application from "@/lib/models/Application";
-import Booking from "@/lib/models/Booking";
+import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { withAdminAuth } from "@/lib/adminAuth";
-import { clerkClient } from "@clerk/nextjs/server";
-let DESTINATION_COUNTRY_COUNT = 5;
-try {
-  ({ DESTINATION_COUNTRY_COUNT } = await import("@/lib/config"));
-} catch {}
+import { DESTINATION_COUNTRY_COUNT } from "@/lib/config";
+
+type CountQuery = ReturnType<
+  ReturnType<typeof getSupabaseAdmin>["from"]
+> extends { select: (...args: never[]) => infer Q }
+  ? Q
+  : never;
+
+async function countWhere(
+  table: string,
+  apply?: (query: CountQuery) => CountQuery,
+) {
+  const supabase = getSupabaseAdmin();
+  let query = supabase.from(table).select("*", { count: "exact", head: true });
+  if (apply) query = apply(query as CountQuery) as typeof query;
+  const { count, error } = await query;
+  if (error) throw error;
+  return count ?? 0;
+}
 
 export const GET = withAdminAuth(async () => {
   try {
-    await connectToDB();
-
+    const supabase = getSupabaseAdmin();
     const todayStr = new Date().toISOString().split("T")[0];
 
-    // Get accurate total from Clerk (source of truth for all users)
-    let totalUsers = 0;
-    try {
-      const client = await clerkClient();
-      const clerkCount = await client.users.getCount();
-      totalUsers = clerkCount;
-    } catch {
-      // Fallback to MongoDB count if Clerk is unreachable
-      totalUsers = await User.countDocuments({});
-    }
-
     const [
+      totalUsers,
       blogsPublished,
       pendingApplications,
       studentsCount,
@@ -36,15 +35,21 @@ export const GET = withAdminAuth(async () => {
       guestsCount,
       todaysBookings,
     ] = await Promise.all([
-      News.countDocuments({ status: "published" }),
-      Application.countDocuments({ status: "pending" }),
-      User.countDocuments({ role: "student" }),
-      User.countDocuments({ role: "admin" }),
-      User.countDocuments({ role: "guest" }),
-      Booking.countDocuments({
-        date: todayStr,
-        status: { $nin: ["cancelled", "rejected"] },
-      }),
+      countWhere("users"),
+      countWhere("news", (q) => q.eq("status", "published")),
+      countWhere("applications", (q) => q.eq("status", "pending")),
+      countWhere("users", (q) => q.eq("role", "student")),
+      countWhere("users", (q) => q.eq("role", "admin")),
+      countWhere("users", (q) => q.eq("role", "guest")),
+      supabase
+        .from("bookings")
+        .select("*", { count: "exact", head: true })
+        .eq("date", todayStr)
+        .not("status", "in", '("cancelled","rejected")')
+        .then(({ count, error }) => {
+          if (error) throw error;
+          return count ?? 0;
+        }),
     ]);
 
     return NextResponse.json({
@@ -61,7 +66,7 @@ export const GET = withAdminAuth(async () => {
     console.error("Stats Error:", error);
     return NextResponse.json(
       { error: "Failed to fetch stats" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 });

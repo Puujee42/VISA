@@ -8,7 +8,6 @@ import {
   MapPin,
   GraduationCap,
   Baby,
-  Bell,
   Users,
   UserCheck,
   FileText,
@@ -27,6 +26,9 @@ import {
   ShoppingBag,
   ShoppingCart,
   Building,
+  Folder,
+  HelpCircle,
+  Menu,
 } from "lucide-react";
 import {
   FaBook,
@@ -44,10 +46,28 @@ import React, { useState, useEffect, useRef } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import LessonsManager from "@/app/components/admin/LessonsManager";
-import ShoppingManager from "@/app/components/admin/ShoppingManager";
-import ClubsManager from "@/app/components/admin/ClubsManager";
+import dynamic from "next/dynamic";
 import { Link } from "@/navigation";
+import NotificationsBell from "@/app/components/admin/NotificationsBell";
+
+const LessonsManager = dynamic(() => import("@/app/components/admin/LessonsManager"), {
+  loading: () => <div className="p-8 text-center text-slate-400 font-bold uppercase tracking-wider text-[10px]">Loading Lessons Module...</div>,
+});
+const ShoppingManager = dynamic(() => import("@/app/components/admin/ShoppingManager"), {
+  loading: () => <div className="p-8 text-center text-slate-400 font-bold uppercase tracking-wider text-[10px]">Loading Shopping Module...</div>,
+});
+const QuestionsManager = dynamic(() => import("@/app/components/admin/QuestionsManager"), {
+  loading: () => <div className="p-8 text-center text-slate-400 font-bold uppercase tracking-wider text-[10px]">Loading…</div>,
+});
+const ClubsManager = dynamic(() => import("@/app/components/admin/ClubsManager"), {
+  loading: () => <div className="p-8 text-center text-slate-400 font-bold uppercase tracking-wider text-[10px]">Loading Clubs Module...</div>,
+});
+const WebsiteInfoManager = dynamic(() => import("@/app/components/admin/WebsiteInfoManager"), {
+  loading: () => <div className="p-8 text-center text-slate-400 font-bold uppercase tracking-wider text-[10px]">Loading Website Info Module...</div>,
+});
+const MaterialsManager = dynamic(() => import("@/app/components/admin/MaterialsManager"), {
+  loading: () => <div className="p-8 text-center text-slate-400 font-bold uppercase tracking-wider text-[10px]">Loading Materials Module...</div>,
+});
 
 // --- CONSTANTS ---
 const ROLES = ["Admin", "Student", "Guest"];
@@ -152,6 +172,7 @@ const UserMasterManagementModal = ({
   const t = useTranslations("admin");
   const [activeTab, setActiveTab] = useState("basic");
   const [formData, setFormData] = useState({ ...user });
+  const [uploadingKey, setUploadingKey] = useState<string | null>(null);
 
   const handleNestedChange = (path: string, value: any) => {
     const keys = path.split(".");
@@ -163,6 +184,34 @@ const UserMasterManagementModal = ({
     }
     current[keys[keys.length - 1]] = value;
     setFormData(newData);
+  };
+
+  const handleDocumentUpload = async (key: string, file: File) => {
+    if (!file) return;
+    setUploadingKey(key);
+    const data = new FormData();
+    data.append("file", file);
+    data.append(
+      "upload_preset",
+      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!
+    );
+    try {
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`,
+        { method: "POST", body: data }
+      );
+      const json = await res.json();
+      if (json.secure_url) {
+        handleNestedChange(`documents.${key}`, json.secure_url);
+      } else {
+        alert("Upload failed.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Upload failed.");
+    } finally {
+      setUploadingKey(null);
+    }
   };
 
   return (
@@ -533,7 +582,7 @@ const UserMasterManagementModal = ({
                           </span>
                         )}
                       </div>
-                      <div className="mt-4">
+                      <div className="mt-4 space-y-2">
                         <Input
                           label="Direct URL Link"
                           placeholder="Paste URL to change..."
@@ -542,6 +591,34 @@ const UserMasterManagementModal = ({
                             handleNestedChange(`documents.${key}`, v)
                           }
                         />
+                        <div className="relative">
+                          <input
+                            type="file"
+                            className="hidden"
+                            id={`file-upload-${key}`}
+                            accept="image/*,application/pdf"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) handleDocumentUpload(key, file);
+                            }}
+                          />
+                          <label
+                            htmlFor={`file-upload-${key}`}
+                            className="w-full flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 px-4 rounded-xl text-xs font-bold cursor-pointer transition-colors"
+                          >
+                            {uploadingKey === key ? (
+                              <>
+                                <FaSpinner className="animate-spin text-slate-400" />
+                                Uploading...
+                              </>
+                            ) : (
+                              <>
+                                <FaCloudUploadAlt className="text-slate-400 text-sm" />
+                                {url ? "Replace File" : "Upload File"}
+                              </>
+                            )}
+                          </label>
+                        </div>
                       </div>
                     </div>
                   ),
@@ -674,6 +751,24 @@ const ApplicationDetailsModal = ({
             </div>
           </section>
 
+          {app.answers && Object.keys(app.answers).length > 0 && (
+            <section className="bg-white border border-slate-100 rounded-2xl p-6">
+              <h4 className="text-[#E31B23] font-black text-[10px] uppercase tracking-widest mb-4">
+                Нэмэлт хариултууд
+              </h4>
+              <div className="grid sm:grid-cols-2 gap-4">
+                {Object.entries(app.answers).map(([k, v]) => (
+                  <div key={k}>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase">
+                      {k}
+                    </p>
+                    <p className="font-bold text-sm text-slate-800">{String(v)}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
           {!profile ? (
             <div className="bg-amber-50 border border-amber-100 p-6 rounded-2xl text-center">
               <p className="text-amber-700 text-sm font-bold">
@@ -783,8 +878,20 @@ const ApplicationDetailsModal = ({
 export default function AdminDashboard() {
   const t = useTranslations("admin");
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [expandedUser, setExpandedUser] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const tab = new URLSearchParams(window.location.search).get("tab");
+    if (tab) setActiveTab(tab);
+  }, []);
+
+  const goTab = (tab: string) => {
+    setActiveTab(tab);
+    setMobileNavOpen(false);
+  };
 
   // Data State
   const [users, setUsers] = useState<any[]>([]);
@@ -798,6 +905,8 @@ export default function AdminDashboard() {
   const [lessons, setLessons] = useState<any[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
   const [clubs, setClubs] = useState<any[]>([]);
+  const [roleFilter, setRoleFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   const [stats, setStats] = useState({
     totalUsers: 0,
@@ -1046,12 +1155,61 @@ export default function AdminDashboard() {
 
   const filteredUsers = users.filter(
     (u) =>
-      u.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      u.email?.toLowerCase().includes(searchTerm.toLowerCase()),
+      (u.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        u.email?.toLowerCase().includes(searchTerm.toLowerCase())) &&
+      (roleFilter === "all" || u.role?.toLowerCase() === roleFilter.toLowerCase()) &&
+      (statusFilter === "all" || u.status?.toLowerCase() === statusFilter.toLowerCase()),
   );
 
   return (
     <div className="min-h-[100dvh] bg-[#FAFAFA] flex font-sans text-slate-900 selection:bg-[#E31B23] selection:text-white overflow-hidden">
+      {/* Mobile drawer */}
+      {mobileNavOpen && (
+        <div className="lg:hidden fixed inset-0 z-[200]">
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/40"
+            aria-label="Close"
+            onClick={() => setMobileNavOpen(false)}
+          />
+          <aside className="absolute left-0 top-0 bottom-0 w-[82%] max-w-xs bg-[#F5F5F5] p-5 overflow-y-auto shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <span className="font-black text-lg">
+                AuPair<span className="text-[#E31B23]">Admin</span>
+              </span>
+              <button type="button" onClick={() => setMobileNavOpen(false)}>
+                <X size={20} />
+              </button>
+            </div>
+            <nav className="space-y-1">
+              {[
+                ["dashboard", LayoutDashboard, t("sidebar.dashboard")],
+                ["users", Users, t("sidebar.users")],
+                ["applications", ClipboardList, t("sidebar.applications")],
+                ["questions", HelpCircle, "Асуултууд"],
+                ["events", Calendar, t("sidebar.events")],
+                ["lessons", FaBook, t("sidebar.lessons")],
+                ["blog", FileText, t("sidebar.blog")],
+                ["shopping", ShoppingBag, t("sidebar.shopping") || "Shopping"],
+                ["bookings", Calendar, t("sidebar.bookings")],
+                ["orders", ShoppingCart, "Orders"],
+                ["clubs", Building, "Clubs"],
+                ["website-info", Globe, t("sidebar.websiteInfo") || "Website"],
+                ["materials", Folder, "Materials"],
+              ].map(([id, Icon, label]) => (
+                <SidebarItem
+                  key={String(id)}
+                  icon={Icon as any}
+                  label={String(label)}
+                  active={activeTab === id}
+                  onClick={() => goTab(String(id))}
+                />
+              ))}
+            </nav>
+          </aside>
+        </div>
+      )}
+
       {/* ─── SIDEBAR ─── */}
       <aside className="w-72 bg-[#F5F5F5] h-[100dvh] sticky top-0 p-6 flex flex-col justify-between hidden lg:flex border-r border-slate-200">
         <div>
@@ -1066,61 +1224,79 @@ export default function AdminDashboard() {
               icon={LayoutDashboard}
               label={t("sidebar.dashboard")}
               active={activeTab === "dashboard"}
-              onClick={() => setActiveTab("dashboard")}
+              onClick={() => goTab("dashboard")}
             />
             <SidebarItem
               icon={Users}
               label={t("sidebar.users")}
               active={activeTab === "users"}
-              onClick={() => setActiveTab("users")}
+              onClick={() => goTab("users")}
             />
             <SidebarItem
               icon={ClipboardList}
               label={t("sidebar.applications")}
               active={activeTab === "applications"}
-              onClick={() => setActiveTab("applications")}
+              onClick={() => goTab("applications")}
+            />
+            <SidebarItem
+              icon={HelpCircle}
+              label="Асуултууд"
+              active={activeTab === "questions"}
+              onClick={() => goTab("questions")}
             />
             <SidebarItem
               icon={Calendar}
               label={t("sidebar.events")}
               active={activeTab === "events"}
-              onClick={() => setActiveTab("events")}
+              onClick={() => goTab("events")}
             />
             <SidebarItem
               icon={FaBook}
               label={t("sidebar.lessons")}
               active={activeTab === "lessons"}
-              onClick={() => setActiveTab("lessons")}
+              onClick={() => goTab("lessons")}
             />
             <SidebarItem
               icon={FileText}
               label={t("sidebar.blog")}
               active={activeTab === "blog"}
-              onClick={() => setActiveTab("blog")}
+              onClick={() => goTab("blog")}
             />
             <SidebarItem
               icon={ShoppingBag}
               label={t("sidebar.shopping") || "Shopping"}
               active={activeTab === "shopping"}
-              onClick={() => setActiveTab("shopping")}
+              onClick={() => goTab("shopping")}
             />
             <SidebarItem
               icon={Calendar}
               label={t("sidebar.bookings")}
               active={activeTab === "bookings"}
-              onClick={() => setActiveTab("bookings")}
+              onClick={() => goTab("bookings")}
             />
             <SidebarItem
               icon={ShoppingCart}
               label="Orders"
               active={activeTab === "orders"}
-              onClick={() => setActiveTab("orders")}
+              onClick={() => goTab("orders")}
             />
             <SidebarItem
               icon={Building}
               label="Clubs"
               active={activeTab === "clubs"}
-              onClick={() => setActiveTab("clubs")}
+              onClick={() => goTab("clubs")}
+            />
+            <SidebarItem
+              icon={Globe}
+              label={t("sidebar.websiteInfo") || "Website Info"}
+              active={activeTab === "website-info"}
+              onClick={() => goTab("website-info")}
+            />
+            <SidebarItem
+              icon={Folder}
+              label="Materials"
+              active={activeTab === "materials"}
+              onClick={() => goTab("materials")}
             />
           </nav>
         </div>
@@ -1138,24 +1314,36 @@ export default function AdminDashboard() {
       </aside>
 
       {/* ─── MAIN CONTENT ─── */}
-      <main className="flex-1 overflow-y-auto p-4 md:p-8 lg:p-10">
+      <main className="flex-1 overflow-y-auto p-4 md:p-8 lg:p-10 pb-28 lg:pb-10">
         {/* Header */}
-        <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
-          <div>
-            <h1 className="text-3xl font-black text-slate-900 mb-1 capitalize tracking-tight">
-              {activeTab === "blog"
-                ? t("header.blog")
-                : t(`sidebar.${activeTab}`)}
-            </h1>
-            <p className="text-slate-400 text-sm font-bold">
-              {t("header.overview")}
-            </p>
-          </div>
-          <div className="flex gap-4">
-            <button className="w-10 h-10 rounded-full bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-[#E31B23] hover:shadow-md transition-all relative">
-              <Bell size={18} />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-[#E31B23] rounded-full border-2 border-white" />
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            <button
+              type="button"
+              className="lg:hidden w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center"
+              onClick={() => setMobileNavOpen(true)}
+            >
+              <Menu size={18} />
             </button>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-black text-slate-900 mb-1 capitalize tracking-tight">
+                {activeTab === "blog"
+                  ? t("header.blog")
+                  : activeTab === "website-info"
+                  ? t("sidebar.websiteInfo") || "Website Info"
+                  : activeTab === "materials"
+                  ? "Materials"
+                  : activeTab === "questions"
+                  ? "Асуултууд"
+                  : t(`sidebar.${activeTab}`)}
+              </h1>
+              <p className="text-slate-400 text-sm font-bold">
+                {t("header.overview")}
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-4 self-end md:self-auto">
+            <NotificationsBell onOpenApplications={() => goTab("applications")} />
           </div>
         </header>
 
@@ -1359,6 +1547,8 @@ export default function AdminDashboard() {
           </div>
         )}
 
+        {activeTab === "materials" && <MaterialsManager />}
+
         {/* ─── SHOPPING MANAGEMENT ─── */}
         {activeTab === "shopping" && <ShoppingManager />}
 
@@ -1378,9 +1568,84 @@ export default function AdminDashboard() {
           <ClubsManager clubs={clubs} onRefresh={refreshData} />
         )}
 
+        {/* ─── WEBSITE TRANSLATIONS & INFO ─── */}
+        {activeTab === "website-info" && <WebsiteInfoManager />}
+
+        {activeTab === "questions" && <QuestionsManager />}
+
         {/* ─── APPLICATIONS MANAGEMENT ─── */}
         {activeTab === "applications" && (
-          <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
+          <div className="space-y-4">
+            {/* Mobile cards */}
+            <div className="md:hidden space-y-3">
+              {applications.length === 0 ? (
+                <div className="bg-white rounded-2xl border border-dashed border-slate-200 p-10 text-center text-slate-400 font-bold text-sm">
+                  Өргөдөл байхгүй
+                </div>
+              ) : (
+                applications.map((app: any) => (
+                  <div
+                    key={app._id}
+                    className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm"
+                  >
+                    <div className="flex items-start justify-between gap-3 mb-2">
+                      <div>
+                        <p className="font-black text-slate-900">
+                          {app.firstName} {app.lastName}
+                        </p>
+                        <p className="text-xs text-slate-500 font-medium">
+                          {app.phone} · {app.email}
+                        </p>
+                      </div>
+                      <span
+                        className={`text-[10px] font-black uppercase px-2 py-1 rounded-full ${
+                          app.status === "pending"
+                            ? "bg-amber-50 text-amber-600"
+                            : app.status === "approved"
+                              ? "bg-emerald-50 text-emerald-600"
+                              : "bg-slate-100 text-slate-500"
+                        }`}
+                      >
+                        {app.status}
+                      </span>
+                    </div>
+                    <p className="text-sm font-bold text-slate-700 mb-2">
+                      {app.programId} · {app.level} · нас {app.age}
+                    </p>
+                    {app.answers && Object.keys(app.answers).length > 0 && (
+                      <div className="text-xs text-slate-500 bg-slate-50 rounded-xl p-3 mb-3 space-y-1">
+                        {Object.entries(app.answers).map(([k, v]) => (
+                          <p key={k}>
+                            <span className="font-bold text-slate-600">{k}:</span>{" "}
+                            {String(v)}
+                          </p>
+                        ))}
+                      </div>
+                    )}
+                    {app.status === "pending" && (
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => handleUpdateApplication(app._id, "approved")}
+                          className="flex-1 rounded-xl bg-[#00C896] text-white text-xs font-black py-2.5"
+                        >
+                          Зөвшөөрөх
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleUpdateApplication(app._id, "rejected")}
+                          className="flex-1 rounded-xl bg-[#E31B23] text-white text-xs font-black py-2.5"
+                        >
+                          Татгалзах
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div className="hidden md:block bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
             <div className="p-6 border-b border-slate-50">
               <h2 className="text-xl font-black text-slate-900">
                 {t("applications.title")}
@@ -1463,13 +1728,14 @@ export default function AdminDashboard() {
                 </tbody>
               </table>
             </div>
+            </div>
           </div>
         )}
 
         {/* ─── USERS MANAGEMENT ─── */}
         {activeTab === "users" && (
           <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
-            <div className="p-6 border-b border-slate-50 flex justify-between items-center">
+            <div className="p-6 border-b border-slate-50 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4">
               <div className="relative">
                 <Search
                   className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
@@ -1482,6 +1748,40 @@ export default function AdminDashboard() {
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-12 pr-4 py-3 bg-[#FAFAFA] rounded-xl text-sm font-bold w-64 focus:outline-none focus:ring-2 focus:ring-[#E31B23]/20 transition-all"
                 />
+              </div>
+              <div className="flex flex-wrap items-center gap-3">
+                {/* Role filter */}
+                <div className="flex bg-slate-100 p-1 rounded-xl text-[10px]">
+                  {["All", "Admin", "Student", "Guest"].map((r) => (
+                    <button
+                      key={r}
+                      onClick={() => setRoleFilter(r.toLowerCase())}
+                      className={`px-3 py-1.5 rounded-lg font-black uppercase transition-all ${
+                        roleFilter === r.toLowerCase()
+                          ? "bg-white text-slate-900 shadow-sm border border-slate-200/50"
+                          : "text-slate-400 hover:text-slate-600"
+                      }`}
+                    >
+                      {r}
+                    </button>
+                  ))}
+                </div>
+                {/* Status filter */}
+                <div className="flex bg-slate-100 p-1 rounded-xl text-[10px]">
+                  {["All", "Active", "Pending", "Suspended"].map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => setStatusFilter(s.toLowerCase())}
+                      className={`px-3 py-1.5 rounded-lg font-black uppercase transition-all ${
+                        statusFilter === s.toLowerCase()
+                          ? "bg-white text-slate-900 shadow-sm border border-slate-200/50"
+                          : "text-slate-400 hover:text-slate-600"
+                      }`}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
             <div className="overflow-x-auto">
@@ -1945,6 +2245,40 @@ export default function AdminDashboard() {
             />
           )}
         </AnimatePresence>
+
+        {/* Mobile bottom nav */}
+        <nav className="lg:hidden fixed bottom-0 inset-x-0 z-[150] px-3 pb-[max(env(safe-area-inset-bottom),10px)] pointer-events-none">
+          <div className="pointer-events-auto mx-auto max-w-md bg-white/95 backdrop-blur border border-slate-200 shadow-[0_-8px_30px_rgba(15,23,42,0.12)] rounded-2xl grid grid-cols-5 py-1.5">
+            {[
+              { id: "dashboard", icon: LayoutDashboard, label: "Home" },
+              { id: "applications", icon: ClipboardList, label: "Apps" },
+              { id: "questions", icon: HelpCircle, label: "Асуулт" },
+              { id: "users", icon: Users, label: "Users" },
+              { id: "more", icon: Menu, label: "Цэс" },
+            ].map((item) => {
+              const Icon = item.icon;
+              const active =
+                item.id === "more"
+                  ? false
+                  : activeTab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() =>
+                    item.id === "more" ? setMobileNavOpen(true) : goTab(item.id)
+                  }
+                  className={`flex flex-col items-center gap-0.5 py-1.5 text-[10px] font-bold ${
+                    active ? "text-[#E31B23]" : "text-slate-400"
+                  }`}
+                >
+                  <Icon size={18} />
+                  {item.label}
+                </button>
+              );
+            })}
+          </div>
+        </nav>
       </main>
     </div>
   );

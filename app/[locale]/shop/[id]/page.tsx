@@ -1,27 +1,32 @@
-import { connectToDB } from "@/lib/db";
-import ShoppingItem from "@/lib/models/ShoppingItem";
+import { getSupabaseAdmin } from "@/lib/supabase/admin";
+import { isDbId, toApi } from "@/lib/supabase/mappers";
 import ItemClient from "./ItemClient";
 import { notFound } from "next/navigation";
-import mongoose from "mongoose";
-import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string, id: string }> }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string; id: string }> }): Promise<Metadata> {
   const { locale, id } = await params;
-  
-  if (!mongoose.Types.ObjectId.isValid(id)) {
+
+  if (!isDbId(id)) {
     return { title: "Item Not Found" };
   }
 
-  await connectToDB();
-  const item = await ShoppingItem.findById(id).lean();
+  const supabase = getSupabaseAdmin();
+  const { data } = await supabase
+    .from("shopping_items")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
 
+  const item = toApi(data);
   if (!item) {
     return { title: "Item Not Found" };
   }
 
-  const title = item.name?.[locale] || item.name?.en || "Shop Item";
-  const desc = item.description?.[locale] || item.description?.en || "";
+  const name = item.name as Record<string, string> | undefined;
+  const descObj = item.description as Record<string, string> | undefined;
+  const title = name?.[locale] || name?.en || "Shop Item";
+  const desc = descObj?.[locale] || descObj?.en || "";
 
   return {
     title: `${title} - VISA Shop`,
@@ -29,25 +34,29 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   };
 }
 
-export default async function ShopItemPage({ params }: { params: Promise<{ locale: string, id: string }> }) {
+export default async function ShopItemPage({ params }: { params: Promise<{ locale: string; id: string }> }) {
   const { locale, id } = await params;
-  
-  if (!mongoose.Types.ObjectId.isValid(id)) {
+
+  if (!isDbId(id)) {
     notFound();
   }
 
-  await connectToDB();
-  const itemResponse = await ShoppingItem.findById(id).lean();
+  const supabase = getSupabaseAdmin();
+  const { data } = await supabase
+    .from("shopping_items")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
 
+  const itemResponse = toApi(data);
   if (!itemResponse || !itemResponse.isActive) {
     notFound();
   }
 
   const item = {
     ...itemResponse,
-    _id: itemResponse._id.toString(),
-    createdAt: itemResponse.createdAt?.toISOString(),
-    updatedAt: itemResponse.updatedAt?.toISOString(),
+    createdAt: itemResponse.createdAt ? String(itemResponse.createdAt) : undefined,
+    updatedAt: itemResponse.updatedAt ? String(itemResponse.updatedAt) : undefined,
   };
 
   return (

@@ -1,18 +1,23 @@
 import { NextResponse } from "next/server";
-import { connectToDB } from "@/lib/db";
-import Event from "@/lib/models/Events";
-import User from "@/lib/models/User";
-import { auth } from "@clerk/nextjs/server";
+import { getUserId } from "@/lib/auth";
+import { getSupabaseAdmin } from "@/lib/supabase/admin";
+import { toApi } from "@/lib/supabase/mappers";
 
 export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
-    await connectToDB();
-    const event = await Event.findById(id);
+    const supabase = getSupabaseAdmin();
+    const { data, error } = await supabase
+      .from("events")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
 
+    if (error) throw error;
+    const event = toApi(data);
     if (!event) {
       return NextResponse.json({ error: "Event not found" }, { status: 404 });
     }
@@ -25,51 +30,80 @@ export async function GET(
 }
 
 export async function POST(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    const { userId: clerkId } = await auth();
-    if (!clerkId) {
+    const userId = await getUserId();
+    if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { id: eventId } = await params;
-    await connectToDB();
+    const supabase = getSupabaseAdmin();
 
-    // 1. Find the user in our DB
-    const user = await User.findOne({ clerkId });
+    const { data: userRow, error: userErr } = await supabase
+      .from("users")
+      .select("*")
+      .eq("clerk_id", userId)
+      .maybeSingle();
+
+    if (userErr) throw userErr;
+    const user = toApi(userRow);
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // 2. Find the event
-    const event = await Event.findById(eventId);
+    const { data: eventRow, error: eventErr } = await supabase
+      .from("events")
+      .select("*")
+      .eq("id", eventId)
+      .maybeSingle();
+
+    if (eventErr) throw eventErr;
+    const event = toApi(eventRow);
     if (!event) {
       return NextResponse.json({ error: "Event not found" }, { status: 404 });
     }
 
-    // 3. Check if already registered
-    if (event.attendees.includes(user._id)) {
+    const { data: existing } = await supabase
+      .from("event_attendees")
+      .select("user_id")
+      .eq("event_id", eventId)
+      .eq("user_id", user._id)
+      .maybeSingle();
+
+    if (existing) {
       return NextResponse.json({ error: "Already registered for this event" }, { status: 400 });
     }
 
-    // 4. Update Event Attendees
-    event.attendees.push(user._id);
-    await event.save();
+    const { error: joinErr } = await supabase
+      .from("event_attendees")
+      .insert({ event_id: eventId, user_id: user._id });
 
-    // 5. Update User Activity History
-    user.activityHistory.push({
-      type: 'Event',
-      title: event.title.en,
-      date: new Date(),
-      points: 10, // Default points for registration
-      status: 'pending'
-    });
-    
-    // Increment events count
-    user.eventsAttendedCount += 1;
-    await user.save();
+    if (joinErr) throw joinErr;
+
+    const title = (event.title as { en?: string })?.en ?? "Event";
+    const activityHistory = [
+      ...(Array.isArray(user.activityHistory) ? user.activityHistory : []),
+      {
+        type: "Event",
+        title,
+        date: new Date().toISOString(),
+        points: 10,
+        status: "pending",
+      },
+    ];
+
+    const { error: updateErr } = await supabase
+      .from("users")
+      .update({
+        activity_history: activityHistory,
+        events_attended_count: (user.eventsAttendedCount ?? 0) + 1,
+      })
+      .eq("id", user._id);
+
+    if (updateErr) throw updateErr;
 
     return NextResponse.json({ success: true, message: "Successfully joined event" }, { status: 200 });
   } catch (error) {

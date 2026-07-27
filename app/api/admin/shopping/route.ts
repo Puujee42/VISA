@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { connectToDB } from "@/lib/db";
-import ShoppingItem from "@/lib/models/ShoppingItem";
+import { getSupabaseAdmin } from "@/lib/supabase/admin";
+import { toApi, toApiList, toDb } from "@/lib/supabase/mappers";
 import { withAdminAuth } from "@/lib/adminAuth";
 import { v2 as cloudinary } from "cloudinary";
 
@@ -10,47 +10,56 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// GET all shopping items (admin)
 export const GET = withAdminAuth(async () => {
   try {
-    await connectToDB();
-    const items = await ShoppingItem.find({}).sort({ createdAt: -1 });
-    return NextResponse.json(items, { status: 200 });
+    const supabase = getSupabaseAdmin();
+    const { data, error } = await supabase
+      .from("shopping_items")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+    return NextResponse.json(toApiList(data), { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { error: "Failed to fetch shopping items" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 });
 
-// CREATE a new shopping item
 export const POST = withAdminAuth(async (req: Request) => {
   try {
-    await connectToDB();
     const data = await req.json();
+    const supabase = getSupabaseAdmin();
 
-    const newItem = await ShoppingItem.create({
-      name: data.name,
-      description: data.description,
-      price: data.price,
-      image: data.image || "",
-      category: data.category || "general",
-      stock: data.stock || 0,
-      isActive: data.isActive !== undefined ? data.isActive : true,
-    });
+    const { data: row, error } = await supabase
+      .from("shopping_items")
+      .insert(
+        toDb({
+          name: data.name,
+          description: data.description,
+          price: data.price,
+          image: data.image || "",
+          category: data.category || "general",
+          stock: data.stock || 0,
+          isActive: data.isActive !== undefined ? data.isActive : true,
+        }),
+      )
+      .select()
+      .single();
 
-    return NextResponse.json(newItem, { status: 201 });
-  } catch (error: any) {
+    if (error) throw error;
+    return NextResponse.json(toApi(row), { status: 201 });
+  } catch (error: unknown) {
     console.error("Shopping item create error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const message = error instanceof Error ? error.message : "Unknown error";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 });
 
-// UPDATE a shopping item
 export const PUT = withAdminAuth(async (req: Request) => {
   try {
-    await connectToDB();
     const data = await req.json();
     const { id, ...updateData } = data;
 
@@ -58,25 +67,29 @@ export const PUT = withAdminAuth(async (req: Request) => {
       return NextResponse.json({ error: "ID required" }, { status: 400 });
     }
 
-    const updated = await ShoppingItem.findByIdAndUpdate(id, updateData, {
-      new: true,
-    });
+    const supabase = getSupabaseAdmin();
+    const { data: row, error } = await supabase
+      .from("shopping_items")
+      .update(toDb(updateData))
+      .eq("id", id)
+      .select()
+      .maybeSingle();
 
-    if (!updated) {
+    if (error) throw error;
+    if (!row) {
       return NextResponse.json({ error: "Item not found" }, { status: 404 });
     }
 
-    return NextResponse.json(updated, { status: 200 });
-  } catch (error: any) {
+    return NextResponse.json(toApi(row), { status: 200 });
+  } catch (error: unknown) {
     console.error("Shopping item update error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const message = error instanceof Error ? error.message : "Unknown error";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 });
 
-// DELETE a shopping item
 export const DELETE = withAdminAuth(async (req: Request) => {
   try {
-    await connectToDB();
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
 
@@ -84,9 +97,13 @@ export const DELETE = withAdminAuth(async (req: Request) => {
       return NextResponse.json({ error: "ID required" }, { status: 400 });
     }
 
-    await ShoppingItem.findByIdAndDelete(id);
+    const supabase = getSupabaseAdmin();
+    const { error } = await supabase.from("shopping_items").delete().eq("id", id);
+    if (error) throw error;
+
     return NextResponse.json({ success: true });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 });

@@ -1,16 +1,19 @@
 import { NextResponse } from "next/server";
-import { currentUser } from "@clerk/nextjs/server";
-import { connectToDB } from "@/lib/db";
-import Booking from "@/lib/models/Booking";
-import User from "@/lib/models/User";
-import { sendBookingApprovedEmail, sendBookingRejectedEmail } from "@/lib/email";
+import { getSupabaseAdmin } from "@/lib/supabase/admin";
+import { toApi, toApiList, toDb } from "@/lib/supabase/mappers";
 import { withAdminAuth } from "@/lib/adminAuth";
+import { sendBookingApprovedEmail, sendBookingRejectedEmail } from "@/lib/email";
 
 export const GET = withAdminAuth(async () => {
   try {
-    await connectToDB();
-    const bookings = await Booking.find({}).sort({ createdAt: -1 });
-    return NextResponse.json(bookings, { status: 200 });
+    const supabase = getSupabaseAdmin();
+    const { data, error } = await supabase
+      .from("bookings")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+    return NextResponse.json(toApiList(data), { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: "Failed to fetch bookings" }, { status: 500 });
   }
@@ -24,41 +27,51 @@ export const PUT = withAdminAuth(async (req: Request) => {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    if (!['confirmed', 'rejected', 'completed', 'cancelled'].includes(status)) {
+    if (!["confirmed", "rejected", "completed", "cancelled"].includes(status)) {
       return NextResponse.json({ error: "Invalid status" }, { status: 400 });
     }
 
-    await connectToDB();
+    const supabase = getSupabaseAdmin();
+    const { data: bookingRow, error: fetchErr } = await supabase
+      .from("bookings")
+      .select("*")
+      .eq("id", bookingId)
+      .maybeSingle();
 
-    const booking = await Booking.findById(bookingId);
-    if (!booking) {
+    if (fetchErr) throw fetchErr;
+    if (!bookingRow) {
       return NextResponse.json({ error: "Booking not found" }, { status: 404 });
     }
 
-    // Update booking status
-    booking.status = status;
-    await booking.save();
+    const { data: updatedRow, error: updateErr } = await supabase
+      .from("bookings")
+      .update({ status })
+      .eq("id", bookingId)
+      .select()
+      .single();
 
-    // Send email notification to user
-    if (status === 'confirmed') {
-      await sendBookingApprovedEmail(booking.email, {
-        serviceTitle: booking.serviceTitle,
-        date: booking.date,
-        time: booking.time,
-        name: booking.name,
-        email: booking.email,
-        phone: booking.phone,
-        note: booking.note
+    if (updateErr) throw updateErr;
+    const booking = toApi(updatedRow)!;
+
+    if (status === "confirmed") {
+      await sendBookingApprovedEmail(booking.email as string, {
+        serviceTitle: booking.serviceTitle as string,
+        date: booking.date as string,
+        time: booking.time as string,
+        name: booking.name as string,
+        email: booking.email as string,
+        phone: booking.phone as string,
+        note: booking.note as string,
       });
-    } else if (status === 'rejected') {
-      await sendBookingRejectedEmail(booking.email, {
-        serviceTitle: booking.serviceTitle,
-        date: booking.date,
-        time: booking.time,
-        name: booking.name,
-        email: booking.email,
-        phone: booking.phone,
-        note: booking.note
+    } else if (status === "rejected") {
+      await sendBookingRejectedEmail(booking.email as string, {
+        serviceTitle: booking.serviceTitle as string,
+        date: booking.date as string,
+        time: booking.time as string,
+        name: booking.name as string,
+        email: booking.email as string,
+        phone: booking.phone as string,
+        note: booking.note as string,
       });
     }
 

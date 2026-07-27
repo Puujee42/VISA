@@ -12,13 +12,15 @@ const LANGUAGES = [
   { code: "de", name: "Deutsch", flag: "🇩🇪" },
 ];
 
-export default function LanguageToggle() {
+export default function LanguageToggle({ variant = "auto" }: { variant?: "auto" | "light" | "dark" }) {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
   const currentLanguage = LANGUAGES.find((l) => l.code === locale) || LANGUAGES[0];
+
+  const isLight = variant === "light";
 
   const handleLanguageChange = (newLocale: string) => {
     setIsOpen(false);
@@ -29,11 +31,14 @@ export default function LanguageToggle() {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 transition-all active:scale-95 text-sm font-bold shadow-sm"
+        className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full transition-all active:scale-95 text-xs font-semibold ${
+          isLight
+            ? "bg-white/15 hover:bg-white/25 border border-white/25 text-white backdrop-blur-md"
+            : "bg-black/[0.04] hover:bg-black/[0.07] border border-black/[0.06] text-slate-700"
+        }`}
       >
-        <span className="text-lg">{currentLanguage.flag}</span>
-        <span className="uppercase">{currentLanguage.code}</span>
-        <ChevronDown size={14} className={`transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
+        <span className="text-base leading-none">{currentLanguage.flag}</span>
+        <ChevronDown size={12} className={`opacity-70 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
       </button>
 
       <AnimatePresence>

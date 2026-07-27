@@ -49,7 +49,15 @@ export default function AestheticFooter() {
   const locale = useLocale();
 
   return (
-    <footer className="relative w-full pt-16 pb-8 font-sans transition-all duration-700 overflow-hidden bg-white">
+    <footer
+      style={{
+        background: 'rgba(15, 23, 42, 0.96)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        borderTop: '0.5px solid rgba(255, 255, 255, 0.08)',
+      }}
+      className="relative w-full pt-16 pb-8 font-sans transition-all duration-700 overflow-hidden text-slate-300 hidden lg:block"
+    >
 
       {/* ─── VIBRANT COLOR BLOBS (Restored) ─── */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -120,7 +128,7 @@ export default function AestheticFooter() {
                 <span className="font-bold text-xl relative z-10">M</span>
               </div>
               <div className="flex flex-col">
-                <span className="text-2xl font-black uppercase leading-none tracking-tight text-slate-900">
+                <span className="text-2xl font-black uppercase leading-none tracking-tight text-white">
                   Mongolian
                 </span>
                 {/* Colorful Agency Text */}
@@ -182,7 +190,7 @@ export default function AestheticFooter() {
 
         {/* ─── 3. BOTTOM BAR ─── */}
         <div className="pt-8 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs font-bold uppercase tracking-widest opacity-60 text-slate-500">
+          <p className="text-xs font-bold uppercase tracking-widest opacity-60 text-slate-400">
             {t("rights")}
           </p>
 
@@ -228,7 +236,7 @@ const SimpleLink = ({ href, text, color }: { href: string, text: string, color: 
         href={href}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        className="text-sm font-bold transition-all duration-300 hover:translate-x-1 inline-block text-slate-500"
+        className="text-sm font-bold transition-all duration-300 hover:translate-x-1 inline-block text-slate-400"
         // Valid standard CSS property 'color' works fine here
         style={{ color: hovered ? color : undefined }}
       >

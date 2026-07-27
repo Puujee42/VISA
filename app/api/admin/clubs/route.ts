@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
-import { connectToDB } from "@/lib/db";
-import Club from "@/lib/models/Club";
-import { v2 as cloudinary } from 'cloudinary';
+import { getSupabaseAdmin } from "@/lib/supabase/admin";
+import { toApi, toApiList, toDb } from "@/lib/supabase/mappers";
+import { v2 as cloudinary } from "cloudinary";
 import { withAdminAuth } from "@/lib/adminAuth";
 
-// Configure Cloudinary
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -13,9 +12,14 @@ cloudinary.config({
 
 export const GET = withAdminAuth(async () => {
   try {
-    await connectToDB();
-    const clubs = await Club.find({}).sort({ createdAt: -1 });
-    return NextResponse.json(clubs, { status: 200 });
+    const supabase = getSupabaseAdmin();
+    const { data, error } = await supabase
+      .from("clubs")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+    return NextResponse.json(toApiList(data), { status: 200 });
   } catch (error) {
     console.error("Failed to fetch clubs", error);
     return NextResponse.json({ error: "Failed to fetch clubs" }, { status: 500 });
@@ -24,9 +28,8 @@ export const GET = withAdminAuth(async () => {
 
 export const POST = withAdminAuth(async (request: Request) => {
   try {
-    await connectToDB();
     const formData = await request.formData();
-    
+
     const clubId = formData.get("clubId") as string;
     const nameEn = formData.get("nameEn") as string;
     const nameMn = formData.get("nameMn") as string;
@@ -38,31 +41,41 @@ export const POST = withAdminAuth(async (request: Request) => {
 
     let imageUrl = "";
     if (imageFile) {
-        const arrayBuffer = await imageFile.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
-        const uploadResult = await new Promise<any>((resolve, reject) => {
-            const uploadStream = cloudinary.uploader.upload_stream(
-                { folder: 'unicef_clubs' },
-                (error, result) => {
-                    if (error) reject(error);
-                    else resolve(result);
-                }
-            );
-            uploadStream.end(buffer);
-        });
-        imageUrl = uploadResult.secure_url;
+      const arrayBuffer = await imageFile.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      const uploadResult = await new Promise<{ secure_url: string }>(
+        (resolve, reject) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            { folder: "unicef_clubs" },
+            (error, result) => {
+              if (error) reject(error);
+              else resolve(result as { secure_url: string });
+            },
+          );
+          uploadStream.end(buffer);
+        },
+      );
+      imageUrl = uploadResult.secure_url;
     }
 
-    const newClub = await Club.create({
-        clubId,
-        name: { en: nameEn, mn: nameMn },
-        description: { en: descEn, mn: descMn },
-        website,
-        email,
-        image: imageUrl
-    });
+    const supabase = getSupabaseAdmin();
+    const { data: row, error } = await supabase
+      .from("clubs")
+      .insert(
+        toDb({
+          clubId,
+          name: { en: nameEn, mn: nameMn },
+          description: { en: descEn, mn: descMn },
+          website,
+          email,
+          image: imageUrl,
+        }),
+      )
+      .select()
+      .single();
 
-    return NextResponse.json(newClub, { status: 201 });
+    if (error) throw error;
+    return NextResponse.json(toApi(row), { status: 201 });
   } catch (error) {
     console.error("Failed to create club", error);
     return NextResponse.json({ error: "Failed to create club" }, { status: 500 });
@@ -70,65 +83,79 @@ export const POST = withAdminAuth(async (request: Request) => {
 });
 
 export const PUT = withAdminAuth(async (request: Request) => {
-    try {
-        await connectToDB();
-        const formData = await request.formData();
-        const id = formData.get("id") as string;
-        
-        if (!id) return NextResponse.json({ error: "ID required" }, { status: 400 });
+  try {
+    const formData = await request.formData();
+    const id = formData.get("id") as string;
 
-        const clubId = formData.get("clubId") as string;
-        const nameEn = formData.get("nameEn") as string;
-        const nameMn = formData.get("nameMn") as string;
-        const descEn = formData.get("descEn") as string;
-        const descMn = formData.get("descMn") as string;
-        const website = formData.get("website") as string;
-        const email = formData.get("email") as string;
-        const imageFile = formData.get("image") as File;
+    if (!id) return NextResponse.json({ error: "ID required" }, { status: 400 });
 
-        const updateData: any = {
-            clubId,
-            name: { en: nameEn, mn: nameMn },
-            description: { en: descEn, mn: descMn },
-            website,
-            email
-        };
+    const clubId = formData.get("clubId") as string;
+    const nameEn = formData.get("nameEn") as string;
+    const nameMn = formData.get("nameMn") as string;
+    const descEn = formData.get("descEn") as string;
+    const descMn = formData.get("descMn") as string;
+    const website = formData.get("website") as string;
+    const email = formData.get("email") as string;
+    const imageFile = formData.get("image") as File;
 
-        if (imageFile) {
-            const arrayBuffer = await imageFile.arrayBuffer();
-            const buffer = Buffer.from(arrayBuffer);
-            const uploadResult = await new Promise<any>((resolve, reject) => {
-                const uploadStream = cloudinary.uploader.upload_stream(
-                    { folder: 'unicef_clubs' },
-                    (error, result) => {
-                        if (error) reject(error);
-                        else resolve(result);
-                    }
-                );
-                uploadStream.end(buffer);
-            });
-            updateData.image = uploadResult.secure_url;
-        }
+    const updateData: Record<string, unknown> = {
+      clubId,
+      name: { en: nameEn, mn: nameMn },
+      description: { en: descEn, mn: descMn },
+      website,
+      email,
+    };
 
-        const updatedClub = await Club.findByIdAndUpdate(id, updateData, { new: true });
-        return NextResponse.json(updatedClub, { status: 200 });
-
-    } catch (error) {
-        console.error("Failed to update club", error);
-        return NextResponse.json({ error: "Failed to update club" }, { status: 500 });
+    if (imageFile) {
+      const arrayBuffer = await imageFile.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      const uploadResult = await new Promise<{ secure_url: string }>(
+        (resolve, reject) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            { folder: "unicef_clubs" },
+            (error, result) => {
+              if (error) reject(error);
+              else resolve(result as { secure_url: string });
+            },
+          );
+          uploadStream.end(buffer);
+        },
+      );
+      updateData.image = uploadResult.secure_url;
     }
+
+    const supabase = getSupabaseAdmin();
+    const { data: row, error } = await supabase
+      .from("clubs")
+      .update(toDb(updateData))
+      .eq("id", id)
+      .select()
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!row) {
+      return NextResponse.json({ error: "Club not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(toApi(row), { status: 200 });
+  } catch (error) {
+    console.error("Failed to update club", error);
+    return NextResponse.json({ error: "Failed to update club" }, { status: 500 });
+  }
 });
 
 export const DELETE = withAdminAuth(async (request: Request) => {
-    try {
-        await connectToDB();
-        const { searchParams } = new URL(request.url);
-        const id = searchParams.get('id');
-        if (!id) return NextResponse.json({ error: "ID required" }, { status: 400 });
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+    if (!id) return NextResponse.json({ error: "ID required" }, { status: 400 });
 
-        await Club.findByIdAndDelete(id);
-        return NextResponse.json({ message: "Deleted" }, { status: 200 });
-    } catch (error) {
-        return NextResponse.json({ error: "Failed to delete" }, { status: 500 });
-    }
+    const supabase = getSupabaseAdmin();
+    const { error } = await supabase.from("clubs").delete().eq("id", id);
+    if (error) throw error;
+
+    return NextResponse.json({ message: "Deleted" }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to delete" }, { status: 500 });
+  }
 });

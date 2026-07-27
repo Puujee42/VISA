@@ -1,20 +1,25 @@
 import { NextResponse } from "next/server";
-import { auth, currentUser } from "@clerk/nextjs/server";
-import { connectToDB } from "@/lib/db";
-import Booking from "@/lib/models/Booking";
+import { getSessionUser, getUserId } from "@/lib/auth";
+import { getSupabaseAdmin } from "@/lib/supabase/admin";
+import { toApi, toApiList } from "@/lib/supabase/mappers";
 import { sendBookingRequestEmail } from "@/lib/email";
 
 export async function GET() {
   try {
-    const { userId } = await auth();
+    const userId = await getUserId();
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    await connectToDB();
-    const bookings = await Booking.find({ userId }).sort({ createdAt: -1 });
+    const supabase = getSupabaseAdmin();
+    const { data, error } = await supabase
+      .from("bookings")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
 
-    return NextResponse.json(bookings, { status: 200 });
+    if (error) throw error;
+    return NextResponse.json(toApiList(data), { status: 200 });
   } catch (error) {
     console.error("Fetch bookings error:", error);
     return NextResponse.json({ error: "Failed to fetch bookings" }, { status: 500 });
@@ -23,11 +28,7 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
-    const user = await currentUser();
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
+    const session = await getSessionUser();
     const body = await req.json();
     const { service, date, time, name, email, phone, note } = body;
 
@@ -35,26 +36,34 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    await connectToDB();
+    const supabase = getSupabaseAdmin();
+    const { data, error } = await supabase
+      .from("bookings")
+      .insert({
+        user_id: session?.id || "guest",
+        service_id: service.id,
+        service_title: service.title,
+        date: date.full,
+        time,
+        name,
+        email,
+        phone,
+        note,
+        status: "pending",
+      })
+      .select()
+      .single();
 
-    const newBooking = new Booking({
-      userId: user.id,
-      serviceId: service.id,
-      serviceTitle: service.title,
-      date: date.full,
-      time,
-      name,
-      email,
-      phone,
-      note,
-      status: 'pending'
-    });
+    if (error) throw error;
 
-    // Use the persistent database ID for the LiveKit room
-    newBooking.livekitRoom = `room_${newBooking._id}`;
-    await newBooking.save();
+    const booking = toApi(data)!;
+    await supabase
+      .from("bookings")
+      .update({ livekit_room: `room_${booking._id}` })
+      .eq("id", booking._id);
 
-    // Send notification email to admin
+    booking.livekitRoom = `room_${booking._id}`;
+
     const adminEmail = process.env.ADMIN_EMAIL;
     if (adminEmail) {
       await sendBookingRequestEmail(adminEmail, {
@@ -64,13 +73,13 @@ export async function POST(req: Request) {
         name,
         email,
         phone,
-        note
+        note,
       });
     }
 
-    return NextResponse.json(newBooking, { status: 201 });
+    return NextResponse.json(booking, { status: 201 });
   } catch (error) {
-    console.error("Create booking error:", error);
+    console.error("Booking creation error:", error);
     return NextResponse.json({ error: "Failed to create booking" }, { status: 500 });
   }
 }
